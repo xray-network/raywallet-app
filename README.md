@@ -1,1 +1,1 @@
-# ray-network-client-app
+# ray-client-web
