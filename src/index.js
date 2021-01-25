@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createHashHistory } from 'history'
+import { createBrowserHistory } from 'history'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 // import { logger } from 'redux-logger'
@@ -18,7 +18,7 @@ import * as serviceWorker from './serviceWorker'
 import 'services/axios/fakeApi'
 
 // middlewared
-const history = createHashHistory()
+const history = createBrowserHistory()
 const sagaMiddleware = createSagaMiddleware()
 const routeMiddleware = routerMiddleware(history)
 const middlewares = [sagaMiddleware, routeMiddleware]

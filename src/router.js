@@ -10,22 +10,18 @@ const routes = [
   {
     path: '/wallets',
     Component: lazy(() => import('pages/wallets')),
-    exact: true,
   },
   {
     path: '/staking-center',
     Component: lazy(() => import('pages/staking')),
-    exact: true,
   },
   {
     path: '/rewards',
     Component: lazy(() => import('pages/rewards')),
-    exact: true,
   },
   {
-    path: '/kick-starter',
-    Component: lazy(() => import('pages/kickstarter')),
-    exact: true,
+    path: '/defi',
+    Component: lazy(() => import('pages/defi')),
   },
 ]
 
@@ -40,16 +36,17 @@ const Router = ({ history, routerAnimation }) => {
         <Route
           render={(state) => {
             const { location } = state
+            const animationKey = location.pathname.slice(1).split('/')[0]
             return (
               <SwitchTransition>
                 <CSSTransition
-                  key={location.pathname}
+                  key={animationKey}
                   appear
                   classNames={routerAnimation}
                   timeout={routerAnimation === 'none' ? 0 : 300}
                 >
                   <Switch location={location}>
-                    <Route exact path="/" render={() => <Redirect to="/wallets" />} />
+                    <Route exact path="/" render={() => <Redirect to="/wallets/send" />} />
                     {routes.map(({ path, Component, exact }) => (
                       <Route
                         path={path}

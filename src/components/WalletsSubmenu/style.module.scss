@@ -1,0 +1,30 @@
+@import 'mixins.scss';
+
+.menu {
+  a {
+    font-size: rem(18);
+    margin-right: rem(30);
+    position: relative;
+    white-space: nowrap;
+
+    span:first-child {
+      opacity: 0;
+      font-weight: 600;
+    }
+
+    span:last-child {
+      position: absolute;
+      left: 0;
+    }
+
+    &.active {
+      font-weight: 600;
+      color: $black;
+    }
+  }
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

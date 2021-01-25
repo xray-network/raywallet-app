@@ -35,13 +35,13 @@ const Header = () => {
             <span>Staking Center</span>
             <span>Staking Center</span>
           </NavLink>
+          <NavLink activeClassName={style.active} to="/defi">
+            <span>Kick Starter (DeFi)</span>
+            <span>Kick Starter (DeFi)</span>
+          </NavLink>
           <NavLink activeClassName={style.active} to="/rewards">
             <span>Rewards</span>
             <span>Rewards</span>
-          </NavLink>
-          <NavLink activeClassName={style.active} to="/kick-starter">
-            <span>Kick Starter</span>
-            <span>Kick Starter</span>
           </NavLink>
         </div>
         <div className={style.icons}>

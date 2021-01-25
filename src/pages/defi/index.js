@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import Empty from 'components/Empty'
 
-const KickStarter = () => {
+const DeFi = () => {
   return (
     <div>
       <Helmet title="Kick Starter" />
@@ -18,4 +18,4 @@ const KickStarter = () => {
   )
 }
 
-export default KickStarter
+export default DeFi

@@ -1,30 +1,41 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Select } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { Button, Select, Spin } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
 import style from './style.module.scss'
 
-const wallets = [
-  {
-    id: '1f2d47627ae826e6b7d442dcf45d5a08efa8ad13040a3af0bc148612',
-    name: 'My RAYs',
-    ticker: 'RAY',
-    network: 'cardano mainnet',
-  },
-  {
-    id: 'efa8ad13040a3af0b1f2d47627ae826e6b7d442dcf45d5a08c148612',
-    name: 'Cardano Stake',
-    ticker: 'ADA',
-    network: 'cardano mainnet',
-  },
-  {
-    id: 'cf45d5a08c14861247627ae8efa8ad130b1f2d26e6b7d442d040a3af',
-    name: 'Main',
-    ticker: 'ADA',
-    network: 'cardano mainnet',
-  },
-]
-
 const WalletsMenu = () => {
+  const dispatch = useDispatch()
+  const walletsList = useSelector((state) => state.wallets.walletsList)
+  const wallet = useSelector((state) => state.wallets.wallet)
+  const { data } = wallet
+
+  const selectWallet = (value) => {
+    dispatch({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'wallet',
+        value: {
+          ...wallet,
+          selected: value,
+        },
+      },
+    })
+  }
+
+  const refreshData = (walletId) => {
+    dispatch({
+      type: 'wallets/FETCH_WALLET_DATA',
+      payload: {
+        walletId,
+      },
+    })
+  }
+
+  const amount = (data.amount && data.amount.toString().split('.')[0]) || '0'
+  const decimal = (data.amount && data.amount.toString().split('.')[1]) || '000000'
+
   return (
     <div>
       <Button hidden size="large" type="primary" className={style.btnAdd}>
@@ -32,61 +43,78 @@ const WalletsMenu = () => {
         <strong>Add Wallet</strong>
       </Button>
       <div className={style.negativeSpace}>
-        <Select
-          suffixIcon={<div className={style.selectWalletsArrow} />}
-          defaultValue={wallets[0].id}
-          className={style.selectWallets}
-          dropdownRender={(menu) => (
-            <div>
-              {menu}
-              <div className="px-2 pt-2 pb-1">
-                <Button size="large" className={style.btnAdd}>
-                  <i className="fe fe-plus-circle" />
-                  <strong>Add Wallet</strong>
-                </Button>
-              </div>
-            </div>
-          )}
-        >
-          {wallets.map((item) => {
-            return (
-              <Select.Option key={item.id} value={item.id}>
-                <div className={style.selectWalletsItem}>
-                  <div>
-                    <strong className="mr-1">{item.name}</strong>
-                    <span className="badge badge-light">{item.ticker}</span>
-                  </div>
-                  <small>{item.network}</small>
+        <div className={`${style.loader} ${wallet.loading ? style.loaderActive : ''}`}>
+          <div className={style.loaderIcon}>
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+          </div>
+          <Select
+            disabled={wallet.loading}
+            onChange={(value) => selectWallet(value)}
+            suffixIcon={<div className={style.selectWalletsArrow} />}
+            defaultValue={wallet.selected || null}
+            className={style.selectWallets}
+            dropdownRender={(menu) => (
+              <div>
+                {menu}
+                <div className="px-2 pt-2 pb-1">
+                  <Button size="large" className={style.btnAdd}>
+                    <i className="fe fe-plus-circle" />
+                    <strong>Add Wallet</strong>
+                  </Button>
                 </div>
-              </Select.Option>
-            )
-          })}
-        </Select>
+              </div>
+            )}
+          >
+            {walletsList.map((item) => {
+              return (
+                <Select.Option key={item.id} value={item.id}>
+                  <div className={style.selectWalletsItem}>
+                    <div>
+                      <strong className="mr-1">{item.name}</strong>
+                      <span className="badge badge-light">{item.ticker}</span>
+                    </div>
+                    <small>{item.network}</small>
+                  </div>
+                </Select.Option>
+              )
+            })}
+          </Select>
+        </div>
       </div>
       <div className="mt-4">
         <div className={style.walletTotal}>
           <span>
-            <strong>1,215,829</strong>
+            <strong>{amount}</strong>
           </span>
-          <small className="mr-1">.820000</small>
-          <sup>RAY</sup>
+          <small className="mr-1">.{decimal}</small>
+          <sup>{data.ticker}</sup>
         </div>
       </div>
       <div>
         <div className={style.fiatExchange}>
-          <span className="mr-2">$284,251.15</span>
-          <span>€243,900.11</span>
+          <span>$ 0.00</span>
+          <span>€ 0.00</span>
         </div>
       </div>
       <div className="mt-3">
-        <a href="#" onClick={(e) => e.preventDefault()} className={style.btnRefresh}>
+        <a
+          href="#"
+          className={style.btnRefresh}
+          onClick={(e) => {
+            e.preventDefault()
+            refreshData(wallet.selected)
+          }}
+        >
           <i className="fe fe-refresh-cw" />
         </a>
       </div>
       <div className="mt-3">
         <div className={style.walletInfo}>
-          <div>Transactions: 15</div>
-          <div>Registered: 22/01/2021</div>
+          <div>Transactions: {(data.transactions && data.transactions.length) || '—'}</div>
+          <div>
+            Registered:{' '}
+            {(data.registered && new Date(data.registered).toLocaleDateString('en-US')) || '—'}
+          </div>
         </div>
       </div>
       <div className="mt-5">
@@ -95,10 +123,10 @@ const WalletsMenu = () => {
             <i className="fe fe-plus-circle mr-2" />
             Add Wallet
           </a>
-          <a href="#" onClick={(e) => e.preventDefault()}>
+          <Link to="/defi">
             <i className="fe fe-plus-circle mr-2" />
             Create Own Token
-          </a>
+          </Link>
           <Link to="/rewards">
             <i className="fe fe-activity mr-2" />
             RAY Reward Program

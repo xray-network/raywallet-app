@@ -95,7 +95,7 @@
 
 .fiatExchange {
   span {
-    margin-right: rem(10);
+    margin-right: rem(15);
     font-size: rem(14);
   }
 }
@@ -122,6 +122,29 @@
       i {
         color: $primary;
       }
+    }
+  }
+}
+
+.loader {
+  position: relative;
+
+  &Icon {
+    position: absolute;
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    width: rem(20);
+    height: rem(20);
+    margin: rem(-10) 0 0 rem(-10);
+    opacity: 0;
+    pointer-events: none;
+    @include transition-middle();
+  }
+
+  &Active {
+    .loaderIcon {
+      opacity: 1;
     }
   }
 }
