@@ -1,5 +1,4 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
-import { notification } from 'antd'
 import * as api from 'services/api'
 import actions from './actions'
 
@@ -50,10 +49,6 @@ export function* FETCH_WALLET_DATA({ payload: { walletId } }) {
           loading: false,
         },
       },
-    })
-    notification.warning({
-      message: 'Something went wrong',
-      description: 'Problems with fetch wallet data. Try later.',
     })
   }
 }

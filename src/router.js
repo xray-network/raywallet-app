@@ -12,8 +12,8 @@ const routes = [
     Component: lazy(() => import('pages/wallets')),
   },
   {
-    path: '/staking-center',
-    Component: lazy(() => import('pages/staking')),
+    path: '/stake',
+    Component: lazy(() => import('pages/stake')),
   },
   {
     path: '/rewards',

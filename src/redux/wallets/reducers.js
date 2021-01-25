@@ -2,7 +2,7 @@ import actions from './actions'
 
 const initialState = {
   wallet: {
-    selected: '',
+    selected: null,
     loading: false,
     data: {},
   },

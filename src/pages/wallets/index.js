@@ -15,12 +15,14 @@ const Wallets = () => {
   const wallet = useSelector((state) => state.wallets.wallet)
 
   useEffect(() => {
-    dispatch({
-      type: 'wallets/FETCH_WALLET_DATA',
-      payload: {
-        walletId: wallet.selected,
-      },
-    })
+    if (wallet.selected) {
+      dispatch({
+        type: 'wallets/FETCH_WALLET_DATA',
+        payload: {
+          walletId: wallet.selected,
+        },
+      })
+    }
   }, [wallet.selected, dispatch])
 
   return (
@@ -33,7 +35,7 @@ const Wallets = () => {
           </div>
           <div className="ray__content">
             <div>
-              {!wallet.selected && <Empty title="No Wallets Selected" />}
+              {!wallet.selected && <Empty title="Wallet is not currently selected" />}
               {wallet.selected && (
                 <div>
                   <WalletsSubmenu />

@@ -10,7 +10,7 @@ const DeFi = () => {
         <div className="ray__page">
           <div className="ray__menu">[kickstarter]</div>
           <div className="ray__content">
-            <Empty title="No Projects Available" />
+            <Empty title="Projects are not available at the moment" />
           </div>
         </div>
       </div>

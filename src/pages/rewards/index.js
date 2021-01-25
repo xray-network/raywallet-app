@@ -10,7 +10,7 @@ const Rewards = () => {
         <div className="ray__page">
           <div className="ray__menu">[rewards]</div>
           <div className="ray__content">
-            <Empty title="RAY Pools Are Empty" />
+            <Empty title="Pools are not available at the moment" />
           </div>
         </div>
       </div>

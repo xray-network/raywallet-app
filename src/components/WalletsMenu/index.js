@@ -38,10 +38,6 @@ const WalletsMenu = () => {
 
   return (
     <div>
-      <Button hidden size="large" type="primary" className={style.btnAdd}>
-        <i className="fe fe-plus-circle mr-2" />
-        <strong>Add Wallet</strong>
-      </Button>
       <div className={style.negativeSpace}>
         <div className={`${style.loader} ${wallet.loading ? style.loaderActive : ''}`}>
           <div className={style.loaderIcon}>
@@ -53,6 +49,14 @@ const WalletsMenu = () => {
             suffixIcon={<div className={style.selectWalletsArrow} />}
             defaultValue={wallet.selected || null}
             className={style.selectWallets}
+            placeholder={
+              <div className={style.selectWalletsItem}>
+                <div>
+                  <span>No Wallets</span>
+                </div>
+                <small>You need to add at least one wallet</small>
+              </div>
+            }
             dropdownRender={(menu) => (
               <div>
                 {menu}
@@ -81,39 +85,41 @@ const WalletsMenu = () => {
           </Select>
         </div>
       </div>
-      <div className="mt-4">
-        <div className={style.walletTotal}>
-          <span>
-            <strong>{amount}</strong>
-          </span>
-          <small className="mr-1">.{decimal}</small>
-          <sup>{data.ticker}</sup>
-        </div>
-      </div>
       <div>
-        <div className={style.fiatExchange}>
-          <span>$ 0.00</span>
-          <span>€ 0.00</span>
+        <div className="mt-4">
+          <div className={style.walletTotal}>
+            <span>
+              <strong>{amount}</strong>
+            </span>
+            <small className="mr-1">.{decimal}</small>
+            <sup>{data.ticker}</sup>
+          </div>
         </div>
-      </div>
-      <div className="mt-3">
-        <a
-          href="#"
-          className={style.btnRefresh}
-          onClick={(e) => {
-            e.preventDefault()
-            refreshData(wallet.selected)
-          }}
-        >
-          <i className="fe fe-refresh-cw" />
-        </a>
-      </div>
-      <div className="mt-3">
-        <div className={style.walletInfo}>
-          <div>Transactions: {(data.transactions && data.transactions.length) || '—'}</div>
-          <div>
-            Registered:{' '}
-            {(data.registered && new Date(data.registered).toLocaleDateString('en-US')) || '—'}
+        <div>
+          <div className={style.fiatExchange}>
+            <span>$ 0.00</span>
+            <span>€ 0.00</span>
+          </div>
+        </div>
+        <div className="mt-3">
+          <a
+            href="#"
+            className={style.btnRefresh}
+            onClick={(e) => {
+              e.preventDefault()
+              refreshData(wallet.selected)
+            }}
+          >
+            <i className="fe fe-refresh-cw" />
+          </a>
+        </div>
+        <div className="mt-3">
+          <div className={style.walletInfo}>
+            <div>Transactions: {(data.transactions && data.transactions.length) || '—'}</div>
+            <div>
+              Registered:{' '}
+              {(data.registered && new Date(data.registered).toLocaleDateString('en-US')) || '—'}
+            </div>
           </div>
         </div>
       </div>

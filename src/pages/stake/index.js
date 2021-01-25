@@ -2,7 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import Empty from 'components/Empty'
 
-const Staking = () => {
+const Stake = () => {
   return (
     <div>
       <Helmet title="Staking Center" />
@@ -10,7 +10,7 @@ const Staking = () => {
         <div className="ray__page">
           <div className="ray__menu">[staking]</div>
           <div className="ray__content">
-            <Empty title="No Wallets Delegated" />
+            <Empty title="Wallet is not currently selected" />
           </div>
         </div>
       </div>
@@ -18,4 +18,4 @@ const Staking = () => {
   )
 }
 
-export default Staking
+export default Stake
