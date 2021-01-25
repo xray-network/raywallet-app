@@ -1,0 +1,38 @@
+// Import mixins
+@import 'mixins.scss';
+
+.ant-collapse {
+  background: $gray-1 !important;
+  &-content {
+    background: none;
+  }
+  &.ant-collapse-borderless {
+    .ant-collapse {
+      &-content {
+        background: $white !important;
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// DARK THEME STYLES
+[data-vb-theme='dark'] {
+  .ant-collapse {
+    background: transparent !important;
+    &-content {
+      background: none;
+    }
+    &.ant-collapse-borderless {
+      .ant-collapse {
+        &-content {
+          background: transparent !important;
+        }
+      }
+    }
+    &-header {
+      background: $dark-gray-5;
+      color: $dark-gray-1 !important;
+    }
+  }
+}

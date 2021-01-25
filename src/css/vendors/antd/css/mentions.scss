@@ -1,0 +1,12 @@
+// Import mixins
+@import 'mixins.scss';
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// DARK THEME STYLES
+[data-vb-theme='dark'] {
+  .ant-mentions {
+    textarea {
+      background: $dark-gray-4;
+    }
+  }
+}

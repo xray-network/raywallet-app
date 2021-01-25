@@ -1,0 +1,11 @@
+@import 'mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/* PROGRESS */
+
+// dark theme
+[data-vb-theme='dark'] {
+  .progress {
+    background: $dark-gray-4;
+  }
+}

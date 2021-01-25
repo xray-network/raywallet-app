@@ -1,0 +1,216 @@
+@import 'mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/* CARDS */
+
+.card,
+.card-header,
+.card-footer {
+  border-color: $border;
+}
+
+.card-header,
+.card-footer,
+.card-body {
+  background: transparent;
+  padding: rem(20) rem(25);
+  @media (max-width: $md-max-width) {
+    padding-left: rem(15);
+    padding-right: rem(15);
+  }
+}
+
+.card {
+  margin-bottom: rem(30);
+  background: $white;
+
+  &-placeholder {
+    margin-bottom: rem(15);
+
+    > div {
+      min-height: 0;
+    }
+
+    > div:empty {
+      min-height: rem(40);
+      border: 1px dashed $gray-3;
+    }
+
+    .card-header,
+    .card-footer,
+    .card-body {
+      padding: 0;
+    }
+
+    @at-root {
+      .card-skip {
+        .card-header,
+        .card-footer,
+        .card-body {
+          padding: rem(20) rem(25) !important;
+        }
+      }
+    }
+  }
+
+  &-top {
+    position: relative;
+    padding-top: 4px;
+
+    @at-root {
+      .vb__layout__squaredBorders & {
+        &:before {
+          border-radius: 0 !important;
+        }
+      }
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background-color: $gray-2;
+      overflow: hidden;
+      border-top-left-radius: calc(7px - 1px);
+      border-top-right-radius: calc(7px - 1px);
+    }
+
+    &-default {
+      &::before {
+        background-color: $default !important;
+      }
+    }
+    &-primary {
+      &::before {
+        background-color: $primary !important;
+      }
+    }
+    &-secondary {
+      &::before {
+        background-color: $primary !important;
+      }
+    }
+    &-success {
+      &::before {
+        background-color: $success !important;
+      }
+    }
+    &-danger {
+      &::before {
+        background-color: $danger !important;
+      }
+    }
+    &-warning {
+      &::before {
+        background-color: $warning !important;
+      }
+    }
+    &-info {
+      &::before {
+        background-color: $info !important;
+      }
+    }
+    &-light {
+      &::before {
+        background-color: $light !important;
+      }
+    }
+    &-dark {
+      &::before {
+        background-color: $dark !important;
+      }
+    }
+    &-white {
+      &::before {
+        background-color: $white !important;
+      }
+    }
+    &-blue {
+      &::before {
+        background-color: $blue !important;
+      }
+    }
+    &-red {
+      &::before {
+        background-color: $red !important;
+      }
+    }
+    &-yellow {
+      &::before {
+        background-color: $yellow !important;
+      }
+    }
+    &-orange {
+      &::before {
+        background-color: $orange !important;
+      }
+    }
+    &-gray-1 {
+      &::before {
+        background-color: $gray-1 !important;
+      }
+    }
+    &-gray-2 {
+      &::before {
+        background-color: $gray-2 !important;
+      }
+    }
+    &-gray-3 {
+      &::before {
+        background-color: $gray-3 !important;
+      }
+    }
+    &-gray-4 {
+      &::before {
+        background-color: $gray-4 !important;
+      }
+    }
+    &-gray-5 {
+      &::before {
+        background-color: $gray-5 !important;
+      }
+    }
+    &-gray-6 {
+      &::before {
+        background-color: $gray-6 !important;
+      }
+    }
+  }
+}
+
+.card-header {
+  &-flex {
+    display: flex;
+    flex-direction: row;
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: rem(62);
+  }
+  &-borderless {
+    border-color: transparent !important;
+    + .card-body {
+      padding-top: 0;
+    }
+  }
+}
+
+// dark theme
+[data-vb-theme='dark'] {
+  .card {
+    background: $dark-gray-6;
+    border-color: $dark-gray-4;
+
+    &-top {
+      &:before {
+        background: $dark-gray-4;
+      }
+    }
+  }
+  .card-header,
+  .card-footer {
+    border-color: $dark-gray-4;
+  }
+}

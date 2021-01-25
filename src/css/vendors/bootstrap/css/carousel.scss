@@ -1,0 +1,25 @@
+@import 'mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/* CAROUSEL */
+
+.carousel-indicators {
+  li {
+    opacity: 0.5;
+    &.active {
+      opacity: 1;
+    }
+  }
+}
+
+// dark theme
+[data-vb-theme='dark'] {
+  .carousel-indicators {
+    li {
+      &.active {
+        opacity: 1;
+        background-color: $primary;
+      }
+    }
+  }
+}

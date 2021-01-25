@@ -1,0 +1,24 @@
+@import 'mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/* BREADCRUMB */
+
+.breadcrumb {
+  background: $gray-1;
+}
+
+// dark theme
+[data-vb-theme='dark'] {
+  .breadcrumb {
+    color: $dark-gray-1;
+    background: $dark-gray-4;
+    .breadcrumb-item {
+      &:before {
+        color: $dark-gray-3;
+      }
+      &.active {
+        color: $dark-gray-1;
+      }
+    }
+  }
+}

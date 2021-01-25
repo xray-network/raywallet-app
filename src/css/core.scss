@@ -1,0 +1,108 @@
+@import 'mixins.scss';
+
+:root {
+  --vb-color-primary: #017aff;
+}
+
+html {
+  font-size: 14px;
+  @media (max-width: $sm-max-width) {
+    font-size: 13px;
+  }
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-family: $base-font;
+  color: $text;
+  overflow-x: hidden !important;
+  position: relative;
+  font-variant: normal;
+  font-feature-settings: normal;
+}
+
+a {
+  text-decoration: none;
+  color: $text;
+  @include transition-color();
+  &:hover,
+  &:active,
+  &:focus {
+    color: $blue;
+    text-decoration: none;
+  }
+}
+
+input {
+  outline: none !important;
+  font-family: $base-font;
+  color: $text;
+}
+
+button,
+input {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+input[type='text'],
+input[type='password'],
+input[type='email'],
+textarea {
+  appearance: none !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $black;
+}
+
+svg {
+  vertical-align: initial;
+  overflow: auto;
+}
+
+b,
+strong {
+  font-weight: 700;
+}
+
+::placeholder {
+  color: $gray-2;
+}
+
+// dark theme
+[data-vb-theme='dark'] {
+  body {
+    background: $dark-gray-5;
+    color: $dark-gray-1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $dark-gray-1;
+  }
+
+  a {
+    color: $dark-gray-1;
+    &:hover,
+    &:active,
+    &:focus {
+      color: $blue;
+      text-decoration: none;
+    }
+  }
+
+  ::placeholder {
+    color: $dark-gray-3;
+  }
+}

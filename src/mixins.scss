@@ -1,0 +1,7 @@
+// this is shared mixins file for all components from the app,
+// there you can easily add your own variables / imports or redefine
+// existing without touching default packages for future updates
+
+@import 'src/css/mixins.scss'; // import default mixins
+
+$pastel-1: #f8f8f8;

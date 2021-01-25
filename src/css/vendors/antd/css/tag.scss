@@ -1,0 +1,10 @@
+// Import mixins
+@import 'mixins.scss';
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// DARK THEME STYLES
+[data-vb-theme='dark'] {
+  .ant-tag {
+    border-color: transparent;
+  }
+}

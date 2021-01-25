@@ -1,0 +1,18 @@
+// Import mixins
+@import 'mixins.scss';
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// DARK THEME STYLES
+[data-vb-theme='dark'] {
+  .ant-time-picker {
+    &-panel-input {
+      background: transparent;
+    }
+    &-panel-select-option-selected {
+      background: $primary;
+      &:hover {
+        background: $primary;
+      }
+    }
+  }
+}

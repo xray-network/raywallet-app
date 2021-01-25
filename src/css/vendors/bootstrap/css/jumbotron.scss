@@ -1,0 +1,12 @@
+// Import mixins from "core" module
+@import 'mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/* JUMBOTRON */
+
+// dark theme
+[data-vb-theme='dark'] {
+  .jumbotron {
+    background: $dark-gray-4;
+  }
+}

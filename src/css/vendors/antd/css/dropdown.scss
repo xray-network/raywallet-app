@@ -1,0 +1,22 @@
+// Import mixins
+@import 'mixins.scss';
+
+.ant-dropdown-menu-item-group-list {
+  margin: 0 !important;
+  list-style: none !important;
+  padding: 0 !important;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// DARK THEME STYLES
+[data-vb-theme='dark'] {
+  .ant-dropdown-menu-item-group-title {
+    color: $dark-gray-2 !important;
+  }
+  .ant-select-dropdown {
+    &-menu-item-selected {
+      color: $text;
+      background: lighten($gray-6, 7%);
+    }
+  }
+}
