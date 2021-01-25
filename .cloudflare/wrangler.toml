@@ -6,5 +6,5 @@ route = "wallet.rraayy.com/*"
 zone_id = "d2b7b0704a9d26e0725937654b59f6f0"
 
 [site]
-bucket = "../public"
+bucket = "../build"
 entry-point = "workers-site"
