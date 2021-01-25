@@ -1,2 +1,1 @@
-# ray-wallet
-
+# ray-wallet-app
