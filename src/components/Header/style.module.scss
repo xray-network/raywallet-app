@@ -2,6 +2,46 @@
 
 .header {
   padding: rem(20) rem(45);
+  display: flex;
+}
+
+.menu {
+  a {
+    font-size: rem(18);
+    margin-right: rem(30);
+    position: relative;
+    white-space: nowrap;
+
+    span:first-child {
+      opacity: 0;
+      font-weight: 600;
+    }
+
+    span:last-child {
+      position: absolute;
+      left: 0;
+    }
+
+    &.active {
+      font-weight: 600;
+      color: $black;
+    }
+  }
+}
+
+.icons {
+  margin-left: auto;
+
+  a {
+    display: inline-block;
+    font-size: rem(18);
+    margin-left: rem(15);
+    color: $gray-5;
+
+    &:hover {
+      color: $blue-dark;
+    }
+  }
 }
 
 // dark theme

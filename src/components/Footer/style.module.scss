@@ -2,6 +2,29 @@
 
 .footer {
   padding: rem(30) rem(45);
+  display: flex;
+}
+
+.logo {
+  svg {
+    width: rem(60);
+    height: rem(18);
+    margin-right: rem(6);
+    vertical-align: sub;
+  }
+
+  &Name {
+    font-weight: bold;
+    color: $black;
+    letter-spacing: 2px;
+    margin-right: rem(15);
+    font-size: rem(14);
+  }
+}
+
+.version {
+  color: $gray-4;
+  font-size: rem(12);
 }
 
 // dark theme

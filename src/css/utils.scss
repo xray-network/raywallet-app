@@ -12,11 +12,11 @@
 
   &__menu {
     width: 370px;
-    background: $gray-2;
     padding: rem(25) rem(45);
   }
 
   &__content {
     padding: rem(25) rem(30);
+    flex-grow: 1;
   }
 }

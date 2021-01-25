@@ -15,7 +15,7 @@ const initialState = {
     title: 'RAY Wallet',
     theme: 'default',
     locale: 'en-US',
-    routerAnimation: 'slide-fadein-right',
+    routerAnimation: 'slide-fadein-up',
     primaryColor: '#017AFF',
   }),
 }

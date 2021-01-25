@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
+import Empty from 'components/Empty'
 
 const KickStarter = () => {
   return (
@@ -8,7 +9,9 @@ const KickStarter = () => {
       <div className="ray__block">
         <div className="ray__page">
           <div className="ray__menu">[kickstarter]</div>
-          <div className="ray__content">[content]</div>
+          <div className="ray__content">
+            <Empty title="No Projects Available" />
+          </div>
         </div>
       </div>
     </div>

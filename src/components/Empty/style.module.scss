@@ -1,0 +1,12 @@
+@import 'mixins.scss';
+
+.empty {
+  padding: rem(50) 0;
+  text-align: center;
+  color: $gray-3;
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

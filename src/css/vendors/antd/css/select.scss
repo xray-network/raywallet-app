@@ -13,6 +13,13 @@
       border-color: $primary;
     }
   }
+
+  &-item-option-active {
+    background: $pastel-1 !important;
+  }
+  &-item-option-selected {
+    background: $pastel-1 !important;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
