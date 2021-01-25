@@ -1,1 +1,1 @@
-# ray-client-web
+# ray-wallet
