@@ -1,5 +1,15 @@
 @import 'mixins.scss';
 
+.btnSend {
+  width: 100%;
+
+  i {
+    margin-right: rem(8);
+    position: relative;
+    top: 1px;
+  }
+}
+
 // dark theme
 // [data-vb-theme='dark'] {
 

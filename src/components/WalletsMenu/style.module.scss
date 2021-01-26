@@ -69,35 +69,7 @@
 }
 
 .negativeSpace {
-  margin: 0 rem(-20);
-}
-
-.walletTotal {
-  font-size: rem(32);
-
-  strong {
-    font-weight: 700;
-  }
-
-  small {
-    font-size: 60%;
-  }
-
-  :global(.badge) {
-    font-size: rem(14);
-    background: $white;
-  }
-
-  sup {
-    font-size: 60%;
-  }
-}
-
-.fiatExchange {
-  span {
-    margin-right: rem(15);
-    font-size: rem(14);
-  }
+  margin: rem(-10) rem(-20) 0;
 }
 
 .btnRefresh {

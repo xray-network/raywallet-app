@@ -11,12 +11,26 @@
   }
 
   &__menu {
-    width: 370px;
-    padding: rem(25) rem(45);
+    min-width: 370px;
+    padding: rem(35) rem(45) rem(25);
   }
 
   &__content {
-    padding: rem(25) rem(30);
+    padding: rem(35) rem(30) rem(25);
     flex-grow: 1;
+  }
+
+  &__form {
+    &__item {
+      margin-bottom: rem(20);
+    }
+
+    &__label {
+      color: $dark !important;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: rem(12) !important;
+      margin-bottom: rem(5);
+    }
   }
 }

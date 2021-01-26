@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Select, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
+import AmountFormatter from 'components/AmountFormatter'
 import style from './style.module.scss'
 
 const WalletsMenu = () => {
@@ -32,9 +33,6 @@ const WalletsMenu = () => {
       },
     })
   }
-
-  const amount = (data.amount && data.amount.toString().split('.')[0]) || '0'
-  const decimal = (data.amount && data.amount.toString().split('.')[1]) || '000000'
 
   return (
     <div>
@@ -87,19 +85,7 @@ const WalletsMenu = () => {
       </div>
       <div>
         <div className="mt-4">
-          <div className={style.walletTotal}>
-            <span>
-              <strong>{amount}</strong>
-            </span>
-            <small className="mr-1">.{decimal}</small>
-            <sup>{data.ticker}</sup>
-          </div>
-        </div>
-        <div>
-          <div className={style.fiatExchange}>
-            <span>$ 0.00</span>
-            <span>€ 0.00</span>
-          </div>
+          <AmountFormatter amount={data.amount} ticker={data.ticker} withRate large />
         </div>
         <div className="mt-3">
           <a

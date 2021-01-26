@@ -20,6 +20,7 @@ import './css/measurements.scss'
 import './css/colors.scss'
 import './css/utils.scss'
 import './css/router.scss'
+import './css/antd-overrides.scss'
 
 const mapStateToProps = ({ settings: { theme, primaryColor } }) => ({
   theme,

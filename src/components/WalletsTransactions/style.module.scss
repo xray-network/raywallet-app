@@ -1,5 +1,36 @@
 @import 'mixins.scss';
 
+.item {
+  margin-bottom: rem(20);
+  padding: rem(10) rem(20);
+  border-radius: 8px;
+  border: 1px solid $border;
+  position: relative;
+  padding-left: rem(70);
+}
+
+.wrapper {
+  font-size: rem(14);
+}
+
+.icon {
+  font-size: rem(36);
+  position: absolute;
+  top: rem(7);
+  left: rem(15);
+}
+
+.address,
+.date {
+  word-break: break-all;
+  word-wrap: break-word;
+  color: $text;
+  margin-bottom: rem(5);
+  font-family: monospace;
+  display: inline-block;
+  line-height: 1.1;
+}
+
 // dark theme
 // [data-vb-theme='dark'] {
 

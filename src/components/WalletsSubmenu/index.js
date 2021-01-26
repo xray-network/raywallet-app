@@ -17,8 +17,8 @@ const WalletsSubmenu = () => {
           <span>Receive</span>
         </NavLink>
         <NavLink exact activeClassName={style.active} to={`${url}/transactions`}>
-          <span>Transactions (15)</span>
-          <span>Transactions (15)</span>
+          <span>Transactions (3)</span>
+          <span>Transactions (3)</span>
         </NavLink>
       </div>
     </div>

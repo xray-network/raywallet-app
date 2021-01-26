@@ -1,0 +1,12 @@
+@import 'mixins.scss';
+
+.ant-form-item-label label {
+  color: $dark !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: rem(12) !important;
+}
+
+.ant-form {
+  color: $dark !important;
+}
