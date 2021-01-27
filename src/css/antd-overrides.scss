@@ -10,3 +10,8 @@
 .ant-form {
   color: $dark !important;
 }
+
+.ant-btn[disabled] {
+  color: $gray-4 !important;
+  background: transparent !important;
+}

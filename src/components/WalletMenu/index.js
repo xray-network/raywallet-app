@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import AmountFormatter from 'components/AmountFormatter'
 import style from './style.module.scss'
 
-const WalletsMenu = () => {
+const WalletMenu = () => {
   const dispatch = useDispatch()
   const walletsList = useSelector((state) => state.wallets.walletsList)
   const wallet = useSelector((state) => state.wallets.wallet)
@@ -115,6 +115,8 @@ const WalletsMenu = () => {
         </div>
         <div className="mt-3">
           <div className={style.walletInfo}>
+            <div>RAY Rewards: Not registered</div>
+            <div>Staking: Not delegated</div>
             <div>Transactions: {(data.transactions && data.transactions.length) || '—'}</div>
             <div>
               Created: {(data.created && new Date(data.created).toLocaleDateString('en-US')) || '—'}
@@ -138,4 +140,4 @@ const WalletsMenu = () => {
   )
 }
 
-export default WalletsMenu
+export default WalletMenu

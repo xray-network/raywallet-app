@@ -6,7 +6,7 @@ import Empty from 'components/Empty'
 import AmountFormatter from 'components/AmountFormatter'
 import style from './style.module.scss'
 
-const WalletsTransactions = () => {
+const WalletTransactions = () => {
   const wallet = useSelector((state) => state.wallets.wallet)
   const { data } = wallet
 
@@ -71,4 +71,4 @@ const WalletsTransactions = () => {
   )
 }
 
-export default WalletsTransactions
+export default WalletTransactions

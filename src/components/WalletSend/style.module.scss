@@ -50,14 +50,9 @@
 
     :global(.ant-btn) {
       width: 50px;
-      i {
-        color: $gray-5;
-        @include transition-slow();
-      }
+      color: $gray-4;
       &:hover {
-        i {
-          color: $primary;
-        }
+        color: $primary;
       }
     }
   }

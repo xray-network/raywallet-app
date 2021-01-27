@@ -8,8 +8,8 @@ import Layout from 'layouts'
 
 const routes = [
   {
-    path: '/wallets',
-    Component: lazy(() => import('pages/wallets')),
+    path: '/wallet',
+    Component: lazy(() => import('pages/wallet')),
   },
   {
     path: '/stake',
@@ -46,7 +46,7 @@ const Router = ({ history, routerAnimation }) => {
                   timeout={routerAnimation === 'none' ? 0 : 300}
                 >
                   <Switch location={location}>
-                    <Route exact path="/" render={() => <Redirect to="/wallets/send" />} />
+                    <Route exact path="/" render={() => <Redirect to="/wallet/send" />} />
                     {routes.map(({ path, Component, exact }) => (
                       <Route
                         path={path}

@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink, useRouteMatch } from 'react-router-dom'
 import style from './style.module.scss'
 
-const WalletsSubmenu = () => {
+const WalletSubmenu = () => {
   const { url } = useRouteMatch()
 
   return (
@@ -25,4 +25,4 @@ const WalletsSubmenu = () => {
   )
 }
 
-export default WalletsSubmenu
+export default WalletSubmenu

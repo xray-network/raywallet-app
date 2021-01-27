@@ -6,14 +6,7 @@ const DeFi = () => {
   return (
     <div>
       <Helmet title="Kick Starter" />
-      <div className="ray__block">
-        <div className="ray__page">
-          <div className="ray__menu">[kickstarter]</div>
-          <div className="ray__content">
-            <Empty title="Projects are not available at the moment" />
-          </div>
-        </div>
-      </div>
+      <Empty title="Projects are not available at the moment" />
     </div>
   )
 }

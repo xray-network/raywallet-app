@@ -25,7 +25,8 @@
   position: absolute;
   top: rem(14);
   left: rem(16);
-  background: $border;
+  border: 1px solid $border;
+  // background: $border;
 }
 
 .address {
