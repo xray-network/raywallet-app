@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, InputNumber } from 'antd'
+import { Form, Input, Button, InputNumber, Tooltip } from 'antd'
 import AmountFormatter from 'components/AmountFormatter'
 import style from './style.module.scss'
 // import style from './style.module.scss'
@@ -71,9 +71,11 @@ const WalletsSend = () => {
           <InputNumber min="1" size="large" placeholder="0 ADA" style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item label=" " className={style.assetRemove}>
-          <Button size="large">
-            <i className="fe fe-x" />
-          </Button>
+          <Tooltip title="Remove Token from TX">
+            <Button size="large">
+              <i className="fe fe-trash-2" />
+            </Button>
+          </Tooltip>
         </Form.Item>
       </Input.Group>
       <div>

@@ -11,7 +11,7 @@ const initialState = {
       id: '1f2d47627ae826e6b7d442dcf45d5a08efa8ad13040a3af0bc148612',
       name: 'Test Wallet',
       ticker: 'RAY',
-      tickers: ['ADA', 'RAY'],
+      tickers: ['ADA', 'RAY', 'EGOR'],
       network: 'cardano testnet',
     },
     {
