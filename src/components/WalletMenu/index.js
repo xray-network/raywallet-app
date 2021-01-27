@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, Spin } from 'antd'
+import { Button, Select, Spin, Tooltip } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import AmountFormatter from 'components/AmountFormatter'
 import style from './style.module.scss'
@@ -87,6 +87,38 @@ const WalletMenu = () => {
       </div>
       <div>
         <div className="mt-4">
+          <a
+            href="#"
+            className={style.btnRefresh}
+            onClick={(e) => {
+              e.preventDefault()
+              refreshData(wallet.selected)
+            }}
+          >
+            <Tooltip title={<div>Update wallet</div>}>
+              <i className="fe fe-refresh-cw mr-3" />
+            </Tooltip>
+          </a>
+          <a
+            href="#"
+            className={style.btnRefresh}
+            onClick={(e) => {
+              e.preventDefault()
+            }}
+          >
+            <Tooltip
+              title={
+                <div>
+                  Wallet is encrypted and
+                  <br /> saved on this device
+                </div>
+              }
+            >
+              <i className="fe fe-lock" />
+            </Tooltip>
+          </a>
+        </div>
+        <div className="mt-2">
           {data.assets &&
             data.assets.map((asset, index) => {
               return (
@@ -100,18 +132,6 @@ const WalletMenu = () => {
                 />
               )
             })}
-        </div>
-        <div className="mt-3">
-          <a
-            href="#"
-            className={style.btnRefresh}
-            onClick={(e) => {
-              e.preventDefault()
-              refreshData(wallet.selected)
-            }}
-          >
-            <i className="fe fe-refresh-cw" />
-          </a>
         </div>
         <div className="mt-3">
           <div className={style.walletInfo}>

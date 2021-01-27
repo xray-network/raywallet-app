@@ -1,10 +1,5 @@
 @import 'mixins.scss';
 
-.header {
-  display: flex;
-  padding: rem(15) rem(45);
-}
-
 .menu {
   a {
     font-size: rem(18);
@@ -25,21 +20,6 @@
     &.active {
       font-weight: 600;
       color: $black;
-    }
-  }
-}
-
-.icons {
-  margin-left: auto;
-
-  a {
-    display: inline-block;
-    font-size: rem(18);
-    margin-right: rem(15);
-    color: $gray-5;
-
-    &:hover {
-      color: $blue-dark;
     }
   }
 }

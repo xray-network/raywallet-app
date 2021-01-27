@@ -4,7 +4,7 @@
   font-size: rem(16);
 
   strong {
-    font-weight: normal;
+    font-weight: 700;
   }
 
   small {
@@ -23,10 +23,6 @@
 
   &Large {
     font-size: rem(28);
-
-    strong {
-      font-weight: 700;
-    }
   }
 }
 

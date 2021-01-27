@@ -3,6 +3,21 @@ import { NavLink } from 'react-router-dom'
 import style from './style.module.scss'
 
 const Header = () => {
+  const toggleTheme = (e) => {
+    e.preventDefault()
+    console.log('lock wallet')
+  }
+
+  const openSettings = (e) => {
+    e.preventDefault()
+    console.log('lock wallet')
+  }
+
+  const logoutWallet = (e) => {
+    e.preventDefault()
+    console.log('lock wallet')
+  }
+
   return (
     <div className={style.header}>
       <div className={style.menu}>
@@ -26,6 +41,17 @@ const Header = () => {
             KickStart <sup>DeFi</sup>
           </span>
         </NavLink>
+      </div>
+      <div className={style.icons}>
+        <a href="/" onClick={(e) => openSettings(e)}>
+          <i className="fe fe-settings" />
+        </a>
+        <a href="/" onClick={(e) => toggleTheme(e)}>
+          <i className="fe fe-sun" />
+        </a>
+        <a href="/" onClick={(e) => logoutWallet(e)}>
+          <i className="fe fe-log-out" />
+        </a>
       </div>
     </div>
   )

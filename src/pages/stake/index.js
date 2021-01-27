@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
+import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Empty from 'components/Empty'
+import StakeSubmenu from 'components/StakeSubmenu'
+import StakeDelegation from 'components/StakeDelegation'
+import StakeHistory from 'components/StakeHistory'
 
 const Stake = () => {
+  const { path } = useRouteMatch()
   const dispatch = useDispatch()
   const wallet = useSelector((state) => state.wallets.wallet)
 
@@ -21,7 +26,23 @@ const Stake = () => {
   return (
     <div>
       <Helmet title="Staking Center" />
-      <Empty title="Wallet is not currently selected" />
+      {!wallet.selected && <Empty title="Wallet is not currently selected" />}
+      {wallet.selected && (
+        <div>
+          <StakeSubmenu />
+          <div className="pt-4">
+            <Switch>
+              <Route exact path={path} render={() => <Redirect to={`${path}/delegation`} />} />
+              <Route exact path={`${path}/delegation`}>
+                <StakeDelegation />
+              </Route>
+              <Route path={`${path}/history`}>
+                <StakeHistory />
+              </Route>
+            </Switch>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
