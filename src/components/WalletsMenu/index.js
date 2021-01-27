@@ -73,7 +73,9 @@ const WalletsMenu = () => {
                   <div className={style.selectWalletsItem}>
                     <div>
                       <strong className="mr-1">{item.name}</strong>
-                      <span className="badge badge-light">{item.ticker}</span>
+                      <span className="badge badge-light">
+                        {item.tickers.length} {item.tickers.length === 1 ? 'token' : 'tokens'}
+                      </span>
                     </div>
                     <small>{item.network}</small>
                   </div>
@@ -85,7 +87,19 @@ const WalletsMenu = () => {
       </div>
       <div>
         <div className="mt-4">
-          <AmountFormatter amount={data.amount} ticker={data.ticker} withRate large />
+          {data.assets &&
+            data.assets.map((asset, index) => {
+              return (
+                <AmountFormatter
+                  key={index}
+                  amount={asset.amount}
+                  ticker={asset.ticker}
+                  hash={asset.hash}
+                  withRate
+                  large
+                />
+              )
+            })}
         </div>
         <div className="mt-3">
           <a
@@ -103,18 +117,13 @@ const WalletsMenu = () => {
           <div className={style.walletInfo}>
             <div>Transactions: {(data.transactions && data.transactions.length) || '—'}</div>
             <div>
-              Registered:{' '}
-              {(data.registered && new Date(data.registered).toLocaleDateString('en-US')) || '—'}
+              Created: {(data.created && new Date(data.created).toLocaleDateString('en-US')) || '—'}
             </div>
           </div>
         </div>
       </div>
       <div className="mt-5">
         <div className={style.walletMenu}>
-          <a href="#" onClick={(e) => e.preventDefault()}>
-            <i className="fe fe-plus-circle mr-2" />
-            Add Wallet
-          </a>
           <Link to="/defi">
             <i className="fe fe-plus-circle mr-2" />
             Create Own Token

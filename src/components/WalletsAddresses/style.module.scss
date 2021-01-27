@@ -11,6 +11,8 @@
 
 .wrapper {
   font-size: rem(14);
+  line-height: 1.3;
+  font-family: monospace;
 }
 
 .icon {
@@ -30,10 +32,6 @@
   word-break: break-all;
   word-wrap: break-word;
   color: $text;
-  margin-bottom: rem(5);
-  font-family: monospace;
-  display: block;
-  line-height: 1.1;
 }
 
 // dark theme

@@ -8,7 +8,8 @@
   }
 
   small {
-    font-size: 100%;
+    font-size: rem(16);
+    white-space: nowrap;
   }
 
   :global(.badge) {
@@ -21,14 +22,10 @@
   }
 
   &Large {
-    font-size: rem(32);
+    font-size: rem(28);
 
     strong {
       font-weight: 700;
-    }
-
-    small {
-      font-size: 60%;
     }
   }
 }

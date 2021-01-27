@@ -32,22 +32,21 @@ const WalletsAddresses = () => {
                 {index}
               </div>
               <div className={style.wrapper}>
-                <Tooltip title="Visit on Cardanoscan">
-                  <a
-                    href={`https://cardanoscan.io/address/${address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={style.address}
-                  >
-                    {address}
-                  </a>
-                </Tooltip>
                 <CopyToClipboard text={address} onCopy={onCopy}>
-                  <a className="ray__link">
-                    <i className="fe fe-copy mr-1" />
-                    Copy to clipboard
+                  <a className={`${style.address} mr-1`}>
+                    <Tooltip title="Copy to clipboard">{address}</Tooltip>
                   </a>
                 </CopyToClipboard>
+                <a
+                  href={`https://cardanoscan.io/address/${address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ray__link"
+                >
+                  <Tooltip title="View on Cardanoscan">
+                    <i className="fe fe-info" />
+                  </Tooltip>
+                </a>
               </div>
             </div>
           )

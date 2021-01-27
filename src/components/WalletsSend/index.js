@@ -53,44 +53,61 @@ const WalletsSend = () => {
       >
         <Input size="large" placeholder="Address" />
       </Form.Item>
-      <div className="row">
-        <div className="col-lg-6">
-          <Form.Item
-            label="Amount"
-            name="amount"
-            rules={[{ required: true, message: 'Please enter amount' }]}
-          >
-            <InputNumber min="1" size="large" placeholder="0.000000" style={{ width: '100%' }} />
-          </Form.Item>
-        </div>
-        <div className="col-lg-6">
-          <Form.Item
-            label="Donate to RAY"
-            name="donate"
-            tooltip="This donation will be used for further development of RAY Network. Not required."
-          >
-            <InputNumber min="1" size="large" placeholder="0.000000" style={{ width: '100%' }} />
-          </Form.Item>
+      <Input.Group compact className={style.assetGroup}>
+        <Form.Item
+          className={style.assetAmount}
+          label="Amount"
+          name="amount"
+          rules={[{ required: true, message: 'Please enter amount' }]}
+        >
+          <InputNumber min="1" size="large" placeholder="0.000000 ADA" style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item
+          className={style.assetDonate}
+          label="Donate to RAY"
+          name="donate"
+          tooltip="This donation will be used for further RAY Network development. Not required."
+        >
+          <InputNumber min="1" size="large" placeholder="0 ADA" style={{ width: '100%' }} />
+        </Form.Item>
+        <Form.Item label=" " className={style.assetRemove}>
+          <Button size="large">
+            <i className="fe fe-x" />
+          </Button>
+        </Form.Item>
+      </Input.Group>
+      <div>
+        <Button>
+          <i className="fe fe-plus-circle mr-1" />
+          Add Token to Tx
+        </Button>
+      </div>
+      <div className={`${style.totals} mt-4`}>
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="ray__form__item">
+              <div className="ray__form__label">Total</div>
+              <div className="ray__form__amount">
+                <AmountFormatter
+                  amount={(formValues.amount || 0) + 0.181251}
+                  ticker="ADA"
+                  withRate
+                  large
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="ray__form__item">
+              <div className="ray__form__label">Fee (inlc. in total)</div>
+              <div className="ray__form__amount">
+                <AmountFormatter amount={0.181251} ticker="ADA" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="ray__form__item">
-        <div className="ray__form__label">Fee</div>
-        <div className="ray__form__amount">
-          <AmountFormatter amount={0.181251} ticker={wallet.data.ticker} />
-        </div>
-      </div>
-      <div className="ray__form__item">
-        <div className="ray__form__label">Total</div>
-        <div className="ray__form__amount">
-          <AmountFormatter
-            amount={(formValues.amount || 0) + 0.181251}
-            ticker={wallet.data.ticker}
-            withRate
-            large
-          />
-        </div>
-      </div>
-      <Form.Item className="pt-3">
+      <Form.Item className="mt-4">
         <Button
           htmlType="submit"
           size="large"

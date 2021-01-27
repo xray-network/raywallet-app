@@ -9,22 +9,24 @@ const initialState = {
   walletsList: [
     {
       id: '1f2d47627ae826e6b7d442dcf45d5a08efa8ad13040a3af0bc148612',
-      name: 'My RAYs',
+      name: 'Test Wallet',
       ticker: 'RAY',
-      network: 'cardano mainnet',
+      tickers: ['ADA', 'RAY'],
+      network: 'cardano testnet',
     },
     {
       id: 'efa8ad13040a3af0b1f2d47627ae826e6b7d442dcf45d5a08c148612',
       name: 'Cardano Stake',
       ticker: 'ADA',
+      tickers: ['ADA'],
       network: 'cardano mainnet',
     },
-    {
-      id: 'cf45d5a08c14861247627ae8efa8ad130b1f2d26e6b7d442d040a3af',
-      name: 'Main',
-      ticker: 'ADA',
-      network: 'cardano mainnet',
-    },
+    // {
+    //   id: 'cf45d5a08c14861247627ae8efa8ad130b1f2d26e6b7d442d040a3af',
+    //   name: 'Main',
+    //   ticker: 'ADA',
+    //   network: 'cardano mainnet',
+    // },
   ],
 }
 

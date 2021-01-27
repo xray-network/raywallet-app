@@ -12,6 +12,7 @@
 
   &__menu {
     min-width: 370px;
+    max-width: 370px;
     padding: rem(35) rem(45) rem(25);
   }
 
@@ -21,16 +22,12 @@
   }
 
   &__form {
-    &__item {
-      margin-bottom: rem(20);
-    }
-
     &__label {
       color: $dark !important;
       text-transform: uppercase;
       font-weight: 700;
       font-size: rem(12) !important;
-      margin-bottom: rem(5);
+      margin-bottom: rem(8);
     }
   }
 }

@@ -20,40 +20,48 @@ const WalletsTransactions = () => {
         <Empty title="No transactions" />
       )}
       {data.transactions &&
-        data.transactions.map((tx, index) => {
+        data.transactions.map((tx, txIndex) => {
           return (
-            <div key={index} className={style.item}>
+            <div key={txIndex} className={style.item}>
               <div className={style.icon}>
                 {tx.type === 'send' && <i className="fe fe-arrow-up-circle text-danger" />}
                 {tx.type === 'receive' && <i className="fe fe-arrow-down-circle text-success" />}
               </div>
               <div className={style.wrapper}>
-                <AmountFormatter
-                  amount={tx.amount}
-                  ticker={data.ticker}
-                  fee={tx.fee}
-                  prefix={tx.type === 'send' ? '-' : '+'}
-                />
+                {tx.assets &&
+                  tx.assets.map((asset, assetIndex) => {
+                    return (
+                      <AmountFormatter
+                        key={assetIndex}
+                        amount={asset.amount}
+                        ticker={asset.ticker}
+                        hash={asset.hash}
+                        prefix={tx.type === 'send' ? '-' : '+'}
+                      />
+                    )
+                  })}
                 <div>Fee: {tx.fee} ADA</div>
-                <div className={style.date}>Date: {tx.date}</div>
-                <div>
-                  <Tooltip title="Visit on Cardanoscan">
+                <div className={style.info}>
+                  <div>{tx.date}</div>
+                  <div>
+                    <CopyToClipboard text={tx.id} onCopy={onCopy}>
+                      <a className={style.address}>
+                        <Tooltip title="Copy to clipboard">
+                          {tx.id.slice(0, 10)}...{tx.id.slice(-10)}
+                        </Tooltip>
+                      </a>
+                    </CopyToClipboard>
                     <a
-                      className={style.address}
+                      className="ray__link ml-2"
                       href={`https://cardanoscan.io/transaction/${tx.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {tx.id.slice(0, 10)}...{tx.id.slice(-10)}
+                      <Tooltip title="View on Cardanoscan">
+                        <i className="fe fe-info" />
+                      </Tooltip>
                     </a>
-                  </Tooltip>
-                  <CopyToClipboard text={tx.id} onCopy={onCopy}>
-                    <Tooltip title="Copy to clipboard">
-                      <a className="ray__link ml-2">
-                        <i className="fe fe-copy mr-1" />
-                      </a>
-                    </Tooltip>
-                  </CopyToClipboard>
+                  </div>
                 </div>
               </div>
             </div>
