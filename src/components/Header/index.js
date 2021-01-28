@@ -35,6 +35,14 @@ const Header = () => {
         </NavLink>
         <NavLink activeClassName={style.active} to="/defi">
           <span>
+            Exchange <sup>DeFi</sup>
+          </span>
+          <span>
+            Exchange <sup>DeFi</sup>
+          </span>
+        </NavLink>
+        <NavLink activeClassName={style.active} to="/kickstart">
+          <span>
             KickStart <sup>DeFi</sup>
           </span>
           <span>

@@ -26,7 +26,7 @@ const Rewards = () => {
 
   return (
     <div>
-      <Helmet title="Rewards" />
+      <Helmet title="RAY Rewards" />
       {!wallet.selected && <Empty title="Pools are not available at the moment" />}
       {wallet.selected && (
         <div>

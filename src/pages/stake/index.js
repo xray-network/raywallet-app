@@ -4,7 +4,8 @@ import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Empty from 'components/Empty'
 import StakeSubmenu from 'components/StakeSubmenu'
-import StakeDelegation from 'components/StakeDelegation'
+import StakeBalances from 'components/StakeBalances'
+import StakePools from 'components/StakePools'
 import StakeHistory from 'components/StakeHistory'
 
 const Stake = () => {
@@ -32,9 +33,12 @@ const Stake = () => {
           <StakeSubmenu />
           <div className="pt-4">
             <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/delegation`} />} />
-              <Route exact path={`${path}/delegation`}>
-                <StakeDelegation />
+              <Route exact path={path} render={() => <Redirect to={`${path}/balances`} />} />
+              <Route exact path={`${path}/balances`}>
+                <StakeBalances />
+              </Route>
+              <Route exact path={`${path}/pools`}>
+                <StakePools />
               </Route>
               <Route path={`${path}/history`}>
                 <StakeHistory />

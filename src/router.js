@@ -23,6 +23,10 @@ const routes = [
     path: '/defi',
     Component: lazy(() => import('pages/defi')),
   },
+  {
+    path: '/kickstart',
+    Component: lazy(() => import('pages/kickstart')),
+  },
 ]
 
 const mapStateToProps = ({ settings }) => ({

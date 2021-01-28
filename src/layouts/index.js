@@ -5,12 +5,12 @@ import NProgress from 'nprogress'
 import { Helmet } from 'react-helmet'
 
 import LayoutMain from './Main'
-import LayoutKickStart from './KickStart'
+// import LayoutKickStart from './KickStart'
 
-const Layouts = {
-  main: LayoutMain,
-  kickStart: LayoutKickStart,
-}
+// const Layouts = {
+//   main: LayoutMain,
+//   kickStart: LayoutKickStart,
+// }
 
 const mapStateToProps = ({ settings }) => ({ title: settings.title })
 let previousPath = ''
@@ -32,19 +32,19 @@ const Layout = ({ children, title, location: { pathname, search } }) => {
   }, 500)
 
   // Layout Rendering
-  const getLayout = () => {
-    if (/^\/defi(?=\/|$)/i.test(pathname)) {
-      return 'kickStart'
-    }
-    return 'main'
-  }
+  // const getLayout = () => {
+  //   if (/^\/kickstart(?=\/|$)/i.test(pathname)) {
+  //     return 'kickStart'
+  //   }
+  //   return 'main'
+  // }
 
-  const LayoutWrapper = Layouts[getLayout()]
+  // const LayoutWrapper = Layouts[getLayout()]
 
   return (
     <Fragment>
       <Helmet titleTemplate={`${title} | %s`} title={title} />
-      <LayoutWrapper>{children}</LayoutWrapper>
+      <LayoutMain>{children}</LayoutMain>
     </Fragment>
   )
 }

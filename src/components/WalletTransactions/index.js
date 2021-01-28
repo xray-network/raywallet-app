@@ -16,6 +16,7 @@ const WalletTransactions = () => {
 
   return (
     <div>
+      <div className="ray__heading">Last transactions</div>
       {(data.transactions == null || (data.transactions && data.transactions.length < 1)) && (
         <Empty title="No transactions" />
       )}

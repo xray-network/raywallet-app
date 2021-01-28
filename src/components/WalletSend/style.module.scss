@@ -10,13 +10,6 @@
   }
 }
 
-.totals {
-  border-radius: 8px;
-  border: 1px solid $border;
-  padding: rem(20);
-  background: $pastel-1;
-}
-
 .assetGroup {
   :global(.ant-input-number),
   :global(.ant-btn) {

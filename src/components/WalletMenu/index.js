@@ -147,12 +147,16 @@ const WalletMenu = () => {
       <div className="mt-5">
         <div className={style.walletMenu}>
           <Link to="/defi">
+            <i className="fe fe-repeat mr-2" />
+            Exchange Assets
+          </Link>
+          <Link to="/kickstart">
             <i className="fe fe-plus-circle mr-2" />
             Create Own Token
           </Link>
           <Link to="/rewards">
             <i className="fe fe-activity mr-2" />
-            RAY Reward Program
+            RAY Rewards Program
           </Link>
         </div>
       </div>

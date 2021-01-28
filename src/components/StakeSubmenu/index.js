@@ -8,9 +8,13 @@ const StakeSubmenu = () => {
   return (
     <div>
       <div className={style.menu}>
-        <NavLink exact activeClassName={style.active} to={`${url}/delegation`}>
-          <span>Pool Delegation</span>
-          <span>Pool Delegation</span>
+        <NavLink exact activeClassName={style.active} to={`${url}/balances`}>
+          <span>Balances</span>
+          <span>Balances</span>
+        </NavLink>
+        <NavLink exact activeClassName={style.active} to={`${url}/pools`}>
+          <span>Pools Delegation</span>
+          <span>Pools Delegation</span>
         </NavLink>
         <NavLink exact activeClassName={style.active} to={`${url}/history`}>
           <span>Rewards History</span>
