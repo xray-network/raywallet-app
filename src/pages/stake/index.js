@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import Empty from 'components/Empty'
-import StakeSubmenu from 'components/StakeSubmenu'
-import StakeBalances from 'components/StakeBalances'
-import StakePools from 'components/StakePools'
-import StakeHistory from 'components/StakeHistory'
+import Empty from 'components/Layout/Empty'
+import StakeSubmenu from 'components/Stake/Submenu'
+import StakeBalances from 'components/Stake/Balances'
+import StakePools from 'components/Stake/Pools'
+import StakeHistory from 'components/Stake/History'
 
 const Stake = () => {
   const { path } = useRouteMatch()

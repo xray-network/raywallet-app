@@ -1,0 +1,52 @@
+@import 'mixins.scss';
+
+.header {
+  display: flex;
+  padding: rem(15) rem(45);
+}
+
+.menu {
+  a {
+    font-size: rem(18);
+    margin-right: rem(30);
+    position: relative;
+    white-space: nowrap;
+
+    span:first-child {
+      opacity: 0;
+      font-weight: 600;
+    }
+
+    span:last-child {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+    }
+
+    &.active {
+      font-weight: 600;
+      color: $black;
+    }
+  }
+}
+
+.icons {
+  margin-left: auto;
+
+  a {
+    display: inline-block;
+    font-size: rem(18);
+    margin-right: rem(15);
+    color: $gray-5;
+
+    &:hover {
+      color: $blue-dark;
+    }
+  }
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import Empty from 'components/Empty'
-import WalletSubmenu from 'components/WalletSubmenu'
-import WalletSend from 'components/WalletSend'
-import WalletAddresses from 'components/WalletAddresses'
-import WalletTransactions from 'components/WalletTransactions'
+import Empty from 'components/Layout/Empty'
+import WalletSubmenu from 'components/Wallet/Submenu'
+import WalletSend from 'components/Wallet/Send'
+import WalletAddresses from 'components/Wallet/Addresses'
+import WalletTransactions from 'components/Wallet/Transactions'
 
 const Wallet = () => {
   const { path } = useRouteMatch()

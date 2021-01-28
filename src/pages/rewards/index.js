@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import Empty from 'components/Empty'
-import RewardsSubmenu from 'components/RewardsSubmenu'
-import RewardsActivities from 'components/RewardsActivities'
-import RewardsHistory from 'components/RewardsHistory'
-import RewardsTopList from 'components/RewardsTopList'
+import Empty from 'components/Layout/Empty'
+import RewardsSubmenu from 'components/Rewards/Submenu'
+import RewardsActivities from 'components/Rewards/Activities'
+import RewardsHistory from 'components/Rewards/History'
+import RewardsTopList from 'components/Rewards/TopList'
 
 const Rewards = () => {
   const { path } = useRouteMatch()
