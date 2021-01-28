@@ -1,8 +1,8 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import Footer from 'components/Footer'
-import Header from 'components/Header'
-import WalletMenu from 'components/WalletMenu'
+import Footer from 'components/Layout/Footer'
+import Header from 'components/Layout/Header'
+import WalletMenu from 'components/Layout/WalletMenu'
 import style from './style.module.scss'
 
 const LayoutMain = ({ children }) => {

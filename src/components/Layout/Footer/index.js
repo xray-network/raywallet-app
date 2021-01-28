@@ -1,6 +1,6 @@
 import React from 'react'
 import style from './style.module.scss'
-import { version } from '../../../package.json'
+import { version } from '../../../../package.json'
 import { ReactComponent as Logo } from './logo.svg'
 
 const Footer = () => {
