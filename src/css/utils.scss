@@ -42,7 +42,7 @@
     }
   }
 
-  &__pool {
+  &__item {
     border-radius: 8px;
     border: 1px solid $border;
     padding: rem(20) rem(20);
@@ -53,10 +53,14 @@
       box-shadow: 0 0 0 2px rgba(1, 122, 255, 0.2);
     }
 
+    &--disabled {
+      background: $gray-1;
+    }
+
     .badge {
       position: relative;
-      top: -1px;
-      font-weight: bold;
+      top: -2px;
+      font-size: rem(14);
     }
 
     &__id {
@@ -65,7 +69,6 @@
       word-wrap: break-word;
       color: $text;
       font-size: rem(14);
-      line-height: 1.3;
     }
   }
 

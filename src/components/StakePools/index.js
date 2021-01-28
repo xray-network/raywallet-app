@@ -14,7 +14,7 @@ const StakeDelegation = () => {
   return (
     <div>
       <div className="ray__heading">Pools list</div>
-      <div className="ray__pool">
+      <div className="ray__item">
         <div className="mb-1">
           <span className="badge badge-success mr-2">RAY</span>
           <span className="mr-2">RAY Network</span>
@@ -24,7 +24,7 @@ const StakeDelegation = () => {
             </Tooltip>
           </a>
         </div>
-        <div className="ray__pool__id mb-3">
+        <div className="ray__item__id mb-3">
           <CopyToClipboard text={pool} onCopy={onCopy}>
             <a>
               <Tooltip title="Copy to clipboard">
@@ -60,7 +60,7 @@ const StakeDelegation = () => {
           Delegate
         </Button>
       </div>
-      <div className="ray__pool ray__pool--current">
+      <div className="ray__item ray__item--current">
         <div className="mb-1">
           <span className="badge badge-success mr-2">RAY2</span>
           <span className="mr-2">RAY Network</span>
@@ -70,7 +70,7 @@ const StakeDelegation = () => {
             </Tooltip>
           </a>
         </div>
-        <div className="ray__pool__id mb-3">
+        <div className="ray__item__id mb-3">
           <CopyToClipboard text={pool} onCopy={onCopy}>
             <a>
               <Tooltip title="Copy to clipboard">
@@ -107,19 +107,17 @@ const StakeDelegation = () => {
         </Button>
       </div>
       <div className="ray__heading">Delegate by Pool ID</div>
-      <div className="ray__pool pb-0">
-        <Form layout="vertical" requiredMark={false}>
-          <Form.Item name="toAddress" rules={[{ required: true, message: 'Please enter pool id' }]}>
-            <Input size="large" placeholder="Pool ID" />
-          </Form.Item>
-          <Form.Item>
-            <Button htmlType="submit">
-              <i className="fe fe-arrow-up-circle mr-1" />
-              <strong>Delegate</strong>
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      <Form layout="vertical" requiredMark={false}>
+        <Form.Item name="toAddress" rules={[{ required: true, message: 'Please enter pool id' }]}>
+          <Input size="large" placeholder="Pool ID" />
+        </Form.Item>
+        <Form.Item>
+          <Button htmlType="submit">
+            <i className="fe fe-arrow-up-circle mr-1" />
+            <strong>Delegate</strong>
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   )
 }

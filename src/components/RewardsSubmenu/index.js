@@ -12,13 +12,13 @@ const RewardsSubmenu = () => {
           <span>Activities</span>
           <span>Activities</span>
         </NavLink>
-        <NavLink exact activeClassName={style.active} to={`${url}/history`}>
-          <span>Rewards History</span>
-          <span>Rewards History</span>
-        </NavLink>
         <NavLink exact activeClassName={style.active} to={`${url}/top-list`}>
           <span>Top List</span>
           <span>Top List</span>
+        </NavLink>
+        <NavLink exact activeClassName={style.active} to={`${url}/history`}>
+          <span>Rewards History</span>
+          <span>Rewards History</span>
         </NavLink>
       </div>
     </div>

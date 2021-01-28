@@ -11,7 +11,9 @@
   color: $dark !important;
 }
 
-.ant-btn[disabled] {
+.ant-btn[disabled],
+.ant-input[disabled],
+.ant-input-affix-wrapper-disabled {
   color: $gray-4 !important;
-  background: transparent !important;
+  background: $gray-1 !important;
 }

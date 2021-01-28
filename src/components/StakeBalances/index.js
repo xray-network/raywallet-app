@@ -50,7 +50,7 @@ const StakeBalances = () => {
         </div>
       </div>
       <div className="ray__heading">Current delegation</div>
-      <div className="ray__pool">
+      <div className="ray__item">
         <div className="mb-1">
           <span className="badge badge-success mr-2">RAY2</span>
           <span className="mr-2">RAY Network</span>
@@ -60,7 +60,7 @@ const StakeBalances = () => {
             </Tooltip>
           </a>
         </div>
-        <div className="ray__pool__id mb-3">
+        <div className="ray__item__id mb-3">
           <CopyToClipboard text={pool} onCopy={onCopy}>
             <a>
               <Tooltip title="Copy to clipboard">

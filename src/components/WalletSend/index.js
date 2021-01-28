@@ -45,53 +45,51 @@ const WalletSend = () => {
         onFinishFailed={onFinishFailed}
         onValuesChange={onValuesChange}
       >
-        <div className="ray__item">
-          <Form.Item label="From Address" hidden name="fromAddress" rules={[{ required: true }]}>
-            <Input placeholder="Address" />
+        <Form.Item label="From Address" hidden name="fromAddress" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="To Address"
+          name="toAddress"
+          rules={[{ required: true, message: 'Please enter address' }]}
+        >
+          <Input size="large" placeholder="Address" />
+        </Form.Item>
+        <Input.Group compact className={style.assetGroup}>
+          <Form.Item
+            className={style.assetAmount}
+            label="Amount"
+            name="amount"
+            rules={[{ required: true, message: 'Please enter amount' }]}
+          >
+            <InputNumber
+              min="1"
+              size="large"
+              placeholder="0.000000 ADA"
+              style={{ width: '100%' }}
+            />
           </Form.Item>
           <Form.Item
-            label="To Address"
-            name="toAddress"
-            rules={[{ required: true, message: 'Please enter address' }]}
+            className={style.assetDonate}
+            label="Donate to RAY"
+            name="donate"
+            tooltip="This donation will be used for further RAY Network development. Not required."
           >
-            <Input size="large" placeholder="Address" />
+            <InputNumber min="1" size="large" placeholder="0 ADA" style={{ width: '100%' }} />
           </Form.Item>
-          <Input.Group compact className={style.assetGroup}>
-            <Form.Item
-              className={style.assetAmount}
-              label="Amount"
-              name="amount"
-              rules={[{ required: true, message: 'Please enter amount' }]}
-            >
-              <InputNumber
-                min="1"
-                size="large"
-                placeholder="0.000000 ADA"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-            <Form.Item
-              className={style.assetDonate}
-              label="Donate to RAY"
-              name="donate"
-              tooltip="This donation will be used for further RAY Network development. Not required."
-            >
-              <InputNumber min="1" size="large" placeholder="0 ADA" style={{ width: '100%' }} />
-            </Form.Item>
-            <Form.Item label=" " className={style.assetRemove}>
-              <Tooltip title="Remove Token from Tx">
-                <Button size="large">
-                  <i className="fe fe-trash-2" />
-                </Button>
-              </Tooltip>
-            </Form.Item>
-          </Input.Group>
-          <div>
-            <Button>
-              <i className="fe fe-plus-circle mr-1" />
-              Add Token to Tx
-            </Button>
-          </div>
+          <Form.Item label=" " className={style.assetRemove}>
+            <Tooltip title="Remove Token from Tx">
+              <Button size="large">
+                <i className="fe fe-trash-2" />
+              </Button>
+            </Tooltip>
+          </Form.Item>
+        </Input.Group>
+        <div>
+          <Button>
+            <i className="fe fe-plus-circle mr-1" />
+            Add Token to Tx
+          </Button>
         </div>
         <div className="ray__totals mt-4">
           <div className="row">
