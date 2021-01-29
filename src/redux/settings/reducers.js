@@ -12,7 +12,7 @@ const STORED_SETTINGS = (storedSettings) => {
 
 const initialState = {
   ...STORED_SETTINGS({
-    title: 'RAY Wallet',
+    title: 'RAY',
     theme: 'default',
     locale: 'en-US',
     routerAnimation: 'slide-fadein-up',

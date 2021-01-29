@@ -34,7 +34,7 @@ const StakeDelegation = () => {
           </CopyToClipboard>
         </div>
         <div className="row">
-          <div className="col-lg-4">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Live Stake</div>
               <div className="ray__form__amount">
@@ -42,13 +42,13 @@ const StakeDelegation = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Saturation</div>
               <div className="ray__form__amount">87.13%</div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">TAx</div>
               <div className="ray__form__amount">0%</div>
@@ -60,7 +60,7 @@ const StakeDelegation = () => {
           Delegate
         </Button>
       </div>
-      <div className="ray__item ray__item--current">
+      <div className="ray__item ray__item--primary">
         <div className="mb-1">
           <span className="badge badge-success mr-2">RAY2</span>
           <span className="mr-2">RAY Network</span>
@@ -80,7 +80,7 @@ const StakeDelegation = () => {
           </CopyToClipboard>
         </div>
         <div className="row">
-          <div className="col-lg-4">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Live Stake</div>
               <div className="ray__form__amount">
@@ -88,13 +88,13 @@ const StakeDelegation = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Saturation</div>
               <div className="ray__form__amount">0.13%</div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">TAx</div>
               <div className="ray__form__amount">0%</div>

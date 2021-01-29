@@ -26,8 +26,8 @@ const Header = () => {
           <span>Wallet</span>
         </NavLink>
         <NavLink activeClassName={style.active} to="/stake">
-          <span>Staking Center</span>
-          <span>Staking Center</span>
+          <span>Stake</span>
+          <span>Stake</span>
         </NavLink>
         <NavLink activeClassName={style.active} to="/rewards">
           <span>Rewards</span>
@@ -35,19 +35,15 @@ const Header = () => {
         </NavLink>
         <NavLink activeClassName={style.active} to="/defi">
           <span>
-            Exchange <sup>DeFi</sup>
+            Swap <sup>DeFi</sup>
           </span>
           <span>
-            Exchange <sup>DeFi</sup>
+            Swap <sup>DeFi</sup>
           </span>
         </NavLink>
         <NavLink activeClassName={style.active} to="/kickstart">
-          <span>
-            KickStart <sup>DeFi</sup>
-          </span>
-          <span>
-            KickStart <sup>DeFi</sup>
-          </span>
+          <span>KickStart</span>
+          <span>KickStart</span>
         </NavLink>
       </div>
       <div className={style.icons}>

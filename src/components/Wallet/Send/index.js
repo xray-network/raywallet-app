@@ -94,14 +94,13 @@ const WalletSend = () => {
             </Tooltip>
           </Form.Item>
         </Input.Group>
-        <div>
+        <div className="mb-4">
           <Button>
             <i className="fe fe-plus-circle mr-1" />
             Add Token to Tx
           </Button>
         </div>
-        {formValues.amount}
-        <div className="ray__totals mt-4">
+        <div className="ray__item ray__item--success ray__item--tinted">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">

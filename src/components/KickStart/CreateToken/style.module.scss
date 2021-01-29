@@ -1,5 +1,40 @@
 @import 'mixins.scss';
 
+.btnSend {
+  width: 100%;
+
+  :global(.ant-btn) {
+    width: 100%;
+  }
+
+  i {
+    margin-right: rem(8);
+    position: relative;
+    top: 1px;
+  }
+}
+
+.assetGroup {
+  :global(.ant-input-number),
+  :global(.ant-btn) {
+    border-radius: 0 !important;
+  }
+
+  :global(.ant-form-item:first-child) {
+    :global(.ant-input-number),
+    :global(.ant-btn) {
+      border-radius: 8px 0 0 8px !important;
+    }
+  }
+
+  :global(.ant-form-item:last-child) {
+    :global(.ant-input-number),
+    :global(.ant-btn) {
+      border-radius: 0 8px 8px 0 !important;
+    }
+  }
+}
+
 // dark theme
 // [data-vb-theme='dark'] {
 

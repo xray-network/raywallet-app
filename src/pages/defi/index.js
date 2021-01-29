@@ -4,8 +4,9 @@ import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Empty from 'components/Layout/Empty'
 import DeFiSubmenu from 'components/DeFi/Submenu'
-import DeFiExchange from 'components/DeFi/Exchange'
-import DeFiLiquidity from 'components/DeFi/Liquidity'
+import DeFiSwap from 'components/DeFi/Swap'
+import DeFiLiquidityPools from 'components/DeFi/LiquidityPools'
+import DeFiLiquidityMy from 'components/DeFi/LiquidityMy'
 
 const DeFi = () => {
   const { path } = useRouteMatch()
@@ -25,19 +26,22 @@ const DeFi = () => {
 
   return (
     <div>
-      <Helmet title="DeFi Center" />
+      <Helmet title="DeFi" />
       {!wallet.selected && <Empty title="Projects are not available at the moment" />}
       {wallet.selected && (
         <div>
           <DeFiSubmenu />
           <div className="pt-4">
             <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/exchange`} />} />
-              <Route exact path={`${path}/exchange`}>
-                <DeFiExchange />
+              <Route exact path={path} render={() => <Redirect to={`${path}/swap`} />} />
+              <Route exact path={`${path}/swap`}>
+                <DeFiSwap />
               </Route>
-              <Route path={`${path}/liquidity`}>
-                <DeFiLiquidity />
+              <Route path={`${path}/liquidity/pools`}>
+                <DeFiLiquidityPools />
+              </Route>
+              <Route path={`${path}/liquidity/my`}>
+                <DeFiLiquidityMy />
               </Route>
             </Switch>
           </div>

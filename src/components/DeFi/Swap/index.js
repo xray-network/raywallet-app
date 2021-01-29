@@ -1,7 +1,7 @@
 import React from 'react'
 // import style from './style.module.scss'
 
-const DeFiExchange = () => {
+const DeFiSwap = () => {
   return (
     <div>
       <div className="ray__heading">DeFi Exchange</div>
@@ -9,4 +9,4 @@ const DeFiExchange = () => {
   )
 }
 
-export default DeFiExchange
+export default DeFiSwap

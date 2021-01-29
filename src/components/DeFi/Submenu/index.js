@@ -8,13 +8,17 @@ const DeFiSubmenu = () => {
   return (
     <div>
       <div className={style.menu}>
-        <NavLink exact activeClassName={style.active} to={`${url}/exchange`}>
-          <span>Exchange</span>
-          <span>Exchange</span>
+        <NavLink exact activeClassName={style.active} to={`${url}/swap`}>
+          <span>Swap</span>
+          <span>Swap</span>
         </NavLink>
-        <NavLink exact activeClassName={style.active} to={`${url}/liquidity`}>
+        <NavLink exact activeClassName={style.active} to={`${url}/liquidity/pools`}>
           <span>Liquidity Pools</span>
           <span>Liquidity Pools</span>
+        </NavLink>
+        <NavLink exact activeClassName={style.active} to={`${url}/liquidity/my`}>
+          <span>My Liquidity</span>
+          <span>My Liquidity</span>
         </NavLink>
       </div>
     </div>

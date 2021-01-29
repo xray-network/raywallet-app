@@ -9,14 +9,14 @@ const KickStartSubmenu = () => {
     <div>
       <div className={style.menu}>
         <NavLink exact activeClassName={style.active} to={`${url}/list`}>
-          <span>Fund List</span>
-          <span>Fund List</span>
+          <span>Funding List</span>
+          <span>Funding List</span>
         </NavLink>
-        <NavLink exact activeClassName={style.active} to={`${url}/create/project`}>
+        <NavLink exact activeClassName={style.active} to={`${url}/create`}>
           <span>Start Funding</span>
           <span>Start Funding</span>
         </NavLink>
-        <NavLink exact activeClassName={style.active} to={`${url}/create/token`}>
+        <NavLink exact activeClassName={style.active} to={`${url}/token/create`}>
           <span>Create Token</span>
           <span>Create Token</span>
         </NavLink>

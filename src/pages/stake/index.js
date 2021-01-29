@@ -26,7 +26,7 @@ const Stake = () => {
 
   return (
     <div>
-      <Helmet title="Staking Center" />
+      <Helmet title="Stake" />
       {!wallet.selected && <Empty title="Wallet is not currently selected" />}
       {wallet.selected && (
         <div>

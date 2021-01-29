@@ -22,24 +22,11 @@
   }
 
   &__heading {
-    font-size: rem(14);
-    padding-bottom: rem(10);
-    border-bottom: 1px solid $border;
+    padding-top: rem(10);
+    border-top: 4px solid $pastel-1;
     margin-bottom: rem(20);
-    text-transform: uppercase;
-    letter-spacing: 1px;
     font-weight: 700;
-  }
-
-  &__totals {
-    border-radius: 8px;
-    border: 1px solid $border;
-    padding: rem(20);
-    background: $pastel-1;
-
-    &--transparent {
-      background: transparent;
-    }
+    font-size: rem(16);
   }
 
   &__item {
@@ -51,6 +38,22 @@
     &--current {
       border-color: $primary;
       box-shadow: 0 0 0 2px rgba(1, 122, 255, 0.2);
+    }
+
+    &--primary {
+      border-top: 4px solid $primary;
+    }
+
+    &--success {
+      border-top: 4px solid $success;
+    }
+
+    &--border {
+      border-top: 4px solid $border;
+    }
+
+    &--tinted {
+      background: $pastel-1;
     }
 
     &--disabled {

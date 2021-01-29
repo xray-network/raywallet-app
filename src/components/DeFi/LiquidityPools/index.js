@@ -1,7 +1,7 @@
 import React from 'react'
 // import style from './style.module.scss'
 
-const DeFiLiquidity = () => {
+const DeFiLiquidityPools = () => {
   return (
     <div>
       <div className="ray__heading">DeFi Liquidity Pools</div>
@@ -9,4 +9,4 @@ const DeFiLiquidity = () => {
   )
 }
 
-export default DeFiLiquidity
+export default DeFiLiquidityPools

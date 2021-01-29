@@ -26,7 +26,7 @@ const KickStart = () => {
 
   return (
     <div>
-      <Helmet title="DeFi Center" />
+      <Helmet title="KickStart" />
       {!wallet.selected && <Empty title="Projects are not available at the moment" />}
       {wallet.selected && (
         <div>
@@ -37,10 +37,10 @@ const KickStart = () => {
               <Route exact path={`${path}/list`}>
                 <KickStartList />
               </Route>
-              <Route path={`${path}/create/project`}>
+              <Route path={`${path}/create`}>
                 <KickStartCreateProject />
               </Route>
-              <Route path={`${path}/create/token`}>
+              <Route path={`${path}/token/create`}>
                 <KickStartCreateToken />
               </Route>
             </Switch>

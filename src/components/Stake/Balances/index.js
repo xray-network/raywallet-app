@@ -19,7 +19,7 @@ const StakeBalances = () => {
   return (
     <div>
       <div className="ray__heading">Stake balances</div>
-      <div className="ray__totals mb-4">
+      <div className="ray__item ray__item--success ray__item--tinted mb-4">
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3">
@@ -30,7 +30,7 @@ const StakeBalances = () => {
             </div>
             <Button type="primary">
               <i className="fe fe-arrow-down-circle mr-1" />
-              Withdraw
+              Withdraw Reward
             </Button>
           </div>
           <div className="col-lg-6">
@@ -50,7 +50,7 @@ const StakeBalances = () => {
         </div>
       </div>
       <div className="ray__heading">Current delegation</div>
-      <div className="ray__item">
+      <div className="ray__item ray__item--primary">
         <div className="mb-1">
           <span className="badge badge-success mr-2">RAY2</span>
           <span className="mr-2">RAY Network</span>
@@ -70,7 +70,7 @@ const StakeBalances = () => {
           </CopyToClipboard>
         </div>
         <div className="row">
-          <div className="col-lg-4">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Live Stake</div>
               <div className="ray__form__amount">
@@ -78,13 +78,13 @@ const StakeBalances = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Saturation</div>
               <div className="ray__form__amount">0.13%</div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">TAx</div>
               <div className="ray__form__amount">0%</div>

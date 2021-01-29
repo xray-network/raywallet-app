@@ -21,7 +21,7 @@ const Layout = ({ children, title, location: { pathname, search } }) => {
   if (!preventRun) {
     if (currentPath !== previousPath) {
       window.scrollTo(0, 0)
-      NProgress.start()
+      NProgress.set(0.2)
       preventRun = true
     }
   }
@@ -43,7 +43,7 @@ const Layout = ({ children, title, location: { pathname, search } }) => {
 
   return (
     <Fragment>
-      <Helmet titleTemplate={`${title} | %s`} title={title} />
+      <Helmet titleTemplate={`${title} | %s`} />
       <LayoutMain>{children}</LayoutMain>
     </Fragment>
   )
