@@ -22,11 +22,24 @@
   }
 
   &__heading {
-    padding-top: rem(10);
+    padding-top: rem(15);
     border-top: 4px solid $pastel-1;
     margin-bottom: rem(20);
     font-weight: 700;
-    font-size: rem(16);
+    padding-left: rem(20);
+    position: relative;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: $primary;
+      position: absolute;
+      top: rem(22);
+      left: 0;
+    }
   }
 
   &__item {
@@ -88,7 +101,7 @@
   }
 
   &__submenu {
-    margin-bottom: rem(25);
+    margin-bottom: rem(20);
 
     a {
       font-size: rem(18);

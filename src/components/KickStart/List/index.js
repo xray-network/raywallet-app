@@ -22,7 +22,7 @@ const KickStartList = () => {
       <div className="mb-3">
         <Input size="large" placeholder="Search project by name..." />
       </div>
-      <div className="mb-3">
+      <div className="mb-4">
         <Radio.Group defaultValue="all">
           <Radio value="all">All</Radio>
           <Radio value="premium">Premium</Radio>
