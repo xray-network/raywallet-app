@@ -31,20 +31,18 @@ const Stake = () => {
       {wallet.selected && (
         <div>
           <StakeSubmenu />
-          <div className="pt-4">
-            <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/balances`} />} />
-              <Route exact path={`${path}/balances`}>
-                <StakeBalances />
-              </Route>
-              <Route exact path={`${path}/pools`}>
-                <StakePools />
-              </Route>
-              <Route path={`${path}/history`}>
-                <StakeHistory />
-              </Route>
-            </Switch>
-          </div>
+          <Switch>
+            <Route exact path={path} render={() => <Redirect to={`${path}/balances`} />} />
+            <Route exact path={`${path}/balances`}>
+              <StakeBalances />
+            </Route>
+            <Route exact path={`${path}/pools`}>
+              <StakePools />
+            </Route>
+            <Route path={`${path}/history`}>
+              <StakeHistory />
+            </Route>
+          </Switch>
         </div>
       )}
     </div>

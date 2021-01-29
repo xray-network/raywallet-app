@@ -31,20 +31,18 @@ const KickStart = () => {
       {wallet.selected && (
         <div>
           <KickStartSubmenu />
-          <div className="pt-4">
-            <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/list`} />} />
-              <Route exact path={`${path}/list`}>
-                <KickStartList />
-              </Route>
-              <Route path={`${path}/create`}>
-                <KickStartCreateProject />
-              </Route>
-              <Route path={`${path}/token/create`}>
-                <KickStartCreateToken />
-              </Route>
-            </Switch>
-          </div>
+          <Switch>
+            <Route exact path={path} render={() => <Redirect to={`${path}/list`} />} />
+            <Route exact path={`${path}/list`}>
+              <KickStartList />
+            </Route>
+            <Route path={`${path}/create`}>
+              <KickStartCreateProject />
+            </Route>
+            <Route path={`${path}/token/create`}>
+              <KickStartCreateToken />
+            </Route>
+          </Switch>
         </div>
       )}
     </div>

@@ -31,20 +31,18 @@ const Rewards = () => {
       {wallet.selected && (
         <div>
           <RewardsSubmenu />
-          <div className="pt-4">
-            <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/activities`} />} />
-              <Route exact path={`${path}/activities`}>
-                <RewardsActivities />
-              </Route>
-              <Route path={`${path}/history`}>
-                <RewardsHistory />
-              </Route>
-              <Route path={`${path}/top-list`}>
-                <RewardsTopList />
-              </Route>
-            </Switch>
-          </div>
+          <Switch>
+            <Route exact path={path} render={() => <Redirect to={`${path}/activities`} />} />
+            <Route exact path={`${path}/activities`}>
+              <RewardsActivities />
+            </Route>
+            <Route path={`${path}/history`}>
+              <RewardsHistory />
+            </Route>
+            <Route path={`${path}/top-list`}>
+              <RewardsTopList />
+            </Route>
+          </Switch>
         </div>
       )}
     </div>

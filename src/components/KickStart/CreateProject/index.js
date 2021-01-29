@@ -42,7 +42,7 @@ const KickStartCreateProject = () => {
 
   return (
     <div>
-      <div className="ray__heading">Smart Contract Parameters</div>
+      <div className="ray__heading">Crowdfunding Project Parameters</div>
       <div className="mb-4">
         <Alert
           message="Funding will be available in the Goguen Era"

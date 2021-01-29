@@ -86,4 +86,34 @@
       line-height: 1.5715;
     }
   }
+
+  &__submenu {
+    margin-bottom: rem(25);
+
+    a {
+      font-size: rem(18);
+      margin-right: rem(30);
+      position: relative;
+      white-space: nowrap;
+
+      span:first-child {
+        opacity: 0;
+        font-weight: 600;
+      }
+
+      span:last-child {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+    }
+
+    &__item {
+      &--active {
+        font-weight: 600;
+        color: $black;
+      }
+    }
+  }
 }

@@ -31,20 +31,18 @@ const Wallet = () => {
       {wallet.selected && (
         <div>
           <WalletSubmenu />
-          <div className="pt-4">
-            <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/send`} />} />
-              <Route exact path={`${path}/send`}>
-                <WalletSend />
-              </Route>
-              <Route path={`${path}/addresses`}>
-                <WalletAddresses />
-              </Route>
-              <Route path={`${path}/transactions`}>
-                <WalletTransactions />
-              </Route>
-            </Switch>
-          </div>
+          <Switch>
+            <Route exact path={path} render={() => <Redirect to={`${path}/send`} />} />
+            <Route exact path={`${path}/send`}>
+              <WalletSend />
+            </Route>
+            <Route path={`${path}/addresses`}>
+              <WalletAddresses />
+            </Route>
+            <Route path={`${path}/transactions`}>
+              <WalletTransactions />
+            </Route>
+          </Switch>
         </div>
       )}
     </div>

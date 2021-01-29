@@ -31,20 +31,18 @@ const DeFi = () => {
       {wallet.selected && (
         <div>
           <DeFiSubmenu />
-          <div className="pt-4">
-            <Switch>
-              <Route exact path={path} render={() => <Redirect to={`${path}/swap`} />} />
-              <Route exact path={`${path}/swap`}>
-                <DeFiSwap />
-              </Route>
-              <Route path={`${path}/liquidity/pools`}>
-                <DeFiLiquidityPools />
-              </Route>
-              <Route path={`${path}/liquidity/my`}>
-                <DeFiLiquidityMy />
-              </Route>
-            </Switch>
-          </div>
+          <Switch>
+            <Route exact path={path} render={() => <Redirect to={`${path}/swap`} />} />
+            <Route exact path={`${path}/swap`}>
+              <DeFiSwap />
+            </Route>
+            <Route path={`${path}/liquidity/pools`}>
+              <DeFiLiquidityPools />
+            </Route>
+            <Route path={`${path}/liquidity/my`}>
+              <DeFiLiquidityMy />
+            </Route>
+          </Switch>
         </div>
       )}
     </div>
