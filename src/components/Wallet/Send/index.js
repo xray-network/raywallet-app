@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { Form, Input, Button, InputNumber, Tooltip } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
-// import style from './style.module.scss'
 
 const WalletSend = () => {
   const wallet = useSelector((state) => state.wallets.wallet)

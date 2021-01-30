@@ -100,6 +100,12 @@
     }
   }
 
+  &__empty {
+    padding: rem(50) 0;
+    text-align: center;
+    color: $gray-3;
+  }
+
   &__submenu {
     margin-bottom: rem(20);
 

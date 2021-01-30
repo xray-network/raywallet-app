@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Input, Form, Tooltip } from 'antd'
-// import style from './style.module.scss'
 
 const RewardsActivities = () => {
   return (

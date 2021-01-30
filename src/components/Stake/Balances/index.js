@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { Button } from 'antd'
 import Address from 'components/Layout/Address'
 import AmountFormatter from 'components/Layout/AmountFormatter'
-// import style from './style.module.scss'
 
 const StakeBalances = () => {
   const wallet = useSelector((state) => state.wallets.wallet)

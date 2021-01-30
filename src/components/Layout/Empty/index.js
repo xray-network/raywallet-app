@@ -1,8 +1,7 @@
 import { React } from 'react'
-import style from './style.module.scss'
 
 const Empty = ({ title }) => {
-  return <div className={style.empty}>{title}</div>
+  return <div className="ray__empty">{title}</div>
 }
 
 Empty.defaultProps = {

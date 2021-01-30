@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Form, Input } from 'antd'
 import Address from 'components/Layout/Address'
 import AmountFormatter from 'components/Layout/AmountFormatter'
-// import style from './style.module.scss'
 
 const StakeDelegation = () => {
   const pool = '1c8cd022e993a8366be641c17cb6d9c5d8944e00bfce3189d8b1515a'
