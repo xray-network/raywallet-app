@@ -6,7 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 
-const Wallet = () => {
+const Wallets = () => {
   const dispatch = useDispatch()
   const walletsList = useSelector((state) => state.wallets.walletsList)
   const wallet = useSelector((state) => state.wallets.wallet)
@@ -164,4 +164,4 @@ const Wallet = () => {
   )
 }
 
-export default Wallet
+export default Wallets

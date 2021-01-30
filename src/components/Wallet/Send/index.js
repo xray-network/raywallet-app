@@ -43,7 +43,6 @@ const WalletSend = () => {
 
   return (
     <div>
-      <div className="ray__heading">Send transaction</div>
       <Form
         form={form}
         layout="vertical"

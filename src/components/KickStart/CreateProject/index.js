@@ -42,7 +42,6 @@ const KickStartCreateProject = () => {
 
   return (
     <div>
-      <div className="ray__heading">Crowdfunding Project Parameters</div>
       <div className="mb-4">
         <Alert
           message="Funding will be available in the Goguen Era"
@@ -136,7 +135,7 @@ const KickStartCreateProject = () => {
             <Radio value="premium">Premium</Radio>
           </Radio.Group>
         </Form.Item>
-        <div className="ray__item ray__item--border ray__item--tinted mt-4">
+        <div className="ray__item ray__item--tinted mt-4">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">

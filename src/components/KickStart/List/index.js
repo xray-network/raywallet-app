@@ -18,7 +18,6 @@ const projects = [
 const KickStartList = () => {
   return (
     <div>
-      <div className="ray__heading">Crowdfunding Projects List (1)</div>
       <div className="mb-3">
         <Input size="large" placeholder="Search project by name..." />
       </div>

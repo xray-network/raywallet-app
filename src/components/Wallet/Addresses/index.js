@@ -37,7 +37,7 @@ const WalletsAddresses = () => {
 
   return (
     <div>
-      <div className="ray__heading">Wallet addresses</div>
+      <div className="ray__heading">Wallet Addresses</div>
       {addresses && addresses.length < 1 && <Empty title="No addresses loaded" />}
       {addresses &&
         addresses.map((address, index) => {

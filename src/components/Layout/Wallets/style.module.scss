@@ -10,11 +10,11 @@
 
 .selectWallets {
   width: 100%;
-  border-radius: 8px;
 
   :global(.ant-select-selector) {
     padding-top: rem(8) !important;
     height: rem(60) !important;
+    border-radius: 14px !important;
   }
 
   &Item {
@@ -69,7 +69,7 @@
 }
 
 .negativeSpace {
-  margin: rem(-10) rem(-20) 0;
+  margin: 0 rem(-10) 0 rem(-20);
 }
 
 .btnRefresh {

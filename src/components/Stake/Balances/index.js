@@ -18,7 +18,7 @@ const StakeBalances = () => {
 
   return (
     <div>
-      <div className="ray__heading">Stake balances</div>
+      <div className="ray__heading">Stake Balances</div>
       <div className="ray__item ray__item--success ray__item--tinted mb-4">
         <div className="row">
           <div className="col-lg-6">
@@ -49,7 +49,7 @@ const StakeBalances = () => {
           </div>
         </div>
       </div>
-      <div className="ray__heading">Current delegation</div>
+      <div className="ray__heading">Current Delegation</div>
       <div className="ray__item ray__item--primary">
         <div className="mb-1 d-flex">
           <div>

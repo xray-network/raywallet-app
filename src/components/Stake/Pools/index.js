@@ -13,8 +13,8 @@ const StakeDelegation = () => {
 
   return (
     <div>
-      <div className="ray__heading">Pools list</div>
-      <div className="ray__item ray__item--border">
+      <div className="ray__heading">RAY Pools List</div>
+      <div className="ray__item">
         <div className="mb-1 d-flex">
           <div>
             <strong className="mr-2">RAY Network</strong>

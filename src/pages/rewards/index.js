@@ -25,7 +25,7 @@ const Rewards = () => {
   }, [wallet.selected, dispatch])
 
   return (
-    <div>
+    <div className="ray__wrapper">
       <Helmet title="Rewards" />
       {!wallet.selected && <Empty title="Pools are not available at the moment" />}
       {wallet.selected && (

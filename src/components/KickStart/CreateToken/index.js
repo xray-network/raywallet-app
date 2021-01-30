@@ -35,7 +35,6 @@ const KickStartCreateToken = () => {
 
   return (
     <div>
-      <div className="ray__heading">Token Parameters</div>
       <Form
         form={form}
         layout="vertical"

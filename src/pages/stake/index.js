@@ -25,7 +25,7 @@ const Stake = () => {
   }, [wallet.selected, dispatch])
 
   return (
-    <div>
+    <div className="ray__wrapper">
       <Helmet title="Stake" />
       {!wallet.selected && <Empty title="Wallet is not currently selected" />}
       {wallet.selected && (

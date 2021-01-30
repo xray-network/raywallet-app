@@ -2,35 +2,29 @@
 
 .container {
   min-height: 100vh;
-  min-width: 850px;
+  max-width: rem(920);
   margin: 0 auto;
-  position: relative;
   display: flex;
   flex-direction: column;
 }
 
-.bg {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  background: $pastel-1;
-  width: calc((100% - 980px) / 2 + 340px);
-  min-width: 340px !important;
+.menu {
+  min-width: 300px;
+  max-width: 300px;
+  padding: rem(30) rem(20);
 }
 
-.header,
-.content,
-.footer {
-  position: relative;
-  z-index: 2;
+.page {
+  padding: rem(30) rem(20);
+  flex-grow: 1;
 }
 
 .header {
-  position: relative;
-  z-index: 3;
-  background: $white;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid $border;
+}
+
+.content {
+  display: flex;
 }
 
 .footer {

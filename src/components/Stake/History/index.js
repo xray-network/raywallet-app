@@ -16,7 +16,7 @@ const StakeHistory = () => {
 
   return (
     <div>
-      <div className="ray__heading">Recently rewards</div>
+      <div className="ray__heading">Recently Rewards</div>
       {(data.transactions == null || (data.transactions && data.transactions.length < 1)) && (
         <Empty title="No transactions" />
       )}

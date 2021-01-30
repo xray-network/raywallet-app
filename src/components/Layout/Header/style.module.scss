@@ -2,7 +2,7 @@
 
 .header {
   display: flex;
-  padding: rem(15) rem(45);
+  padding: rem(15) rem(20);
 }
 
 .menu {
@@ -42,6 +42,10 @@
 
     &:hover {
       color: $blue-dark;
+    }
+
+    &:last-child {
+      margin-right: 0;
     }
   }
 }

@@ -33,7 +33,7 @@ const RewardsTopList = () => {
 
   return (
     <div>
-      <div className="ray__heading">Most rewarded addresses</div>
+      <div className="ray__heading">Most Rewarded Addresses</div>
       {list && list.length < 1 && <Empty title="No addresses loaded" />}
       {list &&
         list.map((address, index) => {
