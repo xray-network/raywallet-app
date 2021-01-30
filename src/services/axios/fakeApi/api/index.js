@@ -15,8 +15,8 @@ const wallets = [
         amount: 1000000,
       },
       {
-        hash: '09fa8ae9028698359697b8a34647ab7b177a920d21f8b6a7edbd8db5d30c36f0.egor',
-        ticker: 'EGOR',
+        hash: '09fa8ae9028698359697b8a34647ab7b177a920d21f8b6a7edbd8db5d30c36f0.ergo',
+        ticker: 'ERGO',
         amount: 500,
       },
     ],

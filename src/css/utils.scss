@@ -101,19 +101,24 @@
   }
 
   &__empty {
-    padding: rem(50) 0;
+    padding: rem(30) 0;
     text-align: center;
     color: $gray-3;
   }
 
   &__submenu {
     margin-bottom: rem(20);
+    display: flex;
 
     a {
       font-size: rem(18);
       margin-right: rem(30);
       position: relative;
       white-space: nowrap;
+
+      &:last-child {
+        margin-right: 0;
+      }
 
       span:first-child {
         opacity: 0;

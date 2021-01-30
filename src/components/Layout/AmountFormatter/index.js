@@ -7,10 +7,10 @@ const mapExchangeRateToAssetHash = {
     usd: 0.34,
     eur: 0.29,
   },
-  '7a920d21f8b6a7edbd8db5d30c36f009fa8ae9028698359697b8a34647ab7b17.ray': {
-    usd: 0.34 / 100,
-    eur: 0.29 / 100,
-  },
+  // '7a920d21f8b6a7edbd8db5d30c36f009fa8ae9028698359697b8a34647ab7b17.ray': {
+  //   usd: 0.34 / 100,
+  //   eur: 0.29 / 100,
+  // },
 }
 
 const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix }) => {

@@ -19,6 +19,9 @@ const DeFiSubmenu = () => {
           <span>My Liquidity</span>
           <span>My Liquidity</span>
         </NavLink>
+        <a href="/" className="ml-auto ray__btn" onClick={(e) => e.preventDefault()}>
+          <i className="fe fe-settings" />
+        </a>
       </div>
     </div>
   )

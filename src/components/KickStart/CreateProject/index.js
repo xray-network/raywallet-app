@@ -191,14 +191,8 @@ const KickStartCreateProject = () => {
         </div>
         <Form.Item className="mt-4">
           <div>
-            <Tooltip title="Funding will be available in the Goguen era">
-              <Button
-                htmlType="submit"
-                size="large"
-                type="primary"
-                className={style.btnSend}
-                disabled
-              >
+            <Tooltip title="Waiting for the Goguene era">
+              <Button htmlType="submit" size="large" type="primary" className={style.btnSend}>
                 <i className="fe fe-plus-circle" />
                 <strong>Create Project</strong>
               </Button>

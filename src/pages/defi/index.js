@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { Alert } from 'antd'
 import Empty from 'components/Layout/Empty'
 import DeFiSubmenu from 'components/DeFi/Submenu'
 import DeFiSwap from 'components/DeFi/Swap'
@@ -31,6 +32,14 @@ const DeFi = () => {
       {wallet.selected && (
         <div>
           <DeFiSubmenu />
+          <div className="mb-4">
+            <Alert
+              message="Swap will be available in the Goguen Era"
+              description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen era."
+              type="warning"
+              showIcon
+            />
+          </div>
           <Switch>
             <Route exact path={path} render={() => <Redirect to={`${path}/swap`} />} />
             <Route exact path={`${path}/swap`}>

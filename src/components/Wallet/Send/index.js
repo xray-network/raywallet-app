@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Tooltip } from 'antd'
+import { Form, Input, Button, Tooltip, Select } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 
 const WalletSend = () => {
   const wallet = useSelector((state) => state.wallets.wallet)
+  const { data } = wallet
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
@@ -55,25 +56,45 @@ const WalletSend = () => {
         </Form.Item>
         <Input.Group compact className={style.assetGroup}>
           <Form.Item
+            className={style.assetTicker}
+            label="Token"
+            name="fromTicker"
+            rules={[{ required: true, message: 'Required' }]}
+          >
+            <Select size="large" placeholder="Select">
+              {data.assets &&
+                data.assets.map((asset, index) => {
+                  return (
+                    <Select.Option key={index}>
+                      <div className={style.assetTo}>
+                        <span className={style.assetIcon}>?</span>
+                        <span className={style.assetTo}>{asset.ticker}</span>
+                      </div>
+                    </Select.Option>
+                  )
+                })}
+            </Select>
+          </Form.Item>
+          <Form.Item
             className={style.assetAmount}
             label="Amount"
             name="amount"
-            rules={[{ required: true, message: 'Please enter amount' }]}
+            rules={[{ required: true, message: 'Required' }]}
           >
             <Input
               size="large"
-              placeholder="0.000000 ADA"
+              placeholder="0.000000"
               autoComplete="off"
               style={{ width: '100%' }}
             />
           </Form.Item>
           <Form.Item
             className={style.assetDonate}
-            label="Donate to RAY"
+            label="Donate"
             name="donate"
             tooltip="This donation will be used for further RAY Network development. Not required."
           >
-            <Input size="large" placeholder="0 ADA" autoComplete="off" style={{ width: '100%' }} />
+            <Input size="large" placeholder="0" autoComplete="off" style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label=" " className={style.assetRemove}>
             <Tooltip title="Remove Token from Tx">
@@ -95,7 +116,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={100} ticker="ADA" withRate large />
+                  <AmountFormatter amount={0} ticker="ADA" withRate large />
                 </div>
               </div>
             </div>
@@ -103,7 +124,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Fee (inlc. in total)</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0.181251} ticker="ADA" />
+                  <AmountFormatter amount={0} ticker="ADA" />
                 </div>
               </div>
             </div>
