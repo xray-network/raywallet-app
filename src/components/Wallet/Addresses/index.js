@@ -1,9 +1,7 @@
 import React from 'react'
-import { Tooltip, message } from 'antd'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 // import { useSelector } from 'react-redux'
+import Address from 'components/Layout/Address'
 import Empty from 'components/Layout/Empty'
-import style from './style.module.scss'
 
 const addresses = [
   'addr1q856yfy7yfc7hv2p8prx4djyu7wmnj3v36ez8eexrupvyugzyu8ye3d6u3f30g2mn2r02rjkc9uzsz3et2ykhvgjy0kqyax9sc',
@@ -31,10 +29,6 @@ const addresses = [
 const WalletsAddresses = () => {
   // const wallet = useSelector((state) => state.wallets.wallet)
 
-  const onCopy = () => {
-    message.success('Address copied to clipboard')
-  }
-
   return (
     <div>
       <div className="ray__heading">Wallet Addresses</div>
@@ -42,27 +36,13 @@ const WalletsAddresses = () => {
       {addresses &&
         addresses.map((address, index) => {
           return (
-            <div key={index} className={style.item}>
-              <div className={style.icon}>
+            <div key={index} className="d-flex mb-4">
+              <div className="ray__item__path mr-3">
                 <sup>/</sup>
                 {index}
               </div>
-              <div className={style.wrapper}>
-                <CopyToClipboard text={address} onCopy={onCopy}>
-                  <a className={`${style.address} mr-1`}>
-                    <Tooltip title="Copy to clipboard">{address}</Tooltip>
-                  </a>
-                </CopyToClipboard>
-                <a
-                  href={`https://cardanoscan.io/address/${address}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ray__link"
-                >
-                  <Tooltip title="View on Cardanoscan">
-                    <i className="fe fe-info" />
-                  </Tooltip>
-                </a>
+              <div>
+                <Address address={address} />
               </div>
             </div>
           )

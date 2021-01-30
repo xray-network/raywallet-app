@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Tooltip, message } from 'antd'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { Button } from 'antd'
+import Address from 'components/Layout/Address'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 // import style from './style.module.scss'
 
@@ -11,10 +11,6 @@ const StakeBalances = () => {
   const ada = (data.assets && data.assets[0]) || {}
   const reward = 7.815125
   const pool = '1c8cd022e993a8366be641c17cb6d9c5d8944e00bfce3189d8b1515a'
-
-  const onCopy = () => {
-    message.success('Pool ID copied to clipboard')
-  }
 
   return (
     <div>
@@ -53,25 +49,14 @@ const StakeBalances = () => {
       <div className="ray__item ray__item--primary">
         <div className="mb-1 d-flex">
           <div>
-            <strong className="mr-2">RAY Network</strong>
-            <a href={`https://cardanoscan.io/pool/${pool}`}>
-              <Tooltip title="View on Cardanoscan">
-                <i className="fe fe-external-link" />
-              </Tooltip>
-            </a>
-          </div>
-          <div className="ml-auto">
             <span className="badge badge-success mr-2">RAY2</span>
           </div>
+          <div>
+            <strong>RAY Network</strong>
+          </div>
         </div>
-        <div className="ray__item__id mb-3">
-          <CopyToClipboard text={pool} onCopy={onCopy}>
-            <a>
-              <Tooltip title="Copy to clipboard">
-                {pool.slice(0, 20)}...{pool.slice(-20)}
-              </Tooltip>
-            </a>
-          </CopyToClipboard>
+        <div className="mb-3">
+          <Address address={pool} />
         </div>
         <div className="row">
           <div className="col-lg-6">

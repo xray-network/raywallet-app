@@ -72,7 +72,7 @@ const Wallets = () => {
                 <Select.Option key={item.id} value={item.id}>
                   <div className={style.selectWalletsItem}>
                     <div>
-                      <strong className="mr-1">{item.name}</strong>
+                      <strong className="mr-2">{item.name}</strong>
                       <span className="badge badge-light">
                         {item.tickers.length} {item.tickers.length === 1 ? 'token' : 'tokens'}
                       </span>

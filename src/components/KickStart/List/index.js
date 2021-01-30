@@ -1,10 +1,11 @@
 import React from 'react'
 import { Input, Radio, Button, Tooltip } from 'antd'
+import Address from 'components/Layout/Address'
 // import style from './style.module.scss'
 
 const projects = [
   {
-    id: '0x717824329859127359871235189',
+    id: '0x717824329859127359871235189717824329859127359871235189',
     name: 'RAY Network',
     url: 'https://rraayy.com',
     rate: '100',
@@ -35,16 +36,20 @@ const KickStartList = () => {
             <div className="mb-1 d-flex">
               <div>
                 <strong className="mr-2">{project.name}</strong>
-                <a href={project.url} target="_blank" rel="noopener noreferrer">
-                  <i className="fe fe-external-link" />
-                </a>
+                <Tooltip title="Visit Homepage">
+                  <a href={project.url} target="_blank" rel="noopener noreferrer">
+                    <i className="fe fe-external-link" />
+                  </a>
+                </Tooltip>
               </div>
               <div className="ml-auto">
                 <span className="badge badge-primary font-size-12 ml-2">premium</span>
                 <span className="badge badge-success font-size-12 ml-2">active</span>
               </div>
             </div>
-            <div className="ray__item__id mb-2">{project.id}</div>
+            <div className="mb-2">
+              <Address address={project.id} />
+            </div>
             <div className="row">
               <div className="col-lg-4">
                 <div className="ray__form__item mb-3">

@@ -19,6 +19,16 @@
     font-weight: 700;
   }
 
+  &__address {
+    font-family: monospace;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: $text;
+    font-size: rem(14);
+    line-height: 1;
+    padding: 3px 0;
+  }
+
   &__item {
     border-radius: 8px;
     border: 1px solid $border;
@@ -57,12 +67,24 @@
       font-size: rem(14);
     }
 
-    &__id {
-      font-family: monospace;
-      word-break: break-all;
-      word-wrap: break-word;
-      color: $text;
-      font-size: rem(14);
+    &__path {
+      min-width: rem(34);
+      max-width: rem(34);
+      height: rem(34);
+      border-radius: 8px;
+      text-align: center;
+      line-height: rem(37);
+      border: 1px solid $border;
+    }
+
+    &__number {
+      min-width: rem(34);
+      max-width: rem(34);
+      height: rem(34);
+      border-radius: 8px;
+      text-align: center;
+      line-height: rem(33);
+      border: 1px solid $border;
     }
   }
 

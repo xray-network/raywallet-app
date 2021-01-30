@@ -5,7 +5,7 @@ import { Button, Input, Form, Tooltip } from 'antd'
 const RewardsActivities = () => {
   return (
     <div>
-      <div className="ray__item ray__item--primary">
+      <div className="ray__item ray__item--success">
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
