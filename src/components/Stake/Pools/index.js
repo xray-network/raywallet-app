@@ -14,15 +14,19 @@ const StakeDelegation = () => {
   return (
     <div>
       <div className="ray__heading">Pools list</div>
-      <div className="ray__item">
-        <div className="mb-1">
-          <span className="badge badge-success mr-2">RAY</span>
-          <span className="mr-2">RAY Network</span>
-          <a href={`https://cardanoscan.io/pool/${pool}`}>
-            <Tooltip title="View on Cardanoscan">
-              <i className="fe fe-external-link" />
-            </Tooltip>
-          </a>
+      <div className="ray__item ray__item--border">
+        <div className="mb-1 d-flex">
+          <div>
+            <strong className="mr-2">RAY Network</strong>
+            <a href={`https://cardanoscan.io/pool/${pool}`}>
+              <Tooltip title="View on Cardanoscan">
+                <i className="fe fe-external-link" />
+              </Tooltip>
+            </a>
+          </div>
+          <div className="ml-auto">
+            <span className="badge badge-success mr-2">RAY</span>
+          </div>
         </div>
         <div className="ray__item__id mb-3">
           <CopyToClipboard text={pool} onCopy={onCopy}>
@@ -61,14 +65,18 @@ const StakeDelegation = () => {
         </Button>
       </div>
       <div className="ray__item ray__item--primary">
-        <div className="mb-1">
-          <span className="badge badge-success mr-2">RAY2</span>
-          <span className="mr-2">RAY Network</span>
-          <a href={`https://cardanoscan.io/pool/${pool}`}>
-            <Tooltip title="View on Cardanoscan">
-              <i className="fe fe-external-link" />
-            </Tooltip>
-          </a>
+        <div className="mb-1 d-flex">
+          <div>
+            <strong className="mr-2">RAY Network</strong>
+            <a href={`https://cardanoscan.io/pool/${pool}`}>
+              <Tooltip title="View on Cardanoscan">
+                <i className="fe fe-external-link" />
+              </Tooltip>
+            </a>
+          </div>
+          <div className="ml-auto">
+            <span className="badge badge-success mr-2">RAY2</span>
+          </div>
         </div>
         <div className="ray__item__id mb-3">
           <CopyToClipboard text={pool} onCopy={onCopy}>

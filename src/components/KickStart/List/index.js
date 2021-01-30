@@ -35,8 +35,8 @@ const KickStartList = () => {
           <div key={index} className="ray__item ray__item--primary">
             <div className="mb-1 d-flex">
               <div>
+                <strong className="mr-2">{project.name}</strong>
                 <a href={project.url} target="_blank" rel="noopener noreferrer">
-                  <strong className="mr-1">{project.name}</strong>
                   <i className="fe fe-external-link" />
                 </a>
               </div>
