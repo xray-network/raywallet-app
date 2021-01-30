@@ -4,7 +4,7 @@ import { Button, Input, Form, Tooltip } from 'antd'
 const RewardsActivities = () => {
   return (
     <div>
-      <div className="ray__item ray__item--success">
+      <div className="ray__item ray__item--primary">
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
@@ -41,7 +41,7 @@ const RewardsActivities = () => {
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
-              <div className="ray__form__amount">Airdrop for early RAY Network users.</div>
+              <div className="ray__form__amount">Airdrop to early RAY token users.</div>
             </div>
           </div>
           <div className="col-lg-7">

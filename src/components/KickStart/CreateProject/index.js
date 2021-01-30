@@ -155,7 +155,7 @@ const KickStartCreateProject = () => {
             <Radio value="premium">Premium</Radio>
           </Radio.Group>
         </Form.Item>
-        <div className="ray__item ray__item--tinted mt-4">
+        <div className="ray__item ray__item--success ray__item--tinted mt-4">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">

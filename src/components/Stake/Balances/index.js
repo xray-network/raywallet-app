@@ -45,7 +45,7 @@ const StakeBalances = () => {
         </div>
       </div>
       <div className="ray__heading">Current Delegation</div>
-      <div className="ray__item">
+      <div className="ray__item ray__item--primary">
         <div className="mb-1 d-flex">
           <div>
             <span className="badge badge-success mr-2">RAY2</span>
