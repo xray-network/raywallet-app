@@ -1,8 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { NavLink, useRouteMatch } from 'react-router-dom'
 
 const WalletSubmenu = () => {
   const { url } = useRouteMatch()
+  const wallet = useSelector((state) => state.wallets.wallet)
+  const { data } = wallet
 
   return (
     <div>
@@ -16,8 +19,8 @@ const WalletSubmenu = () => {
           <span>Receive</span>
         </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/transactions`}>
-          <span>Transactions (3)</span>
-          <span>Transactions (3)</span>
+          <span>Transactions ({data.transactions && data.transactions.length})</span>
+          <span>Transactions ({data.transactions && data.transactions.length})</span>
         </NavLink>
       </div>
     </div>

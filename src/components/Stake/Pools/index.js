@@ -48,7 +48,7 @@ const StakeDelegation = () => {
           Delegate
         </Button>
       </div>
-      <div className="ray__item ray__item--primary">
+      <div className="ray__item ray__item--success ray__item--tinted">
         <div className="mb-1 d-flex">
           <div>
             <span className="badge badge-success mr-2">RAY2</span>

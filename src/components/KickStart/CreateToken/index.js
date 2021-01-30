@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, InputNumber } from 'antd'
+import { Form, Input, Button } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 // import style from './style.module.scss'
@@ -60,10 +60,10 @@ const KickStartCreateToken = () => {
               name="amount"
               rules={[{ required: true, message: 'Please enter amount' }]}
             >
-              <InputNumber
-                min="1"
+              <Input
                 size="large"
                 placeholder="Enter Mint Amount"
+                autoComplete="off"
                 style={{ width: '100%' }}
               />
             </Form.Item>
@@ -92,13 +92,7 @@ const KickStartCreateToken = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter
-                    // amount={(Number.isNaN(formValues.amount) ? 0 : formValues.amount) + (Number.isNaN(formValues.donate) ? 0 : formValues.donate) + 0.181251}
-                    amount={300.181251}
-                    ticker="ADA"
-                    withRate
-                    large
-                  />
+                  <AmountFormatter amount={300.181251} ticker="ADA" withRate large />
                 </div>
               </div>
             </div>

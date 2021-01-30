@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { Alert, Form, Input, Button, Select, Tooltip, Radio, InputNumber, DatePicker } from 'antd'
+import { Alert, Form, Input, Button, Select, Tooltip, Radio, DatePicker } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 // import style from './style.module.scss'
@@ -97,16 +97,16 @@ const KickStartCreateProject = () => {
               name="rate"
               rules={[{ required: true, message: 'Please enter rate' }]}
             >
-              <InputNumber
-                min="1"
+              <Input
                 size="large"
                 placeholder="Enter Rate"
+                autoComplete="off"
                 style={{ width: '100%' }}
               />
             </Form.Item>
           </div>
           <div className="col-lg-6">
-            <Form.Item label="Until" name="rate">
+            <Form.Item label="Until" name="date">
               <DatePicker
                 format="YYYY-MM-DD"
                 disabledDate={disabledDate}
@@ -142,7 +142,6 @@ const KickStartCreateProject = () => {
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    // amount={(Number.isNaN(formValues.amount) ? 0 : formValues.amount) + (Number.isNaN(formValues.donate) ? 0 : formValues.donate) + 0.181251}
                     amount={formValues.type === 'premium' ? 5300.181251 : 300.181251}
                     ticker="ADA"
                     withRate

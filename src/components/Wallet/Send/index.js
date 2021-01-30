@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, InputNumber, Tooltip } from 'antd'
+import { Form, Input, Button, Tooltip } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 
@@ -26,14 +26,6 @@ const WalletSend = () => {
       ...formValues,
       ...values,
     })
-  }
-
-  const inputParser = (number) => {
-    const reg = /^-?\d*(\.\d*)?$/
-    if (reg.test(number) || number === '') {
-      return number
-    }
-    return ''
   }
 
   useEffect(() => {
@@ -68,11 +60,10 @@ const WalletSend = () => {
             name="amount"
             rules={[{ required: true, message: 'Please enter amount' }]}
           >
-            <InputNumber
-              min="1"
+            <Input
               size="large"
               placeholder="0.000000 ADA"
-              parser={(number) => inputParser(number)}
+              autoComplete="off"
               style={{ width: '100%' }}
             />
           </Form.Item>
@@ -82,7 +73,7 @@ const WalletSend = () => {
             name="donate"
             tooltip="This donation will be used for further RAY Network development. Not required."
           >
-            <InputNumber min="1" size="large" placeholder="0 ADA" style={{ width: '100%' }} />
+            <Input size="large" placeholder="0 ADA" autoComplete="off" style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item label=" " className={style.assetRemove}>
             <Tooltip title="Remove Token from Tx">
@@ -104,13 +95,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter
-                    // amount={(Number.isNaN(formValues.amount) ? 0 : formValues.amount) + (Number.isNaN(formValues.donate) ? 0 : formValues.donate) + 0.181251}
-                    amount={100}
-                    ticker="ADA"
-                    withRate
-                    large
-                  />
+                  <AmountFormatter amount={100} ticker="ADA" withRate large />
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Select, Spin, Tooltip } from 'antd'
@@ -12,6 +12,8 @@ const Wallets = () => {
   const wallet = useSelector((state) => state.wallets.wallet)
   const { data } = wallet
 
+  const selectRef = useRef()
+
   const selectWallet = (value) => {
     dispatch({
       type: 'wallets/CHANGE_SETTING',
@@ -23,6 +25,7 @@ const Wallets = () => {
         },
       },
     })
+    selectRef.current.blur()
   }
 
   const refreshData = (walletId) => {
@@ -42,6 +45,7 @@ const Wallets = () => {
             <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
           </div>
           <Select
+            ref={selectRef}
             disabled={wallet.loading}
             onChange={(value) => selectWallet(value)}
             suffixIcon={<div className={style.selectWalletsArrow} />}
