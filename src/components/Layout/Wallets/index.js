@@ -148,7 +148,7 @@ const Wallets = () => {
         <div className={style.walletMenu}>
           <Link to="/defi/swap">
             <i className="fe fe-repeat mr-2" />
-            Exchange Assets
+            Tokens Exchange
           </Link>
           <Link to="/kickstart/token/create">
             <i className="fe fe-plus-circle mr-2" />

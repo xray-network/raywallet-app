@@ -11,7 +11,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
-                Get a RAY rewards every 24h for delegating ADA coins to any RAY pool.
+                Get a RAY rewards every 24h for delegating your ADA coins to any RAY pool.
               </div>
             </div>
           </div>
