@@ -66,6 +66,14 @@ const KickStartCreateProject = () => {
         >
           <Input size="large" placeholder="Enter Project Name" />
         </Form.Item>
+        <Form.Item label="Until" name="date">
+          <DatePicker
+            format="YYYY-MM-DD"
+            disabledDate={disabledDate}
+            size="large"
+            style={{ width: '100%' }}
+          />
+        </Form.Item>
         <Form.Item
           label="Swap Address"
           name="address"
@@ -74,26 +82,28 @@ const KickStartCreateProject = () => {
         >
           <Input size="large" placeholder="Address" disabled />
         </Form.Item>
-        <Form.Item
-          label="Project swap token"
-          name="token"
-          rules={[{ required: true, message: 'Please enter address' }]}
-        >
-          <Select size="large" placeholder="Select token">
-            {data.assets &&
-              data.assets.map((asset, index) => {
-                return (
-                  <Select.Option key={index}>
-                    {asset.ticker} (balance: {asset.amount})
-                  </Select.Option>
-                )
-              })}
-          </Select>
-        </Form.Item>
         <div className="row">
           <div className="col-lg-6">
             <Form.Item
-              label="Rate (1 ADA = ?)"
+              label="Swap token"
+              name="token"
+              rules={[{ required: true, message: 'Please enter address' }]}
+            >
+              <Select size="large" placeholder="Select token">
+                {data.assets &&
+                  data.assets.map((asset, index) => {
+                    return (
+                      <Select.Option key={index} value={asset.ticker}>
+                        {asset.ticker}
+                      </Select.Option>
+                    )
+                  })}
+              </Select>
+            </Form.Item>
+          </div>
+          <div className="col-lg-6">
+            <Form.Item
+              label="Swap Rate"
               name="rate"
               rules={[{ required: true, message: 'Please enter rate' }]}
             >
@@ -105,14 +115,24 @@ const KickStartCreateProject = () => {
               />
             </Form.Item>
           </div>
+        </div>
+        <div className="row">
           <div className="col-lg-6">
-            <Form.Item label="Until" name="date">
-              <DatePicker
-                format="YYYY-MM-DD"
-                disabledDate={disabledDate}
-                size="large"
-                style={{ width: '100%' }}
-              />
+            <Form.Item
+              label="Initital Pledge"
+              name="swapPledge"
+              rules={[{ required: true, message: 'Please enter amount' }]}
+            >
+              <Input size="large" placeholder={`0.000000 ${formValues.token || ''}`} />
+            </Form.Item>
+          </div>
+          <div className="col-lg-6">
+            <Form.Item
+              label="Fees Pledge"
+              name="swapFees"
+              rules={[{ required: true, message: 'Please enter amount' }]}
+            >
+              <Input size="large" placeholder="0.000000 ADA" />
             </Form.Item>
           </div>
         </div>
