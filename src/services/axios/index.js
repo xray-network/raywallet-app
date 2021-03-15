@@ -7,14 +7,9 @@ const apiClient = axios.create({
   // headers: { 'X-Custom-Header': 'foobar' }
 })
 
-apiClient.interceptors.request.use((request) => {
-  // const accessToken = store.get('accessToken')
-  // if (accessToken) {
-  //   request.headers.Authorization = `Bearer ${accessToken}`
-  //   request.headers.AccessToken = accessToken
-  // }
-  return request
-})
+// apiClient.interceptors.request.use((request) => {
+//   return request
+// })
 
 apiClient.interceptors.response.use(undefined, (error) => {
   // Errors handling

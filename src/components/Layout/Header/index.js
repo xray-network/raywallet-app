@@ -33,13 +33,13 @@ const Header = () => {
           <span>Rewards</span>
           <span>Rewards</span>
         </NavLink>
-        <NavLink activeClassName={style.active} to="/defi">
-          <span>
-            Swap <sup>DeFi</sup>
-          </span>
-          <span>
-            Swap <sup>DeFi</sup>
-          </span>
+        <NavLink activeClassName={style.active} to="/swap">
+          <span>Swap</span>
+          <span>Swap</span>
+        </NavLink>
+        <NavLink activeClassName={style.active} to="/nft">
+          <span>NFT</span>
+          <span>NFT</span>
         </NavLink>
         <NavLink activeClassName={style.active} to="/kickstart">
           <span>KickStart</span>
@@ -47,11 +47,11 @@ const Header = () => {
         </NavLink>
       </div>
       <div className={style.icons}>
-        <a href="/" onClick={(e) => openSettings(e)}>
-          <i className="fe fe-settings" />
-        </a>
         <a href="/" onClick={(e) => toggleTheme(e)}>
           <i className="fe fe-sun" />
+        </a>
+        <a href="/" onClick={(e) => openSettings(e)}>
+          <i className="fe fe-settings" />
         </a>
         <a href="/" onClick={(e) => logoutWallet(e)}>
           <i className="fe fe-log-out" />

@@ -17,3 +17,7 @@
   color: $gray-4 !important;
   background: $gray-1 !important;
 }
+
+.ant-select-dropdown {
+  z-index: 990 !important;
+}

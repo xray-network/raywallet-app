@@ -2,8 +2,8 @@ name = "ray-wallet"
 type = "webpack"
 account_id = "792461088a4c863230f3faee467094b1"
 # workers_dev = true
-route = "wallet.rraayy.com/*"
-zone_id = "d2b7b0704a9d26e0725937654b59f6f0"
+route = "raywallet.io/*"
+zone_id = "52e500366bb28eae347b932bf92162ca"
 
 [site]
 bucket = "../build"

@@ -6,10 +6,26 @@
     margin: 0 auto;
   }
 
+  &__btn {
+    &__send {
+      width: 100%;
+
+      :global(.ant-btn) {
+        width: 100%;
+      }
+
+      i {
+        margin-right: rem(8);
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+
   &__wrapper {
     background: $white;
     padding: rem(20) rem(30) rem(10);
-    border-radius: 20px;
+    border-radius: 14px;
     box-shadow: rgba(0, 0, 0, 0.01) 0 0 1px, rgba(0, 0, 0, 0.04) 0 4px 8px,
       rgba(0, 0, 0, 0.04) 0 16px 24px, rgba(0, 0, 0, 0.01) 0 24px 32px;
   }

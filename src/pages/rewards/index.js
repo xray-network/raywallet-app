@@ -1,28 +1,16 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Empty from 'components/Layout/Empty'
-import RewardsSubmenu from 'components/Rewards/Submenu'
-import RewardsActivities from 'components/Rewards/Activities'
-import RewardsHistory from 'components/Rewards/History'
-import RewardsTopList from 'components/Rewards/TopList'
+import RewardsSubmenu from 'components/Page/Rewards/Submenu'
+import RewardsActivities from 'components/Page/Rewards/Activities'
+import RewardsHistory from 'components/Page/Rewards/History'
+import RewardsTopList from 'components/Page/Rewards/TopList'
 
 const Rewards = () => {
   const { path } = useRouteMatch()
-  const dispatch = useDispatch()
   const wallet = useSelector((state) => state.wallets.wallet)
-
-  useEffect(() => {
-    if (wallet.selected) {
-      dispatch({
-        type: 'wallets/FETCH_WALLET_DATA',
-        payload: {
-          walletId: wallet.selected,
-        },
-      })
-    }
-  }, [wallet.selected, dispatch])
 
   return (
     <div className="ray__wrapper">

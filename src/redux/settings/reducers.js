@@ -17,6 +17,7 @@ const initialState = {
     locale: 'en-US',
     routerAnimation: 'slide-fadein-up',
     primaryColor: '#017AFF',
+    modalAddWallet: true,
   }),
 }
 

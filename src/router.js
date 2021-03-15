@@ -1,31 +1,37 @@
-import React, { lazy, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'connected-react-router'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
+
+import Wallet from 'pages/wallet'
+import Stake from 'pages/stake'
+import Rewards from 'pages/rewards'
+import Swap from 'pages/swap'
+import KickStart from 'pages/kickstart'
 
 import Layout from 'layouts'
 
 const routes = [
   {
     path: '/wallet',
-    Component: lazy(() => import('pages/wallet')),
+    Component: Wallet,
   },
   {
     path: '/stake',
-    Component: lazy(() => import('pages/stake')),
+    Component: Stake,
   },
   {
     path: '/rewards',
-    Component: lazy(() => import('pages/rewards')),
+    Component: Rewards,
   },
   {
-    path: '/defi',
-    Component: lazy(() => import('pages/defi')),
+    path: '/swap',
+    Component: Swap,
   },
   {
     path: '/kickstart',
-    Component: lazy(() => import('pages/kickstart')),
+    Component: KickStart,
   },
 ]
 
