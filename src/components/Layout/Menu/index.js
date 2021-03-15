@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Select, Spin, Tooltip } from 'antd'
@@ -11,6 +11,7 @@ const Menu = () => {
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletData = useSelector((state) => state.wallets.walletData)
+  const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
 
   const selectRef = useRef()
@@ -38,20 +39,8 @@ const Menu = () => {
   const refreshData = () => {
     dispatch({
       type: 'wallets/FETCH_WALLET_DATA',
-      payload: {
-        accountId: walletParams.accountId,
-      },
     })
   }
-
-  useEffect(() => {
-    dispatch({
-      type: 'wallets/FETCH_WALLET_DATA',
-      payload: {
-        accountId: walletParams.accountId,
-      },
-    })
-  }, [walletParams.accountId, dispatch])
 
   return (
     <div>
@@ -72,7 +61,7 @@ const Menu = () => {
                 <div>
                   <strong>No Wallets</strong>
                 </div>
-                <div className={style.selectWalletsItemDescr}>Please add at least one wallet</div>
+                <div className={style.selectWalletsItemDescr}>Add at least one wallet</div>
               </div>
             }
             dropdownRender={(menu) => (
@@ -95,13 +84,16 @@ const Menu = () => {
             )}
           >
             {walletList.map((item) => {
+              const totalTickers = walletStore[item.accountId]
+                ? walletStore[item.accountId].tickers.length
+                : '?'
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
                   <div className={style.selectWalletsItem}>
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
                       <span className="badge badge-light">
-                        {item.tickers.length} {item.tickers.length === 1 ? 'token' : 'tokens'}
+                        {totalTickers} {totalTickers === 1 ? 'asset' : 'assets'}
                       </span>
                     </div>
                     <div className={style.selectWalletsItemDescr}>
@@ -115,23 +107,7 @@ const Menu = () => {
         </div>
       </div>
       <div className="pt-4">
-        {!walletData.assets && (
-          <div className="mb-4">
-            <div className={style.walletMenu}>
-              <a
-                className="ray__link"
-                onClick={handleAddWalletModalOpen}
-                onKeyPress={handleAddWalletModalOpen}
-                role="button"
-                tabIndex="-1"
-              >
-                <i className="fe fe-plus-circle mr-2" />
-                Add Wallet
-              </a>
-            </div>
-          </div>
-        )}
-        {walletData.assets && (
+        {walletParams.accountId && (
           <div className="mb-2">
             <a
               href="#"
@@ -181,33 +157,44 @@ const Menu = () => {
             })}
           </div>
         )}
-        <div>
-          <div className={style.walletInfo}>
-            <div>RAY Rewards: Not registered</div>
-            <div>Staking: Not delegated</div>
-            <div>
-              Transactions: {(walletData.transactions && walletData.transactions.length) || '—'}
+        {walletParams.accountId && (
+          <div className="mb-5">
+            <div className={style.walletInfo}>
+              <div>RAY Rewards: 0 RAY</div>
+              <div>Staking: Not delegated</div>
+              <div>
+                Transactions: {(walletData.transactions && walletData.transactions.length) || '0'}
+              </div>
             </div>
-            {/* <div>
-              Created: {(walletData.created && new Date(walletData.created).toLocaleDateString('en-US')) || '—'}
-            </div> */}
           </div>
-        </div>
-      </div>
-      <div className="mt-5">
-        <div className={style.walletMenu}>
-          <Link to="/swap">
-            <i className="fe fe-repeat mr-2" />
-            Tokens Exchange
-          </Link>
-          <Link to="/kickstart/token/create">
-            <i className="fe fe-plus-circle mr-2" />
-            Create Own Token
-          </Link>
-          <Link to="/rewards/activities">
-            <i className="fe fe-activity mr-2" />
-            RAY Rewards Program
-          </Link>
+        )}
+        <div>
+          <div className={style.walletMenu}>
+            {!walletParams.accountId && (
+              <a
+                className="ray__link"
+                onClick={handleAddWalletModalOpen}
+                onKeyPress={handleAddWalletModalOpen}
+                role="button"
+                tabIndex="-1"
+              >
+                <i className="fe fe-plus-circle mr-2" />
+                Add Wallet
+              </a>
+            )}
+            <Link to="/swap">
+              <i className="fe fe-repeat mr-2" />
+              Tokens Exchange
+            </Link>
+            <Link to="/kickstart/token/create">
+              <i className="fe fe-plus-circle mr-2" />
+              Create Own Token
+            </Link>
+            <Link to="/rewards/activities">
+              <i className="fe fe-activity mr-2" />
+              RAY Rewards Program
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { all, takeEvery, put, call, select } from 'redux-saga/effects'
+import store from 'store'
 import * as api from 'services/api'
 import actions from './actions'
 
@@ -22,9 +23,18 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
       value: selectedWallet,
     },
   })
+
+  yield put({
+    type: 'wallets/FETCH_WALLET_DATA',
+  })
 }
 
-export function* FETCH_WALLET_DATA({ payload: { accountId } }) {
+export function* FETCH_WALLET_DATA() {
+  const { accountId } = yield select((state) => state.wallets.walletParams)
+  if (!accountId) {
+    return
+  }
+
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
@@ -41,6 +51,28 @@ export function* FETCH_WALLET_DATA({ payload: { accountId } }) {
         value: {
           assets: response.assets,
           transactions: response.transactions,
+          addresses: response.addresses,
+        },
+      },
+    })
+
+    const tickers = response.assets.map((asset) => asset.ticker)
+    const { walletStore } = yield select((state) => state.wallets)
+    store.set('RAY.walletStore', {
+      ...store.get('RAY.walletStore'),
+      [accountId]: {
+        tickers,
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletStore',
+        value: {
+          ...walletStore,
+          [accountId]: {
+            tickers,
+          },
         },
       },
     })
@@ -56,7 +88,7 @@ export function* FETCH_WALLET_DATA({ payload: { accountId } }) {
 
 export function* SETUP() {
   const { walletList } = yield select((state) => state.wallets)
-  if (walletList[0]) {
+  if (walletList.length) {
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
@@ -65,6 +97,9 @@ export function* SETUP() {
       },
     })
   }
+  yield put({
+    type: 'wallets/FETCH_WALLET_DATA',
+  })
 }
 
 export default function* rootSaga() {

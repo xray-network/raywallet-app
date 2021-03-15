@@ -5,17 +5,14 @@ import Address from 'components/Layout/Address'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 
 const WalletTransactions = () => {
-  const wallet = useSelector((state) => state.wallets.wallet)
-  const { data } = wallet
+  const walletData = useSelector((state) => state.wallets.walletData)
 
   return (
     <div>
       <div className="ray__heading">Recently Transactions</div>
-      {(data.transactions == null || (data.transactions && data.transactions.length < 1)) && (
-        <Empty title="No transactions" />
-      )}
-      {data.transactions &&
-        data.transactions.map((tx, txIndex) => {
+      {walletData.transactions.length < 1 && <Empty title="No transactions" />}
+      {walletData.transactions &&
+        walletData.transactions.map((tx, txIndex) => {
           return (
             <div key={txIndex} className="d-flex mb-4">
               <div className="font-size-36 mr-3">
@@ -39,8 +36,8 @@ const WalletTransactions = () => {
                   <span className="mr-3">Fee: {tx.fee} ADA</span>
                   <span>Date: {tx.date}</span>
                 </div>
-                <div className="mt-1">
-                  <Address address={tx.id} />
+                <div>
+                  <Address address={tx.id} prefix="Tx: " cut />
                 </div>
               </div>
             </div>

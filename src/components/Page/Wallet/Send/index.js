@@ -110,7 +110,7 @@ const WalletSend = () => {
             Add Token to Tx
           </Button>
         </div>
-        <div className="ray__item ray__item--success ray__item--tinted">
+        <div className="ray__item">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">

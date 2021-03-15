@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import WalletSubmenu from 'components/Page/Wallet/Submenu'
 import WalletSend from 'components/Page/Wallet/Send'
-// import WalletAddresses from 'components/Page/Wallet/Addresses'
-// import WalletTransactions from 'components/Page/Wallet/Transactions'
+import WalletAddresses from 'components/Page/Wallet/Addresses'
+import WalletTransactions from 'components/Page/Wallet/Transactions'
 
 const Wallet = () => {
   const { path } = useRouteMatch()
@@ -19,8 +19,12 @@ const Wallet = () => {
           <Route exact path={`${path}/send`}>
             <WalletSend />
           </Route>
-          <Route path={`${path}/addresses`}>{/* <WalletAddresses /> */}</Route>
-          <Route path={`${path}/transactions`}>{/* <WalletTransactions /> */}</Route>
+          <Route path={`${path}/addresses`}>
+            <WalletAddresses />
+          </Route>
+          <Route path={`${path}/transactions`}>
+            <WalletTransactions />
+          </Route>
         </Switch>
       </div>
     </div>
