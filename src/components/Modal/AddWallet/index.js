@@ -1,12 +1,12 @@
 import React from 'react'
 import { Modal, Form, Input, Button } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/cardano-js-api'
+// import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/cardano-js-api'
 
 const StakeBalances = () => {
-  const mnemonic = CardanoGenerateMnemonic()
-  console.log(mnemonic)
-  console.log('valid:', CardanoValidateMnemonic(mnemonic))
+  // const mnemonic = CardanoGenerateMnemonic()
+  // console.log(mnemonic)
+  // console.log('valid:', CardanoValidateMnemonic(mnemonic))
 
   const [form] = Form.useForm()
   const dispatch = useDispatch()

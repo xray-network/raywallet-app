@@ -1,9 +1,9 @@
 import apiClient from 'services/axios'
 
-export async function getWalletData(walletId) {
+export async function getWalletData(accountId) {
   return apiClient
     .post('/wallet', {
-      id: walletId,
+      id: accountId,
     })
     .then((response) => {
       if (response) {
@@ -14,10 +14,10 @@ export async function getWalletData(walletId) {
     .catch((err) => console.log(err))
 }
 
-export async function getGetStakeData(walletId) {
+export async function getGetStakeData(accountId) {
   return apiClient
     .post('/stake', {
-      id: walletId,
+      id: accountId,
     })
     .then((response) => {
       if (response) {

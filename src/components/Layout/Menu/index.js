@@ -8,21 +8,18 @@ import style from './style.module.scss'
 
 const Menu = () => {
   const dispatch = useDispatch()
-  const walletsList = useSelector((state) => state.wallets.walletsList)
-  const wallet = useSelector((state) => state.wallets.wallet)
-  const { data } = wallet
+  const walletList = useSelector((state) => state.wallets.walletList)
+  const walletParams = useSelector((state) => state.wallets.walletParams)
+  const walletData = useSelector((state) => state.wallets.walletData)
+  const walletLoading = useSelector((state) => state.wallets.walletLoading)
 
   const selectRef = useRef()
 
   const selectWallet = (value) => {
     dispatch({
-      type: 'wallets/CHANGE_SETTING',
+      type: 'wallets/CHANGE_WALLET',
       payload: {
-        setting: 'wallet',
-        value: {
-          ...wallet,
-          selected: value,
-        },
+        accountId: value,
       },
     })
     selectRef.current.blur()
@@ -42,35 +39,33 @@ const Menu = () => {
     dispatch({
       type: 'wallets/FETCH_WALLET_DATA',
       payload: {
-        walletId: wallet.selected,
+        accountId: walletParams.accountId,
       },
     })
   }
 
   useEffect(() => {
-    if (wallet.selected) {
-      dispatch({
-        type: 'wallets/FETCH_WALLET_DATA',
-        payload: {
-          walletId: wallet.selected,
-        },
-      })
-    }
-  }, [wallet.selected, dispatch])
+    dispatch({
+      type: 'wallets/FETCH_WALLET_DATA',
+      payload: {
+        accountId: walletParams.accountId,
+      },
+    })
+  }, [walletParams.accountId, dispatch])
 
   return (
     <div>
       <div className={style.negativeSpace}>
-        <div className={`${style.loader} ${wallet.loading ? style.loaderActive : ''}`}>
+        <div className={`${style.loader} ${walletLoading ? style.loaderActive : ''}`}>
           <div className={style.loaderIcon}>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
           </div>
           <Select
             ref={selectRef}
-            disabled={wallet.loading}
+            disabled={walletLoading}
             onChange={(value) => selectWallet(value)}
             suffixIcon={<div className={style.selectWalletsArrow} />}
-            defaultValue={wallet.selected || null}
+            defaultValue={walletParams.accountId || null}
             className={style.selectWallets}
             placeholder={
               <div className={style.selectWalletsItem}>
@@ -99,9 +94,9 @@ const Menu = () => {
               </div>
             )}
           >
-            {walletsList.map((item) => {
+            {walletList.map((item) => {
               return (
-                <Select.Option key={item.id} value={item.id}>
+                <Select.Option key={item.accountId} value={item.accountId}>
                   <div className={style.selectWalletsItem}>
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
@@ -109,7 +104,9 @@ const Menu = () => {
                         {item.tickers.length} {item.tickers.length === 1 ? 'token' : 'tokens'}
                       </span>
                     </div>
-                    <div className={style.selectWalletsItemDescr}>{item.network}</div>
+                    <div className={style.selectWalletsItemDescr}>
+                      {item.accountId.slice(0, 4)}...{item.accountId.slice(-10)}
+                    </div>
                   </div>
                 </Select.Option>
               )
@@ -118,7 +115,7 @@ const Menu = () => {
         </div>
       </div>
       <div className="pt-4">
-        {!data.assets && (
+        {!walletData.assets && (
           <div className="mb-4">
             <div className={style.walletMenu}>
               <a
@@ -134,7 +131,7 @@ const Menu = () => {
             </div>
           </div>
         )}
-        {data.assets && (
+        {walletData.assets && (
           <div className="mb-2">
             <a
               href="#"
@@ -168,9 +165,9 @@ const Menu = () => {
             </a>
           </div>
         )}
-        {data.assets && (
+        {walletData.assets && (
           <div className="mb-3">
-            {data.assets.map((asset, index) => {
+            {walletData.assets.map((asset, index) => {
               return (
                 <AmountFormatter
                   key={index}
@@ -188,9 +185,11 @@ const Menu = () => {
           <div className={style.walletInfo}>
             <div>RAY Rewards: Not registered</div>
             <div>Staking: Not delegated</div>
-            <div>Transactions: {(data.transactions && data.transactions.length) || '—'}</div>
+            <div>
+              Transactions: {(walletData.transactions && walletData.transactions.length) || '—'}
+            </div>
             {/* <div>
-              Created: {(data.created && new Date(data.created).toLocaleDateString('en-US')) || '—'}
+              Created: {(walletData.created && new Date(walletData.created).toLocaleDateString('en-US')) || '—'}
             </div> */}
           </div>
         </div>

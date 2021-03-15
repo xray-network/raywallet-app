@@ -11,59 +11,57 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
   })
 }
 
-export function* FETCH_WALLET_DATA({ payload: { walletId } }) {
-  const { wallet } = yield select((state) => state.wallets)
+export function* CHANGE_WALLET({ payload: { accountId } }) {
+  const { walletList } = yield select((state) => state.wallets)
+  const selectedWallet = walletList.filter((item) => item.accountId === accountId)[0]
+
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
-      setting: 'wallet',
-      value: {
-        ...wallet,
-        loading: true,
-      },
+      setting: 'walletParams',
+      value: selectedWallet,
     },
   })
-  const response = yield call(api.getWalletData, walletId)
+}
+
+export function* FETCH_WALLET_DATA({ payload: { accountId } }) {
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletLoading',
+      value: true,
+    },
+  })
+  const response = yield call(api.getWalletData, accountId)
   if (response) {
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
-        setting: 'wallet',
+        setting: 'walletData',
         value: {
-          ...wallet,
-          loading: false,
-          data: {
-            ...response,
-          },
+          assets: response.assets,
+          transactions: response.transactions,
         },
       },
     })
   }
-  if (!response) {
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'wallet',
-        value: {
-          ...wallet,
-          loading: false,
-        },
-      },
-    })
-  }
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletLoading',
+      value: false,
+    },
+  })
 }
 
 export function* SETUP() {
-  const { walletsList, wallet } = yield select((state) => state.wallets)
-  if (walletsList[0]) {
+  const { walletList } = yield select((state) => state.wallets)
+  if (walletList[0]) {
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
-        setting: 'wallet',
-        value: {
-          ...wallet,
-          selected: walletsList[0].id,
-        },
+        setting: 'walletParams',
+        value: walletList[0],
       },
     })
   }
@@ -73,6 +71,7 @@ export default function* rootSaga() {
   yield all([
     takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
     takeEvery(actions.FETCH_WALLET_DATA, FETCH_WALLET_DATA),
+    takeEvery(actions.CHANGE_WALLET, CHANGE_WALLET),
     SETUP(), // run once on app load to init listeners
   ])
 }

@@ -5,13 +5,13 @@ import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 
 const WalletSend = () => {
-  const wallet = useSelector((state) => state.wallets.wallet)
-  const { data } = wallet
+  const walletData = useSelector((state) => state.wallets.walletData)
+  const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
   const initialValues = {
-    fromAddress: wallet.selected,
+    fromAddress: walletData.accountId,
   }
 
   const onFinish = (values) => {
@@ -31,7 +31,7 @@ const WalletSend = () => {
 
   useEffect(() => {
     form.resetFields()
-  }, [wallet.selected, form])
+  }, [walletData.accountId, form])
 
   return (
     <div>
@@ -62,8 +62,8 @@ const WalletSend = () => {
             rules={[{ required: true, message: 'Required' }]}
           >
             <Select size="large" placeholder="Select">
-              {data.assets &&
-                data.assets.map((asset, index) => {
+              {walletData.assets &&
+                walletData.assets.map((asset, index) => {
                   return (
                     <Select.Option key={index}>
                       <div className={style.assetTo}>
@@ -136,10 +136,10 @@ const WalletSend = () => {
             size="large"
             type="primary"
             className="ray__btn__send"
-            loading={wallet.loading}
+            loading={walletLoading}
           >
             <i className="fe fe-send" />
-            <strong>Send {wallet.data.ticker || ''}</strong>
+            <strong>Send</strong>
           </Button>
         </Form.Item>
       </Form>
