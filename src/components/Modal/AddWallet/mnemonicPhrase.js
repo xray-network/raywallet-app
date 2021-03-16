@@ -7,7 +7,8 @@ const MnemonicForm = () => {
 
   const [form] = Form.useForm()
   const [currentTab, setCurrentTab] = useState('1')
-  const [wroteDown, setWroteDown] = useState(false)
+  const [wroteDownMnemonic, setWroteDownMnemonic] = useState(false)
+  const [agreeTerms, setAgreeTerms] = useState(false)
   const [mnemonic, setMnemonic] = useState(CardanoGenerateMnemonic())
 
   const onFinish = (values) => {
@@ -22,8 +23,12 @@ const MnemonicForm = () => {
     setCurrentTab(value)
   }
 
-  const handleWroteDown = (e) => {
-    setWroteDown(e.target.checked)
+  const handleWroteDownMnemonic = (e) => {
+    setWroteDownMnemonic(e.target.checked)
+  }
+
+  const handleAgreeTrems = (e) => {
+    setAgreeTerms(e.target.checked)
   }
 
   const generateNewMnemonic = () => {
@@ -49,15 +54,22 @@ const MnemonicForm = () => {
             onFinishFailed={onFinishFailed}
           >
             <Form.Item
-              className="pb-2"
               label="Mnemonic Phrase"
               name="mnemonic"
               rules={[{ required: true }]}
             >
               <Input size="large" placeholder="Enter your wallet mnemonic" />
             </Form.Item>
+            <div className="mb-3">
+              <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
+                By using Ray Wallet, or other Ray Network software, I agree to the{' '}
+                <a href="https://rraayy.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                {' '}and{' '}
+                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+              </Checkbox>
+            </div>
             <Form.Item className="mb-0">
-              <Button disabled htmlType="submit" size="large" type="primary" className="ray__btn__send">
+              <Button disabled={!agreeTerms} htmlType="submit" size="large" type="primary" className="ray__btn__send">
                 <i className="fe fe-plus-circle" />
                 <strong>Unlock</strong>
               </Button>
@@ -84,20 +96,33 @@ const MnemonicForm = () => {
             {mnemonic}
           </div>
           <div className="mt-4">
-            <div className="mb-3">
-              <Checkbox checked={wroteDown} onChange={handleWroteDown}>I wrote down my wallet mnemonic</Checkbox>
+            <div className="mb-1">
+              <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
+                By using Ray Wallet, or other Ray Network software, I agree to the{' '}
+                <a href="https://rraayy.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                {' '}and{' '}
+                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+              </Checkbox>
             </div>
-            {wroteDown && (
+            <div className="mb-3">
+              <Checkbox checked={wroteDownMnemonic} onChange={handleWroteDownMnemonic}>I wrote down my wallet mnemonic</Checkbox>
+            </div>
+            {wroteDownMnemonic && (
               <div className="mb-4">
                 <Alert
                   showIcon
                   type="warning"
                   message="Proceed with caution!"
-                  description="Please double check that the mnemonic is written correctly and stored securely"
+                  description={(
+                    <div>
+                      <p>This information is not stored on our servers and the Ray Network developers have no access to your mnemonics. If you lose this data, you lose access to your wallet.</p>
+                      <p className="mb-0">Please double check that the mnemonic is written correctly and stored securely.</p>
+                    </div>
+                  )}
                 />
               </div>
             )}
-            <Button disabled={!wroteDown} htmlType="submit" size="large" type="primary" className="ray__btn__send">
+            <Button disabled={!(wroteDownMnemonic && agreeTerms)} htmlType="submit" size="large" type="primary" className="ray__btn__send">
               <i className="fe fe-plus-circle" />
               <strong>Access Wallet</strong>
             </Button>
