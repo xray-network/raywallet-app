@@ -6,6 +6,7 @@ import style from './style.module.scss'
 
 const WalletSend = () => {
   const walletData = useSelector((state) => state.wallets.walletData)
+  const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
@@ -135,8 +136,9 @@ const WalletSend = () => {
             htmlType="submit"
             size="large"
             type="primary"
-            className="ray__btn__send"
+            className="ray__btn__send w-100"
             loading={walletLoading}
+            disabled={!walletParams.accountId}
           >
             <i className="fe fe-send" />
             <strong>Send</strong>

@@ -1,24 +1,14 @@
-import React from 'react'
-import { Modal, Form, Input, Button } from 'antd'
+import React, { useState } from 'react'
+import { Modal, Tabs, Tooltip } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-// import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/cardano-js-api'
+import MnemonicForm from './mnemonicPhrase'
+import HardwareWallet from './hardwareWallet'
+import KeyFile from './keyFile'
 
-const StakeBalances = () => {
-  // const mnemonic = CardanoGenerateMnemonic()
-  // console.log(mnemonic)
-  // console.log('valid:', CardanoValidateMnemonic(mnemonic))
-
-  const [form] = Form.useForm()
+const AddWalletModal = () => {
   const dispatch = useDispatch()
   const isModalVisible = useSelector((state) => state.settings.modalAddWallet)
-
-  const onFinish = (values) => {
-    console.log('Success:', values)
-  }
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo)
-  }
+  const [currentTab, setCurrentTab] = useState('1')
 
   const handleCancel = () => {
     dispatch({
@@ -30,33 +20,45 @@ const StakeBalances = () => {
     })
   }
 
+  const handleTabs = (value) => {
+    setCurrentTab(value)
+  }
+
   return (
     <Modal
-      title="Add Wallet"
+      title={(
+        <Tabs defaultActiveKey={currentTab} className="ray__tabs__card ray__tabs__head" type="card" onChange={handleTabs}>
+          <Tabs.TabPane tab="Mnemonic" key="1" />
+          <Tabs.TabPane
+            disabled
+            tab={(
+              <Tooltip title="Soon">
+                Hardware Wallet
+              </Tooltip>
+            )}
+            key="2"
+          />
+          <Tabs.TabPane
+            disabled
+            tab={(
+              <Tooltip title="Soon">
+                Key File
+              </Tooltip>
+            )}
+            key="3"
+          />
+        </Tabs>
+      )}
       visible={isModalVisible}
       onCancel={handleCancel}
       footer={null}
       width={760}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        requiredMark={false}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item label="Wallet ID" name="id" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
-        <Form.Item className="mt-4">
-          <Button htmlType="submit" size="large" type="primary">
-            <i className="fe fe-plus-circle" />
-            <strong>Add</strong>
-          </Button>
-        </Form.Item>
-      </Form>
+      {currentTab === '1' && <MnemonicForm />}
+      {currentTab === '2' && <HardwareWallet />}
+      {currentTab === '3' && <KeyFile />}
     </Modal>
   )
 }
 
-export default StakeBalances
+export default AddWalletModal

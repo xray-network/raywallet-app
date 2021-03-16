@@ -1,22 +1,26 @@
-import React from 'react'
-import { Button, Input, Form, Tooltip } from 'antd'
+import React, { useState } from 'react'
+import { Button, Input, Form, Tooltip, Statistic } from 'antd'
+import style from './style.module.scss'
 
 const RewardsActivities = () => {
+  const [date] = useState(new Date("2021-06-01"))
+
   return (
     <div>
-      <div className="ray__item ray__item--primary">
+      <div className="ray__heading">Live Activities</div>
+      <div className="ray__item ray__item--success">
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
-                Get a RAY rewards every 24h for delegating your ADA coins to any RAY pool.
+                Receive additional RAY rewards every epoch (5 days) for delegating your ADA coins to any RAY pool.
               </div>
             </div>
           </div>
           <div className="col-lg-7">
             <div className="ray__form__item mb-3">
-              <div className="ray__form__label">Your Rewards</div>
+              <div className="ray__form__label">Scheduled Rewards</div>
               <div className="ray__form__amount">
                 <span className="badge badge-light">182122.125125 RAY</span>
               </div>
@@ -26,16 +30,27 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">1 ADA = 0.1 RAY</span>
+                <span className="badge badge-light">100 ADA = 1 RAY</span>
               </div>
             </div>
           </div>
         </div>
-        <Button type="primary">
-          <i className="fe fe-arrow-down-circle mr-1" />
-          Withdraw Reward
-        </Button>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="ray__form__item mb-0">
+              <div className="ray__form__label">Time to withdraw</div>
+              <div className="ray__form__amount">
+                <Statistic.Countdown
+                  className={style.count}
+                  value={date}
+                  format="D[d] HH[h] mm[m] ss[s]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <div className="ray__heading">Upcoming Activities</div>
       <div className="ray__item">
         <div className="row">
           <div className="col-lg-12">
@@ -54,7 +69,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">**,***,***.00 $</span>
+                <span className="badge badge-light">**,***,*** RAY</span>
               </div>
             </div>
           </div>
@@ -96,7 +111,7 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Сonditions</div>
               <div className="ray__form__amount">
                 <ol className="pl-4">
-                  <li>You should delegate at least 100 ADA to any RAY pool.</li>
+                  <li>You should delegate at least 1000 ADA to any RAY pool.</li>
                   <li>One tweet per day.</li>
                 </ol>
               </div>
@@ -106,7 +121,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">50 RAY</span>
+                <span className="badge badge-light">10 RAY</span>
               </div>
             </div>
           </div>

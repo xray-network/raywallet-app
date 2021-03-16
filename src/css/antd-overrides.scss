@@ -21,3 +21,32 @@
 .ant-select-dropdown {
   z-index: 990 !important;
 }
+
+.ant-modal {
+  &-content {
+    border-radius: 12px !important;
+  }
+
+  &-header {
+    background: transparent !important;
+  }
+
+  &-body {
+    font-size: rem(16) !important;
+    color: $black;
+  }
+
+  &-title {
+    color: $black;
+  }
+}
+
+.ant-tabs {
+  font-size: rem(16) !important;
+}
+
+.ant-checkbox {
+  &-inner {
+    border-radius: 5px !important;
+  }
+}

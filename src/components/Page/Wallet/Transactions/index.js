@@ -10,7 +10,7 @@ const WalletTransactions = () => {
   return (
     <div>
       <div className="ray__heading">Recently Transactions</div>
-      {walletData.transactions.length < 1 && <Empty title="No transactions" />}
+      {walletData.transactions.length < 1 && <Empty title="No transactions found" />}
       {walletData.transactions &&
         walletData.transactions.map((tx, txIndex) => {
           return (
@@ -37,7 +37,7 @@ const WalletTransactions = () => {
                   <span>Date: {tx.date}</span>
                 </div>
                 <div>
-                  <Address address={tx.id} prefix="Tx: " cut />
+                  <Address address={tx.id} prefix="Tx:" cut />
                 </div>
               </div>
             </div>

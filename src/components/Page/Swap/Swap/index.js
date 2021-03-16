@@ -21,8 +21,7 @@ const swapAssets = [
 
 const Swap = () => {
   const [form] = Form.useForm()
-  const wallet = useSelector((state) => state.wallets.wallet)
-  const { data } = wallet
+  const walletData = useSelector((state) => state.wallets.walletData)
 
   return (
     <div>
@@ -35,8 +34,8 @@ const Swap = () => {
             rules={[{ required: true, message: 'Required' }]}
           >
             <Select size="large" placeholder="Select">
-              {data.assets &&
-                data.assets.map((asset, index) => {
+              {walletData.assets &&
+                walletData.assets.map((asset, index) => {
                   return (
                     <Select.Option key={index}>
                       <div className={style.assetTo}>
@@ -92,7 +91,7 @@ const Swap = () => {
               })}
           </Select>
         </Form.Item>
-        <div className="ray__item ray__item--success ray__item--tinted">
+        <div className="ray__item">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item mb-3">
@@ -124,7 +123,7 @@ const Swap = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label mb-3">Rate</div>
                 <div className="ray__form__amount">
-                  <strong>1 ADA = 0.125125 RAY</strong>
+                  <strong>0 ADA = 0 RAY</strong>
                 </div>
               </div>
             </div>
@@ -132,7 +131,7 @@ const Swap = () => {
         </div>
         <Form.Item className="mt-4">
           <Tooltip title="Waiting for the Goguene era">
-            <Button htmlType="submit" size="large" type="primary" className="ray__btn__send">
+            <Button htmlType="submit" size="large" type="primary" className="ray__btn__send w-100">
               <i className="fe fe-repeat" />
               <strong>Swap</strong>
             </Button>

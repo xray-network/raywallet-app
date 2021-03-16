@@ -6,13 +6,13 @@ import AmountFormatter from 'components/Layout/AmountFormatter'
 // import style from './style.module.scss'
 
 const KickStartCreateProject = () => {
-  const wallet = useSelector((state) => state.wallets.wallet)
-  const { data } = wallet
+  const walletParams = useSelector((state) => state.wallets.walletParams)
+  const walletData = useSelector((state) => state.wallets.walletData)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
   const initialValues = {
-    fromAddress: wallet.selected,
+    fromAddress: walletParams.accountId,
   }
 
   const onFinish = (values) => {
@@ -37,7 +37,7 @@ const KickStartCreateProject = () => {
 
   useEffect(() => {
     form.resetFields()
-  }, [wallet.selected, form])
+  }, [walletParams.accountId, form])
 
   return (
     <div>
@@ -76,7 +76,7 @@ const KickStartCreateProject = () => {
         <Form.Item
           label="Swap Address"
           name="address"
-          initialValue={`addr1${wallet.selected}`}
+          initialValue={`addr1${walletParams.accountId}`}
           rules={[{ required: true, message: 'Please enter address' }]}
         >
           <Input size="large" placeholder="Address" disabled />
@@ -89,8 +89,8 @@ const KickStartCreateProject = () => {
               rules={[{ required: true, message: 'Please enter address' }]}
             >
               <Select size="large" placeholder="Select token">
-                {data.assets &&
-                  data.assets.map((asset, index) => {
+                {walletData.assets &&
+                  walletData.assets.map((asset, index) => {
                     return (
                       <Select.Option key={index} value={asset.ticker}>
                         {asset.ticker}
@@ -139,7 +139,7 @@ const KickStartCreateProject = () => {
           label="Wallet ID"
           name="wallet"
           hidden
-          initialValue={wallet.selected}
+          initialValue={walletParams.accountId}
           rules={[{ required: true, message: 'Please enter wallet id' }]}
         >
           <Input size="large" placeholder="Address" disabled />
@@ -154,14 +154,14 @@ const KickStartCreateProject = () => {
             <Radio value="premium">Premium</Radio>
           </Radio.Group>
         </Form.Item>
-        <div className="ray__item ray__item--success ray__item--tinted mt-4">
+        <div className="ray__item mt-4">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    amount={formValues.type === 'premium' ? 5300.181251 : 300.181251}
+                    amount={formValues.type === 'premium' ? 1400.181251 : 300.181251}
                     ticker="ADA"
                     withRate
                     large
@@ -174,7 +174,7 @@ const KickStartCreateProject = () => {
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    amount={formValues.type === 'premium' ? 5300 : 300}
+                    amount={formValues.type === 'premium' ? 1400 : 300}
                     ticker="ADA"
                   />
                 </div>
@@ -191,7 +191,7 @@ const KickStartCreateProject = () => {
         <Form.Item className="mt-4">
           <div>
             <Tooltip title="Waiting for the Goguene era">
-              <Button htmlType="submit" size="large" type="primary" className="ray__btn__send">
+              <Button htmlType="submit" size="large" type="primary" className="ray__btn__send w-100">
                 <i className="fe fe-plus-circle" />
                 <strong>Create Project</strong>
               </Button>

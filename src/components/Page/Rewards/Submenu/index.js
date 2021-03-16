@@ -11,10 +11,6 @@ const RewardsSubmenu = () => {
           <span>Activities</span>
           <span>Activities</span>
         </NavLink>
-        <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/top-list`}>
-          <span>Top List</span>
-          <span>Top List</span>
-        </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/history`}>
           <span>Rewards History</span>
           <span>Rewards History</span>

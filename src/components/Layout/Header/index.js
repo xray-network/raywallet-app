@@ -37,13 +37,13 @@ const Header = () => {
           <span>Swap</span>
           <span>Swap</span>
         </NavLink>
-        <NavLink activeClassName={style.active} to="/nft">
-          <span>NFT</span>
-          <span>NFT</span>
-        </NavLink>
         <NavLink activeClassName={style.active} to="/kickstart">
           <span>KickStart</span>
           <span>KickStart</span>
+        </NavLink>
+        <NavLink activeClassName={style.active} to="/nft">
+          <span>NFT</span>
+          <span>NFT</span>
         </NavLink>
       </div>
       <div className={style.icons}>

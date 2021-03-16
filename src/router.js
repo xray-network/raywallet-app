@@ -5,10 +5,10 @@ import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
 import Wallet from 'pages/wallet'
-// import Stake from 'pages/stake'
-// import Rewards from 'pages/rewards'
-// import Swap from 'pages/swap'
-// import KickStart from 'pages/kickstart'
+import Stake from 'pages/stake'
+import Rewards from 'pages/rewards'
+import Swap from 'pages/swap'
+import KickStart from 'pages/kickstart'
 
 import Layout from 'layouts'
 
@@ -17,22 +17,22 @@ const routes = [
     path: '/wallet',
     Component: Wallet,
   },
-  // {
-  //   path: '/stake',
-  //   Component: Stake,
-  // },
-  // {
-  //   path: '/rewards',
-  //   Component: Rewards,
-  // },
-  // {
-  //   path: '/swap',
-  //   Component: Swap,
-  // },
-  // {
-  //   path: '/kickstart',
-  //   Component: KickStart,
-  // },
+  {
+    path: '/stake',
+    Component: Stake,
+  },
+  {
+    path: '/rewards',
+    Component: Rewards,
+  },
+  {
+    path: '/swap',
+    Component: Swap,
+  },
+  {
+    path: '/kickstart',
+    Component: KickStart,
+  },
 ]
 
 const mapStateToProps = ({ settings }) => ({

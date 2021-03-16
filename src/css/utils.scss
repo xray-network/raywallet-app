@@ -8,12 +8,8 @@
 
   &__btn {
     &__send {
-      width: 100%;
-
-      :global(.ant-btn) {
-        width: 100%;
-      }
-
+      padding-left: rem(30) !important;
+      padding-right: rem(30) !important;
       i {
         margin-right: rem(8);
         position: relative;
@@ -121,12 +117,12 @@
   }
 
   &__submenu {
-    margin-bottom: rem(20);
+    margin-bottom: rem(25);
     display: flex;
 
     a {
       font-size: rem(18);
-      margin-right: rem(30);
+      margin-right: rem(20);
       position: relative;
       white-space: nowrap;
 
@@ -151,6 +147,80 @@
       &--active {
         font-weight: 600;
         color: $black !important;
+      }
+    }
+  }
+
+  &__tabs {
+    color: $dark !important;
+  
+    .ant-tabs-tab {
+      margin: 0 !important;
+      padding-top: 0 !important;
+      font-size: rem(16);
+      font-weight: 500;
+    }
+  
+    .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: rem(20) !important;
+    }
+  
+    &__head {
+      margin-bottom: -17px !important;
+      
+      .ant-tabs-nav {
+        margin-bottom: 0 !important;
+    
+        &:before {
+          display: none !important;
+        }
+      }
+    }
+  }
+
+  &__tabs__pills {
+    color: $dark !important;
+
+    .ant-tabs-tab {
+      font-size: rem(16);
+      font-weight: 500;
+      padding: rem(5) rem(15);
+      border-radius: 8px;
+      margin: 0 rem(10) 0 0 !important;
+      background: $pastel-1;
+
+      &-active {
+        background: $primary;
+
+        .ant-tabs-tab-btn {
+          color: $white !important;
+        }
+      }
+    }
+
+    .ant-tabs-nav {
+      &:before {
+        display: none !important;
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      display: none !important;
+    }
+  }
+
+  &__tabs__card {
+    color: $dark !important;
+
+    .ant-tabs-tab {
+      font-size: rem(16);
+      font-weight: 500;
+      border-radius: 8px;
+      margin-right: rem(5) !important;
+      @include transition-fast();
+
+      div {
+        @include transition-fast();
       }
     }
   }

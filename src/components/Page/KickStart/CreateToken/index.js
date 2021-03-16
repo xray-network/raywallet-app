@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, Alert } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 // import style from './style.module.scss'
 
 const KickStartCreateToken = () => {
-  const wallet = useSelector((state) => state.wallets.wallet)
+  const walletParams = useSelector((state) => state.wallets.walletParams)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
   const initialValues = {
-    fromAddress: wallet.selected,
+    fromAddress: walletParams.accountId,
   }
 
   const onFinish = (values) => {
@@ -30,10 +30,18 @@ const KickStartCreateToken = () => {
 
   useEffect(() => {
     form.resetFields()
-  }, [wallet.selected, form])
+  }, [walletParams.accountId, form])
 
   return (
     <div>
+      <div className="mb-4">
+        <Alert
+          message="Under development"
+          description="Token minting will be added soon. Stay tuned!"
+          type="warning"
+          showIcon
+        />
+      </div>
       <Form
         form={form}
         layout="vertical"
@@ -72,7 +80,7 @@ const KickStartCreateToken = () => {
           label="Wallet ID"
           name="wallet"
           hidden
-          initialValue={wallet.selected}
+          initialValue={walletParams.accountId}
           rules={[{ required: true, message: 'Please enter wallet id' }]}
         >
           <Input size="large" placeholder="Address" disabled />
@@ -80,18 +88,18 @@ const KickStartCreateToken = () => {
         <Form.Item
           label="Mint Address"
           name="address"
-          initialValue={`addr1${wallet.selected}`}
+          initialValue={`addr1${walletParams.accountId}`}
           rules={[{ required: true, message: 'Please enter address' }]}
         >
           <Input size="large" placeholder="Address" disabled />
         </Form.Item>
-        <div className="ray__item ray__item--success ray__item--tinted mt-4">
+        <div className="ray__item mt-4">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={300.181251} ticker="ADA" withRate large />
+                  <AmountFormatter amount={100.181251} ticker="ADA" withRate large />
                 </div>
               </div>
             </div>
@@ -99,7 +107,7 @@ const KickStartCreateToken = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={300} ticker="ADA" />
+                  <AmountFormatter amount={100} ticker="ADA" />
                 </div>
               </div>
               <div className="ray__form__item">
@@ -112,7 +120,7 @@ const KickStartCreateToken = () => {
           </div>
         </div>
         <Form.Item className="mt-4">
-          <Button htmlType="submit" size="large" type="primary" className="ray__btn__send">
+          <Button htmlType="submit" size="large" type="primary" className="ray__btn__send w-100">
             <i className="fe fe-plus-circle" />
             <strong>Create Token</strong>
           </Button>

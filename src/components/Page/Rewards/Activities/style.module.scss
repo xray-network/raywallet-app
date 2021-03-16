@@ -1,0 +1,13 @@
+@import 'mixins.scss';
+
+.count {
+  :global(.ant-statistic-content) {
+    color: $black;
+    font-weight: 700;
+  }
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

@@ -6,7 +6,7 @@ import Address from 'components/Layout/Address'
 const projects = [
   {
     id: '0x717824329859127359871235189717824329859127359871235189',
-    name: 'RAY Network',
+    name: 'RAY Network (phase 1)',
     url: 'https://rraayy.com',
     rate: '100',
     type: 'not-end',
@@ -32,7 +32,7 @@ const KickStartList = () => {
       </div>
       {projects.map((project, index) => {
         return (
-          <div key={index} className="ray__item ray__item--primary">
+          <div key={index} className="ray__item ray__item--success">
             <div className="mb-1 d-flex">
               <div>
                 <strong className="mr-2">{project.name}</strong>
@@ -48,14 +48,14 @@ const KickStartList = () => {
               </div>
             </div>
             <div className="mb-2">
-              <Address address={project.id} />
+              <Address address={project.id} cut prefix="ID:" />
             </div>
             <div className="row">
               <div className="col-lg-4">
                 <div className="ray__form__item mb-3">
-                  <div className="ray__form__label">Tokens left</div>
+                  <div className="ray__form__label">Tokens Total</div>
                   <div className="ray__form__amount">
-                    <span className="badge badge-light">1000000 RAY</span>
+                    <span className="badge badge-light">10,000,000 RAY</span>
                   </div>
                 </div>
               </div>
@@ -63,14 +63,14 @@ const KickStartList = () => {
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Rate</div>
                   <div className="ray__form__amount">
-                    <span className="badge badge-light">1 ADA = 1 RAY</span>
+                    <span className="badge badge-light">1 ADA = 10 RAY</span>
                   </div>
                 </div>
               </div>
               <div className="col-lg-4">
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Until</div>
-                  <span className="badge badge-light">lifetime</span>
+                  <span className="badge badge-light">tokens end</span>
                 </div>
               </div>
             </div>

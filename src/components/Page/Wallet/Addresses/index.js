@@ -9,12 +9,12 @@ const WalletsAddresses = () => {
   return (
     <div>
       <div className="ray__heading">Wallet Addresses</div>
-      {!walletData.addresses && <Empty title="No addresses found" />}
-      {walletData.addresses &&
+      {!walletData.addresses.length && <Empty title="No addresses found" />}
+      {walletData.addresses.length > 0 &&
         walletData.addresses.map((address, index) => {
           return (
             <div key={index} className="d-flex mb-4">
-              <div className="ray__item__path mr-3">
+              <div className="ray__item__path mt-2 mr-3">
                 <sup>/</sup>
                 {index}
               </div>

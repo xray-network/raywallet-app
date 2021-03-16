@@ -11,18 +11,16 @@ const Stake = () => {
   return (
     <div className="ray__wrapper">
       <Helmet title="Stake" />
-      <div>
-        <StakeSubmenu />
-        <Switch>
-          <Route exact path={path} render={() => <Redirect to={`${path}/delegation`} />} />
-          <Route exact path={`${path}/delegation`}>
-            <StakeDelegation />
-          </Route>
-          <Route path={`${path}/history`}>
-            <StakeHistory />
-          </Route>
-        </Switch>
-      </div>
+      <StakeSubmenu />
+      <Switch>
+        <Route exact path={path} render={() => <Redirect to={`${path}/delegation`} />} />
+        <Route exact path={`${path}/delegation`}>
+          <StakeDelegation />
+        </Route>
+        <Route path={`${path}/history`}>
+          <StakeHistory />
+        </Route>
+      </Switch>
     </div>
   )
 }

@@ -70,7 +70,7 @@ const Menu = () => {
                 <div className="px-2 pt-2 pb-1">
                   <Button
                     size="large"
-                    className={style.btnAdd}
+                    className="ray__btn__send w-100"
                     onClick={handleAddWalletModalOpen}
                     onKeyPress={handleAddWalletModalOpen}
                     role="button"
@@ -97,7 +97,7 @@ const Menu = () => {
                       </span>
                     </div>
                     <div className={style.selectWalletsItemDescr}>
-                      {item.accountId.slice(0, 4)}...{item.accountId.slice(-10)}
+                      {item.accountId.slice(0, 8)}...{item.accountId.slice(-12)}
                     </div>
                   </div>
                 </Select.Option>
@@ -170,25 +170,23 @@ const Menu = () => {
         )}
         <div>
           <div className={style.walletMenu}>
-            {!walletParams.accountId && (
-              <a
-                className="ray__link"
-                onClick={handleAddWalletModalOpen}
-                onKeyPress={handleAddWalletModalOpen}
-                role="button"
-                tabIndex="-1"
-              >
-                <i className="fe fe-plus-circle mr-2" />
-                Add Wallet
-              </a>
-            )}
+            <a
+              className="ray__link"
+              onClick={handleAddWalletModalOpen}
+              onKeyPress={handleAddWalletModalOpen}
+              role="button"
+              tabIndex="-1"
+            >
+              <i className="fe fe-plus-circle mr-2" />
+              Add Wallet
+            </a>
             <Link to="/swap">
               <i className="fe fe-repeat mr-2" />
               Tokens Exchange
             </Link>
             <Link to="/kickstart/token/create">
               <i className="fe fe-plus-circle mr-2" />
-              Create Own Token
+              Create Token
             </Link>
             <Link to="/rewards/activities">
               <i className="fe fe-activity mr-2" />
