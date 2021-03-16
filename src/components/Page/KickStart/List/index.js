@@ -43,7 +43,7 @@ const KickStartList = () => {
                 </Tooltip>
               </div>
               <div className="ml-auto">
-                <span className="badge badge-primary font-size-12 ml-2">premium</span>
+                <span className="badge badge-success font-size-12 ml-2">premium</span>
                 <span className="badge badge-success font-size-12 ml-2">active</span>
               </div>
             </div>

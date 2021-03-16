@@ -161,7 +161,7 @@ const KickStartCreateProject = () => {
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    amount={formValues.type === 'premium' ? 1400.181251 : 300.181251}
+                    amount={formValues.type === 'premium' ? 2300.181251 : 300.181251}
                     ticker="ADA"
                     withRate
                     large
@@ -174,7 +174,7 @@ const KickStartCreateProject = () => {
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    amount={formValues.type === 'premium' ? 1400 : 300}
+                    amount={formValues.type === 'premium' ? 2300 : 300}
                     ticker="ADA"
                   />
                 </div>

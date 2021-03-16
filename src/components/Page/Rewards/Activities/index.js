@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Input, Form, Tooltip, Statistic } from 'antd'
-import style from './style.module.scss'
+import AmountFormatter from 'components/Layout/AmountFormatter'
 
 const RewardsActivities = () => {
   const [date] = useState(new Date("2021-06-01"))
@@ -10,6 +10,34 @@ const RewardsActivities = () => {
       <div className="ray__heading">Live Activities</div>
       <div className="ray__item ray__item--success">
         <div className="row">
+          <div className="col-lg-6">
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Expected Payout</div>
+              <div className="ray__form__amount">
+                <AmountFormatter
+                  amount={15158}
+                  ticker="RAY"
+                  large
+                  prefix="~"
+                  availablePrivate
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Next payout</div>
+              <div className="ray__form__amount">
+                <Statistic.Countdown
+                  className="ray__count"
+                  value={date}
+                  format="D[d] HH[h] mm[m] ss[s]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
@@ -18,33 +46,23 @@ const RewardsActivities = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-7">
-            <div className="ray__form__item mb-3">
-              <div className="ray__form__label">Scheduled Rewards</div>
+        </div>
+        <div className="row">
+          <div className="col-lg-6">
+            <div className="ray__form__item mb-3 mb-lg-0">
+              <div className="ray__form__label">Conditions</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">182122.125125 RAY</span>
+                <ol className="pl-4">
+                  <li>You should delegate at least 100 ADA to any RAY pool.</li>
+                </ol>
               </div>
             </div>
           </div>
-          <div className="col-lg-5">
-            <div className="ray__form__item mb-3">
+          <div className="col-lg-6">
+            <div className="ray__form__item mb-3 mb-lg-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
                 <span className="badge badge-light">100 ADA = 1 RAY</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="ray__form__item mb-0">
-              <div className="ray__form__label">Time to withdraw</div>
-              <div className="ray__form__amount">
-                <Statistic.Countdown
-                  className={style.count}
-                  value={date}
-                  format="D[d] HH[h] mm[m] ss[s]"
-                />
               </div>
             </div>
           </div>
@@ -59,13 +77,13 @@ const RewardsActivities = () => {
               <div className="ray__form__amount">Airdrop to early RAY token users.</div>
             </div>
           </div>
-          <div className="col-lg-7">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Conditions</div>
               <div className="ray__form__amount">To be announced soon.</div>
             </div>
           </div>
-          <div className="col-lg-5">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
@@ -78,7 +96,7 @@ const RewardsActivities = () => {
           <div className="col-lg-12">
             <Form>
               <Form.Item className="mb-0">
-                <Tooltip title="Activity will be available soon">
+                <Tooltip title="Soon">
                   <Button type="primary" disabled>
                     <i className="fe fe-arrow-down-circle mr-1" />
                     Redeem Reward
@@ -106,7 +124,7 @@ const RewardsActivities = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-7">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Сonditions</div>
               <div className="ray__form__amount">
@@ -117,7 +135,7 @@ const RewardsActivities = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-5">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
@@ -141,7 +159,7 @@ const RewardsActivities = () => {
                 />
               </Form.Item>
               <Form.Item className="mb-0">
-                <Tooltip title="Activity will be available soon">
+                <Tooltip title="Soon">
                   <Button type="primary" disabled>
                     <i className="fe fe-arrow-down-circle mr-1" />
                     Redeem Reward

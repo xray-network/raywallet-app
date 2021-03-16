@@ -35,8 +35,23 @@
     font-family: monospace;
     word-break: break-all;
     word-wrap: break-word;
-    color: $text;
+    color: $gray-6;
     font-size: rem(14);
+  }
+
+  &__tx {
+    display: flex;
+    margin-bottom: rem(20);
+    padding: rem(15);
+    border-radius: 12px;
+    border: 1px solid $border;
+  }
+
+  &__count {
+    .ant-statistic-content {
+      color: $black;
+      font-weight: 700;
+    }
   }
 
   &__item {

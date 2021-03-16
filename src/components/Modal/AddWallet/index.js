@@ -28,12 +28,23 @@ const AddWalletModal = () => {
     <Modal
       title={(
         <Tabs defaultActiveKey={currentTab} className="ray__tabs__card ray__tabs__head" type="card" onChange={handleTabs}>
-          <Tabs.TabPane tab="Mnemonic" key="1" />
+          <Tabs.TabPane
+            tab={(
+              <div>
+                <i className="fe fe-align-center mr-2" />
+                Mnemonic
+              </div>
+            )}
+            key="1"
+          />
           <Tabs.TabPane
             disabled
             tab={(
               <Tooltip title="Soon">
-                Hardware Wallet
+                <div>
+                  <i className="fe fe-hard-drive mr-2" />
+                  Hardware Wallet
+                </div>
               </Tooltip>
             )}
             key="2"
@@ -42,7 +53,10 @@ const AddWalletModal = () => {
             disabled
             tab={(
               <Tooltip title="Soon">
-                Key File
+                <div>
+                  <i className="fe fe-file-text mr-2" />
+                  Key File
+                </div>
               </Tooltip>
             )}
             key="3"

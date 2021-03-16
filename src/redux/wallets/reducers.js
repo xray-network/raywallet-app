@@ -6,8 +6,10 @@ const initialState = {
   walletParams: {
     order: 0,
     accountId: '',
+    mnemonic: '',
     password: '',
     name: '',
+    encrypted: false,
   },
   walletData: {
     assets: [],

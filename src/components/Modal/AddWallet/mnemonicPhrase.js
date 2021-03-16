@@ -70,8 +70,8 @@ const MnemonicForm = () => {
             </div>
             <Form.Item className="mb-0">
               <Button disabled={!agreeTerms} htmlType="submit" size="large" type="primary" className="ray__btn__send">
-                <i className="fe fe-plus-circle" />
-                <strong>Unlock</strong>
+                <i className="fe fe-unlock" />
+                <strong>Unlock Wallet</strong>
               </Button>
             </Form.Item>
           </Form>
@@ -123,8 +123,8 @@ const MnemonicForm = () => {
               </div>
             )}
             <Button disabled={!(wroteDownMnemonic && agreeTerms)} htmlType="submit" size="large" type="primary" className="ray__btn__send">
-              <i className="fe fe-plus-circle" />
-              <strong>Access Wallet</strong>
+              <i className="fe fe-unlock" />
+              <strong>Unlock Wallet</strong>
             </Button>
           </div>
         </div>

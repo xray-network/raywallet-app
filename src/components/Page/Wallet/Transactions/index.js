@@ -14,7 +14,7 @@ const WalletTransactions = () => {
       {walletData.transactions &&
         walletData.transactions.map((tx, txIndex) => {
           return (
-            <div key={txIndex} className="d-flex mb-4">
+            <div key={txIndex} className="ray__tx">
               <div className="font-size-36 mr-3">
                 {tx.type === 'send' && <i className="fe fe-arrow-up-circle text-danger" />}
                 {tx.type === 'receive' && <i className="fe fe-arrow-down-circle text-success" />}
@@ -29,6 +29,7 @@ const WalletTransactions = () => {
                         ticker={asset.ticker}
                         hash={asset.hash}
                         prefix={tx.type === 'send' ? '-' : '+'}
+                        availablePrivate
                       />
                     )
                   })}

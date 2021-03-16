@@ -13,6 +13,7 @@ const Menu = () => {
   const walletData = useSelector((state) => state.wallets.walletData)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
+  const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
 
   const selectRef = useRef()
 
@@ -32,6 +33,16 @@ const Menu = () => {
       payload: {
         setting: 'modalAddWallet',
         value: true,
+      },
+    })
+  }
+
+  const togglePrivateMode = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'isPrivateMode',
+        value: !isPrivateMode,
       },
     })
   }
@@ -108,22 +119,22 @@ const Menu = () => {
       </div>
       <div className="pt-4">
         {walletParams.accountId && (
-          <div className="mb-2">
+          <div className="mb-3">
             <a
               href="#"
-              className={style.btnRefresh}
+              className={`${style.btnRefresh} mr-3`}
               onClick={(e) => {
                 e.preventDefault()
                 refreshData()
               }}
             >
               <Tooltip title={<div>Update wallet</div>}>
-                <i className="fe fe-refresh-cw mr-3" />
+                <i className="fe fe-refresh-cw" />
               </Tooltip>
             </a>
             <a
               href="#"
-              className={style.btnRefresh}
+              className={`${style.btnRefresh} mr-3`}
               onClick={(e) => {
                 e.preventDefault()
               }}
@@ -139,6 +150,25 @@ const Menu = () => {
                 <i className="fe fe-lock" />
               </Tooltip>
             </a>
+            <a
+              href="#"
+              className={`${style.btnRefresh} mr-3`}
+              onClick={(e) => {
+                e.preventDefault()
+                togglePrivateMode()
+              }}
+            >
+              <Tooltip
+                title={
+                  <div>
+                    Toggle private mode
+                  </div>
+                }
+              >
+                {!isPrivateMode && <i className="fe fe-eye-off" />}
+                {isPrivateMode && <i className="fe fe-eye" />}
+              </Tooltip>
+            </a>
           </div>
         )}
         {walletData.assets && (
@@ -152,6 +182,7 @@ const Menu = () => {
                   hash={asset.hash}
                   withRate
                   large
+                  availablePrivate
                 />
               )
             })}
@@ -160,8 +191,8 @@ const Menu = () => {
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
-              <div>RAY Rewards: 0 RAY</div>
               <div>Staking: Not delegated</div>
+              <div>RAY Rewards: Not delegated</div>
               <div>
                 Transactions: {(walletData.transactions && walletData.transactions.length) || '0'}
               </div>

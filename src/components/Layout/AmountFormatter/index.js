@@ -1,11 +1,12 @@
 import React from 'react'
 import { Tooltip } from 'antd'
+import { useSelector } from 'react-redux'
 import style from './style.module.scss'
 
 const mapExchangeRateToAssetHash = {
   lovelace: {
-    usd: 0.34,
-    eur: 0.29,
+    usd: 1.2,
+    eur: 1.51,
   },
   // '7a920d21f8b6a7edbd8db5d30c36f009fa8ae9028698359697b8a34647ab7b17.ray': {
   //   usd: 0.34 / 100,
@@ -13,7 +14,10 @@ const mapExchangeRateToAssetHash = {
   // },
 }
 
-const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix }) => {
+const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix, availablePrivate = false }) => {
+  const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
+  const privateSymbols = '****** '
+
   const numberWithCommas = (x) => {
     return Number(x)
       .toString()
@@ -33,9 +37,9 @@ const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix }) => {
       <div className={`${style.total} ${large ? style.totalLarge : ''}`}>
         {prefix && <span className={style.prefix}>{prefix}</span>}
         <span>
-          <strong>{integer(amount)}</strong>
+          <strong>{isPrivateMode ? privateSymbols : integer(amount)}</strong>
         </span>
-        <small className="mr-2">.{decimal(amount)}</small>
+        {!isPrivateMode && <small className="mr-2">.{decimal(amount)}</small>}
         <small>
           {ticker}
           {withRate && exchangeRates && (
@@ -43,9 +47,9 @@ const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix }) => {
               <Tooltip
                 title={
                   <div className={style.exchange}>
-                    <span>$ {fixed(amount * exchangeRates.usd)}</span>
+                    <span>$ {isPrivateMode ? privateSymbols : fixed(amount * exchangeRates.usd)}</span>
                     <br />
-                    <span>€ {fixed(amount * exchangeRates.eur)}</span>
+                    <span>€ {isPrivateMode ? privateSymbols : fixed(amount * exchangeRates.eur)}</span>
                   </div>
                 }
               >
