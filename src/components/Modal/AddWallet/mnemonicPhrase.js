@@ -115,7 +115,7 @@ const MnemonicForm = () => {
                   message="Proceed with caution!"
                   description={(
                     <div>
-                      <p>This information is not stored on our servers and the Ray Network developers have no access to your mnemonics. If you lose this data, you lose access to your wallet.</p>
+                      <p>Your information is not stored on our servers and the Ray Network developers have no access to your mnemonics. If you lose this data, you lose access to your wallet.</p>
                       <p className="mb-0">Please double check that the mnemonic is written correctly and stored securely.</p>
                     </div>
                   )}
