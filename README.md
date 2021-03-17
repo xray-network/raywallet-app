@@ -1,5 +1,5 @@
 ### Ray Wallet ###
-* https://wallet.rraayy.com/
+* https://raywallet.io/
 
 
 ### Quick Start ###
