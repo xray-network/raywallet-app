@@ -16,11 +16,15 @@ body {
   line-height: 1.5;
   font-family: $base-font;
   color: $dark;
-  overflow-x: hidden !important;
-  position: relative;
   font-variant: normal;
   font-feature-settings: normal;
   background: $pastel-1;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {

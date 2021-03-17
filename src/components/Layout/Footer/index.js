@@ -5,7 +5,7 @@ import { ReactComponent as Logo } from './logo.svg'
 
 const Footer = () => {
   return (
-    <div className={style.footer}>
+    <div>
       <div className={style.logo}>
         <Logo />
         <span className={style.logoName}>WALLET</span>

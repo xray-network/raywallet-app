@@ -1,0 +1,38 @@
+@import 'mixins.scss';
+
+.ray {
+  &__layout {
+    &__container {
+      min-height: 100%;
+      width: 100%;
+      max-width: rem(980);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    &__menu {
+      min-width: 300px;
+      max-width: 300px;
+      padding: rem(30) rem(20);
+    }
+    
+    &__page {
+      padding: rem(30) rem(20);
+      flex-grow: 1;
+    }
+    
+    &__header {
+      border-bottom: 1px solid $border;
+    }
+    
+    &__content {
+      display: flex;
+    }
+    
+    &__footer {
+      margin-top: auto;
+      padding: 0 rem(20) rem(20);
+    }
+  }
+}

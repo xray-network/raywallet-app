@@ -68,9 +68,11 @@ const AddWalletModal = () => {
       footer={null}
       width={760}
     >
-      {currentTab === '1' && <MnemonicForm />}
-      {currentTab === '2' && <HardwareWallet />}
-      {currentTab === '3' && <KeyFile />}
+      <div className="px-3 pt-1 pb-2">
+        {currentTab === '1' && <MnemonicForm />}
+        {currentTab === '2' && <HardwareWallet />}
+        {currentTab === '3' && <KeyFile />}
+      </div>
     </Modal>
   )
 }

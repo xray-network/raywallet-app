@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Tooltip, Select } from 'antd'
+import { Form, Input, Button, Tooltip, Select, Empty } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 
@@ -62,7 +62,17 @@ const WalletSend = () => {
             name="fromTicker"
             rules={[{ required: true, message: 'Required' }]}
           >
-            <Select size="large" placeholder="Select">
+            <Select
+              size="large"
+              placeholder="Select"
+              notFoundContent={
+                <Empty
+                  description="No Tokens"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  className="mt-3 mb-2"
+                />
+              }
+            >
               {walletData.assets &&
                 walletData.assets.map((asset, index) => {
                   return (

@@ -58,6 +58,24 @@
       color: $black;
       font-weight: 700;
     }
+
+    &__inline {
+      display: inline-block;
+      font-size: inherit !important;
+      color: inherit !important; 
+      .ant-statistic-content {
+        color: inherit;
+        font-weight: 400;
+        font-size: inherit;
+      }
+    }
+  }
+
+  &__banner {
+    background: $primary;
+    color: $white;
+    padding: rem(10) rem(20);
+    text-align: center;
   }
 
   &__item {

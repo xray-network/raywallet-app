@@ -12,6 +12,38 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
   })
 }
 
+export function* ADD_WALLET({ payload: { mnemonic } }) {
+  const { walletList } = yield select((state) => state.wallets)
+  const firstWord = mnemonic.split(' ')[0]
+
+  const newWallet = {
+    order: walletList.length,
+    accountId: Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7),
+    mnemonic,
+    password: '',
+    name: `${firstWord.charAt(0).toUpperCase() + firstWord.slice(1)} Wallet`,
+    encrypted: false,
+  }
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletList',
+      value: [
+        ...walletList,
+        newWallet,
+      ],
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_WALLET',
+    payload: {
+      accountId: newWallet.accountId,
+    }
+  })
+}
+
 export function* CHANGE_WALLET({ payload: { accountId } }) {
   const { walletList } = yield select((state) => state.wallets)
   const selectedWallet = walletList.filter((item) => item.accountId === accountId)[0]
@@ -107,6 +139,7 @@ export default function* rootSaga() {
     takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
     takeEvery(actions.FETCH_WALLET_DATA, FETCH_WALLET_DATA),
     takeEvery(actions.CHANGE_WALLET, CHANGE_WALLET),
+    takeEvery(actions.ADD_WALLET, ADD_WALLET),
     SETUP(), // run once on app load to init listeners
   ])
 }

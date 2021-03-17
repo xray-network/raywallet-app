@@ -1,18 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Tabs, Checkbox, Alert } from 'antd'
+import { useSelector, useDispatch } from 'react-redux'
 import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/cardano-js-api'
 import style from './style.module.scss'
 
 const MnemonicForm = () => {
-
   const [form] = Form.useForm()
+  const dispatch = useDispatch()
   const [currentTab, setCurrentTab] = useState('1')
   const [wroteDownMnemonic, setWroteDownMnemonic] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
-  const [mnemonic, setMnemonic] = useState(CardanoGenerateMnemonic())
+  const [generatedMnemonic, setGeneratedMnemonic] = useState('')
+  const isModalVisible = useSelector((state) => state.settings.modalAddWallet)
+  const hiddenMnemonic = '**** **** ******* ***** ****** ***** ***** ****** **** ***** **** ****** ***** ******* **** **** **** ******* ****** ******** ****** **** ***** *******'
+
+  useEffect(() => {
+    form.resetFields()
+    generateNewMnemonic()
+    setWroteDownMnemonic(false)
+    setAgreeTerms(false)
+  }, [isModalVisible, form])
+
+  const unlockWallet = (mnemonic) => {
+    dispatch({
+      type: 'wallets/ADD_WALLET',
+      payload: {
+        mnemonic,
+      },
+    })
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'modalAddWallet',
+        value: false,
+      },
+    })
+  }
 
   const onFinish = (values) => {
-    console.log('Success:', values)
+    const { mnemonic } = values
+    unlockWallet(mnemonic)
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -33,8 +60,7 @@ const MnemonicForm = () => {
 
   const generateNewMnemonic = () => {
     const mnemonicPhrase = CardanoGenerateMnemonic()
-    console.log('valid:', CardanoValidateMnemonic(mnemonicPhrase))
-    setMnemonic(mnemonicPhrase)
+    setGeneratedMnemonic(mnemonicPhrase)
   }
 
   return (
@@ -56,9 +82,27 @@ const MnemonicForm = () => {
             <Form.Item
               label="Mnemonic Phrase"
               name="mnemonic"
-              rules={[{ required: true }]}
+              rules={[
+                {
+                  required: true,
+                },
+                () => ({
+                  validator(_, value) {
+                    if (!value || CardanoValidateMnemonic(value)) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Mnemonic Phrase is wrong'));
+                  },
+                }),
+              ]}
+              className="py-2"
+              hasFeedback
             >
-              <Input size="large" placeholder="Enter your wallet mnemonic" />
+              <Input.TextArea
+                size="large"
+                autoSize
+                placeholder="Enter your wallet mnemonic"
+              />
             </Form.Item>
             <div className="mb-3">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
@@ -80,20 +124,22 @@ const MnemonicForm = () => {
       {currentTab === '2' && (
         <div>
           <p>New wallet is created with a mnemonic phrase listed below</p>
-          <div className="ray__form__label">
-            <span className="mr-2">Mnemonic Phrase</span>
-            <a
-              onClick={generateNewMnemonic}
-              onKeyPress={generateNewMnemonic}
-              role="button"
-              tabIndex="-1"
-              className="ray__link"
-            >
-              Generate New
-            </a>
-          </div>
-          <div className={style.mnemonicArea}>
-            {mnemonic}
+          <div className="py-2">
+            <div className="ray__form__label">
+              <span className="mr-2">Mnemonic Phrase</span>
+              <a
+                onClick={generateNewMnemonic}
+                onKeyPress={generateNewMnemonic}
+                role="button"
+                tabIndex="-1"
+                className="ray__link"
+              >
+                Generate New
+              </a>
+            </div>
+            <div className={style.mnemonicArea}>
+              {isModalVisible ? generatedMnemonic : hiddenMnemonic}
+            </div>
           </div>
           <div className="mt-4">
             <div className="mb-1">
@@ -122,7 +168,14 @@ const MnemonicForm = () => {
                 />
               </div>
             )}
-            <Button disabled={!(wroteDownMnemonic && agreeTerms)} htmlType="submit" size="large" type="primary" className="ray__btn__send">
+            <Button
+              disabled={!(wroteDownMnemonic && agreeTerms)}
+              htmlType="submit"
+              size="large"
+              type="primary"
+              className="ray__btn__send"
+              onClick={() => unlockWallet(generatedMnemonic)}
+            >
               <i className="fe fe-unlock" />
               <strong>Unlock Wallet</strong>
             </Button>

@@ -16,6 +16,7 @@ import './css/vendors/nprogress/style.scss'
 
 // styles
 import './css/core.scss'
+import './css/layout.scss'
 import './css/measurements.scss'
 import './css/colors.scss'
 import './css/utils.scss'

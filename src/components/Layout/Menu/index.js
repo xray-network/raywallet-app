@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, Spin, Tooltip } from 'antd'
+import { Button, Select, Spin, Tooltip, Empty } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
@@ -65,8 +65,15 @@ const Menu = () => {
             disabled={walletLoading}
             onChange={(value) => selectWallet(value)}
             suffixIcon={<div className={style.selectWalletsArrow} />}
-            defaultValue={walletParams.accountId || null}
+            value={walletParams.accountId || null}
             className={style.selectWallets}
+            notFoundContent={
+              <Empty
+                description="No Wallets"
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                className="mt-4 mb-2"
+              />
+            }
             placeholder={
               <div className={style.selectWalletsItem}>
                 <div>
@@ -142,12 +149,11 @@ const Menu = () => {
               <Tooltip
                 title={
                   <div>
-                    Wallet is encrypted and
-                    <br /> saved on this device
+                    Wallet is not saved on this device
                   </div>
                 }
               >
-                <i className="fe fe-lock" />
+                <i className="fe fe-unlock" />
               </Tooltip>
             </a>
             <a
