@@ -1,6 +1,6 @@
-import { all, takeEvery, put, call, select } from 'redux-saga/effects'
-import store from 'store'
-import * as api from 'services/api'
+import { all, takeEvery, put, select } from 'redux-saga/effects'
+// import store from 'store'
+// import * as apiCardano from 'services/api/cardano'
 import actions from './actions'
 
 export function* CHANGE_SETTING({ payload: { setting, value } }) {
@@ -74,41 +74,42 @@ export function* FETCH_WALLET_DATA() {
       value: true,
     },
   })
-  const response = yield call(api.getWalletData, accountId)
-  if (response) {
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'walletData',
-        value: {
-          assets: response.assets,
-          transactions: response.transactions,
-          addresses: response.addresses,
-        },
-      },
-    })
+  // const response = yield call(apiCardano.getWalletData, [])
+  // console.log(response)
+  // if (response) {
+  //   yield put({
+  //     type: 'wallets/CHANGE_SETTING',
+  //     payload: {
+  //       setting: 'walletData',
+  //       value: {
+  //         assets: response.assets,
+  //         transactions: response.transactions,
+  //         addresses: response.addresses,
+  //       },
+  //     },
+  //   })
 
-    const tickers = response.assets.map((asset) => asset.ticker)
-    const { walletStore } = yield select((state) => state.wallets)
-    store.set('RAY.walletStore', {
-      ...store.get('RAY.walletStore'),
-      [accountId]: {
-        tickers,
-      },
-    })
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'walletStore',
-        value: {
-          ...walletStore,
-          [accountId]: {
-            tickers,
-          },
-        },
-      },
-    })
-  }
+  //   const tickers = response.assets.map((asset) => asset.ticker)
+  //   const { walletStore } = yield select((state) => state.wallets)
+  //   store.set('RAY.walletStore', {
+  //     ...store.get('RAY.walletStore'),
+  //     [accountId]: {
+  //       tickers,
+  //     },
+  //   })
+  //   yield put({
+  //     type: 'wallets/CHANGE_SETTING',
+  //     payload: {
+  //       setting: 'walletStore',
+  //       value: {
+  //         ...walletStore,
+  //         [accountId]: {
+  //           tickers,
+  //         },
+  //       },
+  //     },
+  //   })
+  // }
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {

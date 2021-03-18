@@ -17,6 +17,37 @@ const StakeBalances = () => {
       <div className="ray__item ray__item--success mb-4">
         <div className="row">
           <div className="col-lg-6">
+            <div className="ray__form__item mb-3 mb-lg-0">
+              <div className="ray__form__label">Expected Payout</div>
+              <div className="ray__form__amount">
+                <AmountFormatter
+                  amount={(ada.amount + reward) * 0.055 / 73}
+                  hash="lovelace"
+                  availablePrivate
+                  withRate
+                  large
+                  ticker="ADA"
+                  prefix="~"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="ray__form__item mb-0 mb-lg-0">
+              <div className="ray__form__label">Next payout</div>
+              <div className="ray__form__amount">
+                <Statistic.Countdown
+                  className="ray__count"
+                  value={date}
+                  format="D[d] HH[h] mm[m] ss[s]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="ray__line" />
+        <div className="row">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
@@ -59,37 +90,6 @@ const StakeBalances = () => {
                   withRate
                   ticker="ADA"
                   availablePrivate
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="ray__line" />
-        <div className="row">
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
-              <div className="ray__form__label">Expected Payout</div>
-              <div className="ray__form__amount">
-                <AmountFormatter
-                  amount={(ada.amount + reward) * 0.055 / 73}
-                  hash="lovelace"
-                  availablePrivate
-                  withRate
-                  large
-                  ticker="ADA"
-                  prefix="~"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-0 mb-lg-0">
-              <div className="ray__form__label">Next payout</div>
-              <div className="ray__form__amount">
-                <Statistic.Countdown
-                  className="ray__count"
-                  value={date}
-                  format="D[d] HH[h] mm[m] ss[s]"
                 />
               </div>
             </div>

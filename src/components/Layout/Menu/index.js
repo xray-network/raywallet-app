@@ -222,7 +222,7 @@ const Menu = () => {
               Tokens Exchange
             </Link>
             <Link to="/kickstart/token/create">
-              <i className="fe fe-plus-circle mr-2" />
+              <i className="fe fe-arrow-up-circle mr-2" />
               Create Token
             </Link>
             <Link to="/rewards/activities">

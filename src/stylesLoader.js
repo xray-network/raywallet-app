@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 // antd core & themes styles
 import 'antd/lib/style/index.less'
 import './css/vendors/antd/themes/default.less'
-import './css/vendors/antd/themes/dark.less'
+// import './css/vendors/antd/themes/dark.less'
 
 // third-party plugins styles
 import 'bootstrap/dist/css/bootstrap.min.css'

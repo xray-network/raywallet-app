@@ -16,22 +16,26 @@ const initialState = {
     addresses: [],
     transactions: [],
   },
-  walletList: store.get('RAY.walletList') || [],
+  // walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
-  // walletList: [
-  //   {
-  //     order: 0,
-  //     accountId: '1f2d47627ae826e6b7d442dcf45d5a08efa8ad13040a3af0bc148612',
-  //     password: 'hello',
-  //     name: 'Main Wallet',
-  //   },
-  //   {
-  //     order: 1,
-  //     accountId: '17627ae826e6b7d442dcf45d5a08c148612efa8ad13040a3af0b1f2d',
-  //     password: 'hello',
-  //     name: 'Rays',
-  //   },
-  // ],
+  walletList: [
+    {
+      order: 0,
+      accountId: 'test',
+      mnemonic: 'simple nation hedgehog vapor helmet split plate tomato picture polar sure oak notice ramp scrub mechanic afford door furnace gate build drop manual silk',
+      password: 'hello',
+      name: 'Test Wallet',
+      encrypted: false,
+    },
+    {
+      order: 1,
+      accountId: 'test2',
+      mnemonic: 'mad exist rent sick garlic salute tail sugar unknown bird bottom acid treat diamond hamster garden umbrella best rival jelly public prefer wear valid',
+      password: 'hello',
+      name: 'Rays',
+      encrypted: false,
+    },
+  ],
 }
 
 export default function settingsReducer(state = initialState, action) {
