@@ -1,6 +1,7 @@
-import { all, takeEvery, put, select } from 'redux-saga/effects'
-// import store from 'store'
-// import * as apiCardano from 'services/api/cardano'
+import { all, takeEvery, put, call, select } from 'redux-saga/effects'
+import store from 'store'
+// import * as explorer from 'services/api/cardano'
+import * as Cardano from 'utils/cardano-js-api'
 import actions from './actions'
 
 export function* CHANGE_SETTING({ payload: { setting, value } }) {
@@ -16,14 +17,22 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
   const { walletList } = yield select((state) => state.wallets)
   const firstWord = mnemonic.split(' ')[0]
 
+  const accountInfo = yield call(Cardano.CardanoGetAccountInfo, mnemonic)
+
   const newWallet = {
     order: walletList.length,
-    accountId: Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7) + Math.random().toString(36).substring(7),
-    mnemonic,
+    accountId: accountInfo.rewardAddressBech32,
+    publicKey: accountInfo.publicKeyBech32,
+    privateKey: accountInfo.privateKeyBech32,
     password: '',
     name: `${firstWord.charAt(0).toUpperCase() + firstWord.slice(1)} Wallet`,
     encrypted: false,
   }
+
+  store.set('RAY.walletList', [
+    ...walletList,
+    newWallet,
+  ])
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -61,12 +70,8 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
   })
 }
 
-export function* FETCH_WALLET_DATA() {
-  const { accountId } = yield select((state) => state.wallets.walletParams)
-  if (!accountId) {
-    return
-  }
-
+export function* GET_PUBLIC_ADRESSES() {
+  const { publicKey } = yield select((state) => state.wallets.walletParams)
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
@@ -74,42 +79,32 @@ export function* FETCH_WALLET_DATA() {
       value: true,
     },
   })
-  // const response = yield call(apiCardano.getWalletData, [])
-  // console.log(response)
-  // if (response) {
-  //   yield put({
-  //     type: 'wallets/CHANGE_SETTING',
-  //     payload: {
-  //       setting: 'walletData',
-  //       value: {
-  //         assets: response.assets,
-  //         transactions: response.transactions,
-  //         addresses: response.addresses,
-  //       },
-  //     },
-  //   })
 
-  //   const tickers = response.assets.map((asset) => asset.ticker)
-  //   const { walletStore } = yield select((state) => state.wallets)
-  //   store.set('RAY.walletStore', {
-  //     ...store.get('RAY.walletStore'),
-  //     [accountId]: {
-  //       tickers,
-  //     },
-  //   })
-  //   yield put({
-  //     type: 'wallets/CHANGE_SETTING',
-  //     payload: {
-  //       setting: 'walletStore',
-  //       value: {
-  //         ...walletStore,
-  //         [accountId]: {
-  //           tickers,
-  //         },
-  //       },
-  //     },
-  //   })
-  // }
+  const walletAddresses = yield call(Cardano.CardanoGetAccountAdresses, publicKey)
+  if (walletAddresses) {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletAddresses',
+        value: walletAddresses,
+      },
+    })
+  }
+}
+
+export function* FETCH_WALLET_DATA() {
+  const { publicKey } = yield select((state) => state.wallets.walletParams)
+  if (!publicKey) {
+    return
+  }
+
+  yield put({ type: 'wallets/GET_PUBLIC_ADRESSES' })
+  // yield put({ type: 'wallets/GET_NETWORK_STATE' })
+  // yield put({ type: 'wallets/GET_RAY_TOKENS_LIST' })
+  // yield put({ type: 'wallets/GET_EXCHANGE_RATES' })
+  // yield put({ type: 'wallets/GET_UTXO_STATE' })
+  // yield put({ type: 'wallets/GET_STAKE_STATE' })
+
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
@@ -141,6 +136,7 @@ export default function* rootSaga() {
     takeEvery(actions.FETCH_WALLET_DATA, FETCH_WALLET_DATA),
     takeEvery(actions.CHANGE_WALLET, CHANGE_WALLET),
     takeEvery(actions.ADD_WALLET, ADD_WALLET),
+    takeEvery(actions.GET_PUBLIC_ADRESSES, GET_PUBLIC_ADRESSES),
     SETUP(), // run once on app load to init listeners
   ])
 }

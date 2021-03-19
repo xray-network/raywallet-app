@@ -115,7 +115,7 @@ const Menu = () => {
                       </span>
                     </div>
                     <div className={style.selectWalletsItemDescr}>
-                      {item.accountId.slice(0, 8)}...{item.accountId.slice(-12)}
+                      ID: {item.accountId.slice(0, 8)}...{item.accountId.slice(-12)}
                     </div>
                   </div>
                 </Select.Option>
@@ -177,7 +177,7 @@ const Menu = () => {
             </a>
           </div>
         )}
-        {walletData.assets && (
+        {walletData.assets.length > 0 && (
           <div className="mb-3">
             {walletData.assets.map((asset, index) => {
               return (
@@ -192,6 +192,18 @@ const Menu = () => {
                 />
               )
             })}
+          </div>
+        )}
+        {walletData.assets.length === 0 && (
+          <div className="mb-3">
+            <AmountFormatter
+              amount={0}
+              ticker="ADA"
+              hash="lovelace"
+              withRate
+              large
+              availablePrivate
+            />
           </div>
         )}
         {walletParams.accountId && (
