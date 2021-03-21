@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Tabs, Checkbox, Alert } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/cardano-js-api'
+import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'services/ray-cardano-crypto'
 import style from './style.module.scss'
 
 const MnemonicForm = () => {
@@ -12,7 +12,8 @@ const MnemonicForm = () => {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [generatedMnemonic, setGeneratedMnemonic] = useState('')
   const isModalVisible = useSelector((state) => state.settings.modalAddWallet)
-  const hiddenMnemonic = '**** **** ******* ***** ****** ***** ***** ****** **** ***** **** ****** ***** ******* **** **** **** ******* ****** ******** ****** **** ***** *******'
+  const hiddenMnemonic =
+    '**** **** ******* ***** ****** ***** ***** ****** **** ***** **** ****** ***** ******* **** **** **** ******* ****** ******** ****** **** ***** *******'
 
   useEffect(() => {
     form.resetFields()
@@ -89,31 +90,41 @@ const MnemonicForm = () => {
                 () => ({
                   validator(_, value) {
                     if (!value || CardanoValidateMnemonic(value)) {
-                      return Promise.resolve();
+                      return Promise.resolve()
                     }
-                    return Promise.reject(new Error('Mnemonic Phrase is wrong'));
+                    return Promise.reject(new Error('Mnemonic Phrase is wrong'))
                   },
                 }),
               ]}
               className="py-2"
               hasFeedback
             >
-              <Input.TextArea
-                size="large"
-                autoSize
-                placeholder="Enter your wallet mnemonic"
-              />
+              <Input.TextArea size="large" autoSize placeholder="Enter your wallet mnemonic" />
             </Form.Item>
             <div className="mb-3">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
-                <a href="https://rraayy.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-                {' '}and{' '}
-                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+                <a
+                  href="https://rraayy.com/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Privacy Policy
+                </a>{' '}
+                and{' '}
+                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">
+                  Terms of Use
+                </a>
               </Checkbox>
             </div>
             <Form.Item className="mb-0">
-              <Button disabled={!agreeTerms} htmlType="submit" size="large" type="primary" className="ray__btn__send">
+              <Button
+                disabled={!agreeTerms}
+                htmlType="submit"
+                size="large"
+                type="primary"
+                className="ray__btn__send"
+              >
                 <i className="fe fe-unlock" />
                 <strong>Unlock Wallet</strong>
               </Button>
@@ -145,13 +156,23 @@ const MnemonicForm = () => {
             <div className="mb-1">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
-                <a href="https://rraayy.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-                {' '}and{' '}
-                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+                <a
+                  href="https://rraayy.com/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Privacy Policy
+                </a>{' '}
+                and{' '}
+                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">
+                  Terms of Use
+                </a>
               </Checkbox>
             </div>
             <div className="mb-3">
-              <Checkbox checked={wroteDownMnemonic} onChange={handleWroteDownMnemonic}>I wrote down my wallet mnemonic</Checkbox>
+              <Checkbox checked={wroteDownMnemonic} onChange={handleWroteDownMnemonic}>
+                I wrote down my wallet mnemonic
+              </Checkbox>
             </div>
             {wroteDownMnemonic && (
               <div className="mb-4">
@@ -159,12 +180,19 @@ const MnemonicForm = () => {
                   showIcon
                   type="warning"
                   message="Proceed with caution!"
-                  description={(
+                  description={
                     <div>
-                      <p>Your information is not stored on our servers and the Ray Network developers have no access to your mnemonics. If you lose this data, you lose access to your wallet.</p>
-                      <p className="mb-0">Please double check that the mnemonic is written correctly and stored securely.</p>
+                      <p>
+                        Your information is not stored on our servers and the Ray Network developers
+                        have no access to your mnemonics. If you lose this data, you lose access to
+                        your wallet.
+                      </p>
+                      <p className="mb-0">
+                        Please double check that the mnemonic is written correctly and stored
+                        securely.
+                      </p>
                     </div>
-                  )}
+                  }
                 />
               </div>
             )}

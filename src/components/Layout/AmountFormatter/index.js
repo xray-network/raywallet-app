@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import style from './style.module.scss'
 
 const mapExchangeRateToAssetHash = {
-  lovelace: {
+  ada: {
     usd: 1.2,
     eur: 1.51,
   },
@@ -14,9 +14,18 @@ const mapExchangeRateToAssetHash = {
   // },
 }
 
-const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix, availablePrivate = false }) => {
+const AmountFormatter = ({
+  amount,
+  ticker,
+  hash = 'ada',
+  withRate,
+  large,
+  prefix,
+  availablePrivate = false,
+}) => {
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
   const privateSymbols = '****** '
+  const computedAmount = hash === 'ada' ? amount / 1000000 : amount
 
   const numberWithCommas = (x) => {
     return Number(x)
@@ -37,19 +46,23 @@ const AmountFormatter = ({ amount, ticker, hash, withRate, large, prefix, availa
       <div className={`${style.total} ${large ? style.totalLarge : ''}`}>
         {prefix && <span className={style.prefix}>{prefix}</span>}
         <span>
-          <strong>{isPrivateMode ? privateSymbols : integer(amount)}</strong>
+          <strong>{isPrivateMode ? privateSymbols : integer(computedAmount)}</strong>
         </span>
-        {!isPrivateMode && <small className="mr-2">.{decimal(amount)}</small>}
+        {!isPrivateMode && <small className="mr-2">.{decimal(computedAmount)}</small>}
         <small>
-          {ticker}
+          <span className="text-uppercase">{ticker}</span>
           {withRate && exchangeRates && (
             <a className="ray__link ml-2">
               <Tooltip
                 title={
                   <div className={style.exchange}>
-                    <span>$ {isPrivateMode ? privateSymbols : fixed(amount * exchangeRates.usd)}</span>
+                    <span>
+                      $ {isPrivateMode ? privateSymbols : fixed(computedAmount * exchangeRates.usd)}
+                    </span>
                     <br />
-                    <span>€ {isPrivateMode ? privateSymbols : fixed(amount * exchangeRates.eur)}</span>
+                    <span>
+                      € {isPrivateMode ? privateSymbols : fixed(computedAmount * exchangeRates.eur)}
+                    </span>
                   </div>
                 }
               >

@@ -53,7 +53,7 @@ const WalletSend = () => {
           name="toAddress"
           rules={[{ required: true, message: 'Please enter address' }]}
         >
-          <Input size="large" placeholder="Address" />
+          <Input size="large" placeholder="Address" allowClear />
         </Form.Item>
         <Input.Group compact className={style.assetGroup}>
           <Form.Item

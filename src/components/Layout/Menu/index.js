@@ -10,7 +10,7 @@ const Menu = () => {
   const dispatch = useDispatch()
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
-  const walletData = useSelector((state) => state.wallets.walletData)
+  const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
@@ -103,7 +103,7 @@ const Menu = () => {
           >
             {walletList.map((item) => {
               const totalTickers = walletStore[item.accountId]
-                ? walletStore[item.accountId].tickers.length
+                ? Object.keys(walletStore[item.accountId]).length
                 : '?'
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
@@ -146,13 +146,7 @@ const Menu = () => {
                 e.preventDefault()
               }}
             >
-              <Tooltip
-                title={
-                  <div>
-                    Wallet is not saved on this device
-                  </div>
-                }
-              >
+              <Tooltip title={<div>Wallet is not saved on this device</div>}>
                 <i className="fe fe-unlock" />
               </Tooltip>
             </a>
@@ -164,28 +158,22 @@ const Menu = () => {
                 togglePrivateMode()
               }}
             >
-              <Tooltip
-                title={
-                  <div>
-                    Toggle private mode
-                  </div>
-                }
-              >
+              <Tooltip title={<div>Toggle private mode</div>}>
                 {!isPrivateMode && <i className="fe fe-eye-off" />}
                 {isPrivateMode && <i className="fe fe-eye" />}
               </Tooltip>
             </a>
           </div>
         )}
-        {walletData.assets.length > 0 && (
+        {walletAssetsSummary.length > 0 && (
           <div className="mb-3">
-            {walletData.assets.map((asset, index) => {
+            {walletAssetsSummary.map((asset, index) => {
               return (
                 <AmountFormatter
                   key={index}
                   amount={asset.amount}
                   ticker={asset.ticker}
-                  hash={asset.hash}
+                  hash={asset.assetId}
                   withRate
                   large
                   availablePrivate
@@ -194,26 +182,26 @@ const Menu = () => {
             })}
           </div>
         )}
-        {walletData.assets.length === 0 && (
+        {/* {walletAssetsSummary.length === 0 && (
           <div className="mb-3">
             <AmountFormatter
               amount={0}
               ticker="ADA"
-              hash="lovelace"
+              hash="ada"
               withRate
               large
               availablePrivate
             />
           </div>
-        )}
+        )} */}
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
               <div>Staking: Not delegated</div>
               <div>RAY Rewards: Not delegated</div>
-              <div>
+              {/* <div>
                 Transactions: {(walletData.transactions && walletData.transactions.length) || '0'}
-              </div>
+              </div> */}
             </div>
           </div>
         )}

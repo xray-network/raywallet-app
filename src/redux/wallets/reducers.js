@@ -7,14 +7,14 @@ const initialState = {
     name: '',
     order: 0,
     accountId: '', // stake key address
-    publicKey: '', // xpub :: encrypted
-    provateKey: '', // xprv
+    publicKey: '', // xpub
+    privateKey: '', // xprv :: encrypted
     password: '', // password :: encrypted
     encrypted: false,
   },
+  walletAssetsSummary: [],
   walletAddresses: [],
   walletTransactions: [],
-  walletAssets: [],
   walletData: {
     assets: [],
     addresses: [],
@@ -22,6 +22,9 @@ const initialState = {
   },
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
+  networkInfo: {},
+  verifiedTokensList: [],
+  exchangeRates: {},
 }
 
 export default function settingsReducer(state = initialState, action) {

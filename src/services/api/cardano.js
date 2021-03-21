@@ -1,8 +1,27 @@
+/**
+ * Copyright (c) 2021, Ray Network <hello@rraayy.com>
+ * https://rraayy.com, https://raywallet.io
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 import axios from 'axios'
 import { notification } from 'antd'
 
 const apiClient = axios.create({
-  baseURL: 'https://graphql-api.testnet.dandelion.link',
+  // baseURL: 'https://graphql.rraayy.com/', // mainnet
+  // baseURL: 'https://explorer.cardano.org/graphql', // mainnet (cors)
+  baseURL: 'https://graphql-api.testnet.dandelion.link', // testnet
   // timeout: 1000,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
@@ -11,29 +30,49 @@ const apiClient = axios.create({
 //   return request
 // })
 
-apiClient.interceptors.response.use(undefined, (error) => {
-  // Errors handling
-  const { response } = error
-  const { data } = response
-  if (data) {
-    notification.warning({
-      message: data,
-    })
-  }
-})
+apiClient.interceptors.response.use(
+  (response) => {
+    const { data } = response
+    if (data.errors) {
+      data.errors.forEach((item) => {
+        notification.warning({
+          message: 'Something went wrong :(',
+          description: item.message,
+        })
+      })
+      return false
+    }
+    return response
+  },
+  (error) => {
+    // Errors handling
+    const { response } = error
+    const { data } = response
+    if (data) {
+      notification.warning({
+        message: data,
+      })
+    }
+  },
+)
 
-export async function getWalletData(wallets) {
-  console.log(wallets)
+export async function GetNetworkInfo() {
   return apiClient
-    .post('/wallet', {
+    .post('/', {
       query: `
         {
-          cardanoDbMeta {
-            initialized
-            syncPercentage
+          cardano {
+            tip {
+              number
+            }
+            currentEpoch {
+              number
+              startedAt
+              blocksCount
+            }
           }
         }
-      `
+      `,
     })
     .then((response) => {
       if (response) {
@@ -44,10 +83,31 @@ export async function getWalletData(wallets) {
     .catch((err) => console.log(err))
 }
 
-export async function getGetStakeData(accountId) {
+export async function GetAdressesData(addresses, atBlock) {
   return apiClient
-    .post('/stake', {
-      id: accountId,
+    .post('/', {
+      query: `
+        query paymentAddressSummay(
+          $addresses: [String!]!
+          $atBlock: Int
+        ) {
+          paymentAddresses (addresses: $addresses) {
+            address
+            summary (atBlock: $atBlock){
+              assetBalances {
+                assetId
+                assetName
+                policyId
+                quantity
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        addresses,
+        atBlock,
+      },
     })
     .then((response) => {
       if (response) {
