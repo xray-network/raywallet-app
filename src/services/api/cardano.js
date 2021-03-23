@@ -149,3 +149,55 @@ export async function GetTransactions(addresses) {
     })
     .catch((err) => console.log(err))
 }
+
+export async function GetTransactionsIO(hashes) {
+  return apiClient
+    .post('/', {
+      query: `
+        query getTxsInfo($hashes: [Hash32Hex]!) {
+          transactions(
+            limit: 100
+            order_by: { includedAt: desc }
+            offset: 0
+            where: {
+              hash: {
+                _in: $hashes
+              }
+            }
+          ) {
+            fee
+            hash
+            includedAt
+            inputs {
+              address
+              value
+              tokens {
+                assetId
+                assetName
+                quantity
+              }
+            }
+            outputs {
+              address
+              value
+              tokens {
+                assetId
+                assetName
+                quantity
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        hashes,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}

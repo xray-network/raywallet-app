@@ -11,6 +11,7 @@ const Menu = () => {
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
+  const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
@@ -103,7 +104,8 @@ const Menu = () => {
           >
             {walletList.map((item) => {
               const totalTickers = walletStore[item.accountId]
-                ? Object.keys(walletStore[item.accountId]).length
+                ? walletStore[item.accountId].tokens.length +
+                  Number(!!walletStore[item.accountId].value)
                 : '?'
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
@@ -111,7 +113,8 @@ const Menu = () => {
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
                       <span className="badge badge-light">
-                        {totalTickers} {totalTickers === 1 ? 'asset' : 'assets'}
+                        {totalTickers}
+                        <small> {totalTickers === 1 ? 'token' : 'tokens'}</small>
                       </span>
                     </div>
                     <div className={style.selectWalletsItemDescr}>
@@ -165,36 +168,35 @@ const Menu = () => {
             </a>
           </div>
         )}
-        {walletAssetsSummary.length > 0 && (
-          <div className="mb-3">
-            {walletAssetsSummary.map((asset, index) => {
-              return (
-                <AmountFormatter
-                  key={index}
-                  amount={asset.amount}
-                  ticker={asset.ticker}
-                  hash={asset.assetId}
-                  withRate
-                  large
-                  availablePrivate
-                />
-              )
-            })}
-          </div>
-        )}
-        {walletParams.accountId && walletAssetsSummary.length === 0 && (
-          <div className="mb-3">
-            <AmountFormatter amount={0} ticker="ADA" hash="ada" withRate large availablePrivate />
-          </div>
-        )}
+        <div className="mb-3">
+          <AmountFormatter
+            amount={walletAssetsSummary.value / 1000000}
+            ticker="ada"
+            hash="lovelace"
+            withRate
+            large
+            availablePrivate
+          />
+          {walletAssetsSummary.tokens.map((token, tokenIndex) => {
+            return (
+              <AmountFormatter
+                key={tokenIndex}
+                amount={token.quantity}
+                ticker={token.ticker}
+                hash={token.assetId}
+                withRate
+                large
+                availablePrivate
+              />
+            )
+          })}
+        </div>
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
               <div>Staking: Not delegated</div>
               <div>RAY Rewards: Not delegated</div>
-              {/* <div>
-                Transactions: {(walletData.transactions && walletData.transactions.length) || '0'}
-              </div> */}
+              <div>Transactions: {walletTransactions.length}</div>
             </div>
           </div>
         )}

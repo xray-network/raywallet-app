@@ -127,13 +127,37 @@ export function* GET_EXCHANGE_RATES() {
 }
 
 export function* GET_UTXO_STATE() {
-  const { publicKey } = yield select((state) => state.wallets.walletParams)
+  const { publicKey, accountId } = yield select((state) => state.wallets.walletParams)
 
-  // const getSummary = (processAdresses) => {
-  //   return processAdresses.map(item => {
-  //     return item
-  //   })
-  // }
+  const getAssetsSummary = (processAddresses) => {
+    const assetsSummary = {
+      value: 0,
+      tokens: {},
+    }
+
+    processAddresses.forEach((addr) => {
+      assetsSummary.value += parseInt(addr.value, 10)
+      const { tokens } = addr
+      if (tokens.length) {
+        tokens.forEach((token) => {
+          const { assetId, quantity, assetName } = token
+          if (!assetsSummary.tokens[assetId]) {
+            assetsSummary.tokens[assetId] = {}
+          }
+          assetsSummary.tokens[assetId].assetId = assetId
+          assetsSummary.tokens[assetId].ticker = assetName
+          assetsSummary.tokens[assetId].quantity = assetsSummary.tokens[assetId].quantity
+            ? parseInt(assetsSummary.tokens[assetId].quantity, 10) + parseInt(quantity, 10)
+            : parseInt(quantity, 10)
+        })
+      }
+    })
+
+    return {
+      value: assetsSummary.value,
+      tokens: Object.keys(assetsSummary.tokens).map((key) => assetsSummary.tokens[key]),
+    }
+  }
 
   function* checkAddresses(type, shift, pageSize) {
     const tmpAddresses = yield call(
@@ -164,11 +188,16 @@ export function* GET_UTXO_STATE() {
       }
     }
   }
-
   yield call(getAddressesWithShift, shiftIndex)
+
+  const assetsSummary = getAssetsSummary(UTXOArray)
   const {
     data: { transactions },
   } = yield call(Explorer.GetTransactions, AdressesArray)
+  const transactionsHashes = transactions.map((tx) => tx.hash)
+  const transactionsInputs = yield call(Explorer.GetTransactionsIO, transactionsHashes)
+
+  console.log(transactionsInputs)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -186,28 +215,28 @@ export function* GET_UTXO_STATE() {
     },
   })
 
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'walletTransactions',
-  //     value: null || [],
-  //   },
-  // })
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletAssetsSummary',
+      value: assetsSummary,
+    },
+  })
 
   // save assets state
-  // const walletStore = yield select((state) => state.wallets.walletStore)
-  // const walletStoreUpdated = {
-  //   ...walletStore,
-  //   [accountId]: walletAssetsSummary,
-  // }
-  // store.set('RAY.walletStore', walletStoreUpdated)
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'walletStore',
-  //     value: walletStoreUpdated,
-  //   },
-  // })
+  const walletStore = yield select((state) => state.wallets.walletStore)
+  const walletStoreUpdated = {
+    ...walletStore,
+    [accountId]: assetsSummary,
+  }
+  store.set('RAY.walletStore', walletStoreUpdated)
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStore',
+      value: walletStoreUpdated,
+    },
+  })
 }
 
 export function* FETCH_WALLET_DATA() {

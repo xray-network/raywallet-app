@@ -13,14 +13,12 @@ const initialState = {
     encrypted: false,
   },
   walletUTXOs: [],
-  walletAssetsSummary: [],
+  walletAssetsSummary: {
+    value: 0,
+    tokens: [],
+  },
   walletAddresses: [],
   walletTransactions: [],
-  walletData: {
-    assets: [],
-    addresses: [],
-    transactions: [],
-  },
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
   networkInfo: {},

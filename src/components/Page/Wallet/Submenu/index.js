@@ -4,7 +4,7 @@ import { NavLink, useRouteMatch } from 'react-router-dom'
 
 const WalletSubmenu = () => {
   const { url } = useRouteMatch()
-  const walletData = useSelector((state) => state.wallets.walletData)
+  const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
 
   return (
     <div>
@@ -18,12 +18,8 @@ const WalletSubmenu = () => {
           <span>Receive</span>
         </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/transactions`}>
-          <span>
-            Transactions ({(walletData.transactions && walletData.transactions.length) || 0})
-          </span>
-          <span>
-            Transactions ({(walletData.transactions && walletData.transactions.length) || 0})
-          </span>
+          <span>Transactions ({walletTransactions.length})</span>
+          <span>Transactions ({walletTransactions.length})</span>
         </NavLink>
       </div>
     </div>
