@@ -21,7 +21,7 @@ import { notification } from 'antd'
 const apiClient = axios.create({
   // baseURL: 'https://graphql-api.mainnet.dandelion.link', // mainnet
   baseURL: 'https://graphql-api.testnet.dandelion.link', // testnet
-  // timeout: 1000,
+  // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
 

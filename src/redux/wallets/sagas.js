@@ -172,14 +172,14 @@ export function* GET_UTXO_STATE() {
   }
 
   const UTXOArray = []
-  const AdressesArray = []
+  const adressesArray = []
   const pageSize = 20
   const type = 'all'
   const maxShiftIndex = 10
   let shiftIndex = 0
   function* getAddressesWithShift(shift) {
     const [adresssesWithUTXOs, checkedAdresses] = yield call(checkAddresses, type, shift, pageSize)
-    AdressesArray.push(...checkedAdresses)
+    adressesArray.push(...checkedAdresses)
     if (adresssesWithUTXOs.data && shiftIndex < maxShiftIndex) {
       if (adresssesWithUTXOs.data.utxos.length) {
         shiftIndex += 1
@@ -193,17 +193,70 @@ export function* GET_UTXO_STATE() {
   const assetsSummary = getAssetsSummary(UTXOArray)
   const {
     data: { transactions },
-  } = yield call(Explorer.GetTransactions, AdressesArray)
+  } = yield call(Explorer.GetTransactions, adressesArray)
   const transactionsHashes = transactions.map((tx) => tx.hash)
-  const transactionsInputs = yield call(Explorer.GetTransactionsIO, transactionsHashes)
+  const transactionsInputsOutputs = yield call(Explorer.GetTransactionsIO, transactionsHashes)
+  const rawTransactions = transactionsInputsOutputs.data.transactions
 
-  console.log(transactionsInputs)
+  const transformedTransactions = rawTransactions.map((tx) => {
+    let inputAmount = 0
+    let outputAmount = 0
+    const tokens = {}
+
+    tx.inputs.forEach((input) => {
+      if (adressesArray.includes(input.address)) {
+        inputAmount += parseInt(input.value, 10)
+        input.tokens.forEach((token) => {
+          if (!tokens[token.assetId]) {
+            tokens[token.assetId] = {
+              quantity: 0,
+            }
+          }
+          tokens[token.assetId].assetId = token.assetId
+          tokens[token.assetId].ticker = token.assetName
+          tokens[token.assetId].quantity =
+            parseInt(tokens[token.assetId].quantity, 10) - parseInt(token.quantity, 10)
+        })
+      }
+    })
+    tx.outputs.forEach((output) => {
+      if (adressesArray.includes(output.address)) {
+        outputAmount += parseInt(output.value, 10)
+        output.tokens.forEach((token) => {
+          if (!tokens[token.assetId]) {
+            tokens[token.assetId] = {
+              quantity: 0,
+            }
+          }
+          tokens[token.assetId].assetId = token.assetId
+          tokens[token.assetId].ticker = token.assetName
+          tokens[token.assetId].quantity =
+            parseInt(tokens[token.assetId].quantity, 10) + parseInt(token.quantity, 10)
+        })
+      }
+    })
+
+    return {
+      ...tx,
+      type: inputAmount ? 'send' : 'receive',
+      value: outputAmount - inputAmount,
+      tokens: Object.keys(tokens).map((key) => tokens[key]),
+    }
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletAssetsSummary',
+      value: assetsSummary,
+    },
+  })
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
       setting: 'walletTransactions',
-      value: transactions,
+      value: transformedTransactions,
     },
   })
 
@@ -212,14 +265,6 @@ export function* GET_UTXO_STATE() {
     payload: {
       setting: 'walletUTXOs',
       value: UTXOArray,
-    },
-  })
-
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'walletAssetsSummary',
-      value: assetsSummary,
     },
   })
 

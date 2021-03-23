@@ -170,9 +170,9 @@ const Menu = () => {
         )}
         <div className="mb-3">
           <AmountFormatter
-            amount={walletAssetsSummary.value / 1000000}
+            amount={walletAssetsSummary.value}
             ticker="ada"
-            hash="lovelace"
+            hash="ada"
             withRate
             large
             availablePrivate
