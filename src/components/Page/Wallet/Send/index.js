@@ -73,10 +73,10 @@ const WalletSend = () => {
                 />
               }
             >
-              <Select.Option>
+              <Select.Option key="ada">
                 <div className={style.assetTo}>
                   <span className={style.assetIcon}>?</span>
-                  <span className={style.assetTo}>ADA</span>
+                  <span className={style.assetTo}>ada</span>
                 </div>
               </Select.Option>
               {walletAssetsSummary.tokens.map((token, tokenIndex) => {
