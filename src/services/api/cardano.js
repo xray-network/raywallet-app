@@ -19,8 +19,7 @@ import axios from 'axios'
 import { notification } from 'antd'
 
 const apiClient = axios.create({
-  // baseURL: 'https://graphql.rraayy.com/', // mainnet
-  // baseURL: 'https://explorer.cardano.org/graphql', // mainnet (cors)
+  // baseURL: 'https://graphql-api.mainnet.dandelion.link', // mainnet
   baseURL: 'https://graphql-api.testnet.dandelion.link', // testnet
   // timeout: 1000,
   // headers: { 'X-Custom-Header': 'foobar' }
@@ -48,9 +47,12 @@ apiClient.interceptors.response.use(
     // Errors handling
     const { response } = error
     const { data } = response
-    if (data) {
-      notification.warning({
-        message: data,
+    if (data.errors) {
+      data.errors.forEach((item) => {
+        notification.warning({
+          message: 'Something went wrong :(',
+          description: item.message,
+        })
       })
     }
   },
@@ -83,30 +85,60 @@ export async function GetNetworkInfo() {
     .catch((err) => console.log(err))
 }
 
-export async function GetAdressesData(addresses, atBlock) {
+export async function GetAdressesUTXO(addresses) {
   return apiClient
     .post('/', {
       query: `
-        query paymentAddressSummay(
-          $addresses: [String!]!
-          $atBlock: Int
-        ) {
-          paymentAddresses (addresses: $addresses) {
+        query utxoSetForAddress($addresses: [String]) {
+          utxos(order_by: { value: desc }, where: { address: { _in: $addresses } }) {
             address
-            summary (atBlock: $atBlock){
-              assetBalances {
-                assetId
-                assetName
-                policyId
-                quantity
-              }
+            value
+            tokens {
+              assetId
+              assetName
+              quantity
             }
           }
         }
       `,
       variables: {
         addresses,
-        atBlock,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
+export async function GetTransactions(addresses) {
+  return apiClient
+    .post('/', {
+      query: `
+        query getTxs($addresses: [String]) {
+          transactions(
+            limit: 100
+            order_by: { includedAt: desc }
+            offset: 0
+            where: {
+              outputs: {
+                address: {
+                  _in: $addresses
+                }
+              }
+            }
+          ) {
+            fee
+            hash
+            includedAt
+          }
+        }
+      `,
+      variables: {
+        addresses,
       },
     })
     .then((response) => {

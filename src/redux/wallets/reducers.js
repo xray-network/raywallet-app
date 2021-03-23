@@ -12,6 +12,7 @@ const initialState = {
     password: '', // password :: encrypted
     encrypted: false,
   },
+  walletUTXOs: [],
   walletAssetsSummary: [],
   walletAddresses: [],
   walletTransactions: [],

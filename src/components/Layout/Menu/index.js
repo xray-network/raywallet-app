@@ -182,18 +182,11 @@ const Menu = () => {
             })}
           </div>
         )}
-        {/* {walletAssetsSummary.length === 0 && (
+        {walletParams.accountId && walletAssetsSummary.length === 0 && (
           <div className="mb-3">
-            <AmountFormatter
-              amount={0}
-              ticker="ADA"
-              hash="ada"
-              withRate
-              large
-              availablePrivate
-            />
+            <AmountFormatter amount={0} ticker="ADA" hash="ada" withRate large availablePrivate />
           </div>
-        )} */}
+        )}
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>

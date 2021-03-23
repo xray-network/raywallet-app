@@ -91,7 +91,7 @@ export const CardanoGetAccountInfo = async (mnemonic) => {
 /**
  * Generate address pack related to Private Key
  * @param {string} publicKeyBech32 private key
- * @param {number} type 0 external / 1 internal derive
+ * @param {string} type external internal / all derives
  * @param {number} shift shifting addresses by page size
  * @param {number} page page size
  * @return {array} adresses array
@@ -99,7 +99,7 @@ export const CardanoGetAccountInfo = async (mnemonic) => {
 
 export const CardanoGetAccountAdresses = async (
   publicKeyBech32,
-  type = 0,
+  type = 'external',
   shift = 0,
   page = 20,
 ) => {
@@ -108,23 +108,39 @@ export const CardanoGetAccountAdresses = async (
   const publicKey = CardanoWasm.API.Bip32PublicKey.from_bech32(publicKeyBech32)
   const accountAdresses = []
 
-  for (let i = 0 + page * shift; i < page + page * shift; i += 1) {
-    const utxoPubKey = publicKey
-      .derive(type) // 0 external / 1 internal
-      .derive(i)
+  const generateAddresses = (addressType) => {
+    const tmpAddresses = []
+    for (let i = 0 + page * shift; i < page + page * shift; i += 1) {
+      const utxoPubKey = publicKey
+        .derive(addressType) // 0 external / 1 internal
+        .derive(i)
+      const stakeKey = publicKey
+        .derive(2) // chimeric
+        .derive(0)
+      const baseAddr = CardanoWasm.API.BaseAddress.new(
+        CardanoWasm.API.NetworkInfo.testnet().network_id(),
+        CardanoWasm.API.StakeCredential.from_keyhash(utxoPubKey.to_raw_key().hash()),
+        CardanoWasm.API.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
+      )
+      const baseAddrBech32 = baseAddr.to_address().to_bech32()
+      tmpAddresses.push(baseAddrBech32)
+    }
+    return tmpAddresses
+  }
 
-    const stakeKey = publicKey
-      .derive(2) // chimeric
-      .derive(0)
-
-    const baseAddr = CardanoWasm.API.BaseAddress.new(
-      CardanoWasm.API.NetworkInfo.testnet().network_id(),
-      CardanoWasm.API.StakeCredential.from_keyhash(utxoPubKey.to_raw_key().hash()),
-      CardanoWasm.API.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
-    )
-    const baseAddrBech32 = baseAddr.to_address().to_bech32()
-
-    accountAdresses.push(baseAddrBech32)
+  switch (type) {
+    case 'external':
+      accountAdresses.push(...generateAddresses(0))
+      break
+    case 'internal':
+      accountAdresses.push(...generateAddresses(1))
+      break
+    case 'all':
+      accountAdresses.push(...generateAddresses(0))
+      accountAdresses.push(...generateAddresses(1))
+      break
+    default:
+      break
   }
 
   return accountAdresses

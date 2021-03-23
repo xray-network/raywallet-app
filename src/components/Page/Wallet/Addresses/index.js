@@ -10,7 +10,7 @@ const WalletsAddresses = () => {
     <div>
       <div className="ray__heading">Wallet Addresses</div>
       {!walletAddresses.length && <Empty title="No addresses found" />}
-      {walletAddresses.length > 0 &&
+      {!!walletAddresses.length &&
         walletAddresses.map((address, index) => {
           return (
             <div key={index} className="d-flex mb-4">
