@@ -5,14 +5,14 @@ import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
 
 const WalletSend = () => {
-  const walletData = useSelector((state) => state.wallets.walletData)
   const walletParams = useSelector((state) => state.wallets.walletParams)
+  const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
   const initialValues = {
-    fromAddress: walletData.accountId,
+    fromAddress: walletParams.accountId,
   }
 
   const onFinish = (values) => {
@@ -32,7 +32,7 @@ const WalletSend = () => {
 
   useEffect(() => {
     form.resetFields()
-  }, [walletData.accountId, form])
+  }, [walletParams.accountId, form])
 
   return (
     <div>
@@ -73,17 +73,22 @@ const WalletSend = () => {
                 />
               }
             >
-              {walletData.assets &&
-                walletData.assets.map((asset, index) => {
-                  return (
-                    <Select.Option key={index}>
-                      <div className={style.assetTo}>
-                        <span className={style.assetIcon}>?</span>
-                        <span className={style.assetTo}>{asset.ticker}</span>
-                      </div>
-                    </Select.Option>
-                  )
-                })}
+              <Select.Option>
+                <div className={style.assetTo}>
+                  <span className={style.assetIcon}>?</span>
+                  <span className={style.assetTo}>ADA</span>
+                </div>
+              </Select.Option>
+              {walletAssetsSummary.tokens.map((token, tokenIndex) => {
+                return (
+                  <Select.Option key={tokenIndex}>
+                    <div className={style.assetTo}>
+                      <span className={style.assetIcon}>?</span>
+                      <span className={style.assetTo}>{token.ticker}</span>
+                    </div>
+                  </Select.Option>
+                )
+              })}
             </Select>
           </Form.Item>
           <Form.Item
