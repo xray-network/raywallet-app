@@ -4,12 +4,14 @@ import Footer from 'components/Layout/Footer'
 import Header from 'components/Layout/Header'
 import Menu from 'components/Layout/Menu'
 import Banner from 'components/Layout/Banner'
-import AddWallet from 'components/Modal/AddWallet'
+import AddWalletModal from 'components/Modal/AddWallet'
+import QRModal from 'components/Modal/QR'
 
 const LayoutMain = ({ children }) => {
   return (
     <>
-      <AddWallet />
+      <AddWalletModal />
+      <QRModal />
       <Banner />
       <div className="ray__layout__container">
         <div className="ray__layout__header">

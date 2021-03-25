@@ -19,6 +19,7 @@ const initialState = {
     primaryColor: '#017AFF',
     modalAddWallet: false,
     isPrivateMode: false,
+    QRCodeAddress: '',
   }),
 }
 

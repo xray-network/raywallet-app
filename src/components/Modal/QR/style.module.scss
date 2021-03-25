@@ -1,6 +1,8 @@
 @import 'mixins.scss';
 
 .logo {
+  display: inline-block;
+
   img {
     width: rem(60);
     margin-right: rem(6);
@@ -17,9 +19,16 @@
   }
 }
 
-.version {
-  color: $gray-4;
-  font-size: rem(12);
+.qr {
+  margin: rem(30) 0 rem(20);
+  display: inline-block;
+
+  canvas {
+    margin: 0 auto;
+    max-width: 100%;
+    width: 300px !important;
+    height: auto !important;
+  }
 }
 
 // dark theme

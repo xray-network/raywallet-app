@@ -43,6 +43,30 @@
     word-wrap: break-word;
     color: $gray-6;
     font-size: rem(14);
+
+    &__path {
+      min-width: rem(34);
+      max-width: rem(34);
+      height: rem(34);
+      border-radius: 8px;
+      text-align: center;
+      line-height: rem(37);
+      border: 1px solid $border;
+      margin-top: rem(3);
+    }
+
+    &__qr {
+      min-width: rem(34);
+      max-width: rem(34);
+      height: rem(34);
+      border-radius: 8px;
+      text-align: center;
+      line-height: rem(37);
+      border: 1px solid $border;
+      cursor: pointer;
+      margin-top: rem(3);
+      color: $gray-6;
+    }
   }
 
   &__tx {
@@ -62,7 +86,7 @@
     &__inline {
       display: inline-block;
       font-size: inherit !important;
-      color: inherit !important; 
+      color: inherit !important;
       .ant-statistic-content {
         color: inherit;
         font-weight: 400;
@@ -114,26 +138,6 @@
       position: relative;
       top: -2px;
       font-size: rem(14);
-    }
-
-    &__path {
-      min-width: rem(34);
-      max-width: rem(34);
-      height: rem(34);
-      border-radius: 8px;
-      text-align: center;
-      line-height: rem(37);
-      border: 1px solid $border;
-    }
-
-    &__number {
-      min-width: rem(34);
-      max-width: rem(34);
-      height: rem(34);
-      border-radius: 8px;
-      text-align: center;
-      line-height: rem(33);
-      border: 1px solid $border;
     }
   }
 
@@ -192,24 +196,24 @@
 
   &__tabs {
     color: $dark !important;
-  
+
     .ant-tabs-tab {
       margin: 0 !important;
       padding-top: 0 !important;
       font-size: rem(16);
       font-weight: 500;
     }
-  
+
     .ant-tabs-tab + .ant-tabs-tab {
       margin-left: rem(20) !important;
     }
-  
+
     &__head {
       margin-bottom: -17px !important;
-      
+
       .ant-tabs-nav {
         margin-bottom: 0 !important;
-    
+
         &:before {
           display: none !important;
         }

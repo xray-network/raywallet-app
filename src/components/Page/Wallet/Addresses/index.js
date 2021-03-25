@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Address from 'components/Layout/Address'
+import AddressQR from 'components/Layout/AddressQR'
 import Empty from 'components/Layout/Empty'
 
 const WalletsAddresses = () => {
@@ -11,19 +11,9 @@ const WalletsAddresses = () => {
       <div className="ray__heading">Wallet Addresses</div>
       {!walletAddresses.length && <Empty title="No addresses found" />}
       {!!walletAddresses.length &&
-        walletAddresses.map((address, index) => {
-          return (
-            <div key={index} className="d-flex mb-4">
-              <div className="ray__item__path mt-2 mr-3">
-                <sup>/</sup>
-                {index}
-              </div>
-              <div>
-                <Address address={address} />
-              </div>
-            </div>
-          )
-        })}
+        walletAddresses.map((address, index) => (
+          <AddressQR key={index} index={index} address={address} />
+        ))}
     </div>
   )
 }

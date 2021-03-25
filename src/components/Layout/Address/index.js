@@ -8,19 +8,19 @@ const Address = ({ address, prefix, cut = false }) => {
   }
 
   return (
-    <span className="ray__address">
-      <CopyToClipboard text={address} onCopy={onCopy}>
-        <Tooltip title="Copy to Clipboard">
+    <CopyToClipboard text={address} onCopy={onCopy}>
+      <Tooltip title="Copy to Clipboard">
+        <span className="ray__address">
           {prefix && <span className="mr-2">{prefix}</span>}
-          {!cut && <a>{address}</a>}
+          {!cut && <a className="ray__address">{address}</a>}
           {cut && (
-            <a>
+            <a className="ray__address">
               {address.slice(0, 8)}...{address.slice(-16)}
             </a>
           )}
-        </Tooltip>
-      </CopyToClipboard>
-    </span>
+        </span>
+      </Tooltip>
+    </CopyToClipboard>
   )
 }
 
