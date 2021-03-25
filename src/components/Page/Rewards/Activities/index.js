@@ -3,7 +3,7 @@ import { Button, Input, Form, Tooltip, Statistic } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 
 const RewardsActivities = () => {
-  const [date] = useState(new Date("2021-06-01"))
+  const [date] = useState(new Date('2021-06-01'))
 
   return (
     <div>
@@ -16,7 +16,8 @@ const RewardsActivities = () => {
               <div className="ray__form__amount">
                 <AmountFormatter
                   amount={15158}
-                  ticker="RAY"
+                  ticker="ray"
+                  hash="__RAYHASH__"
                   large
                   prefix="~"
                   availablePrivate
@@ -43,7 +44,8 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
-                Receive additional RAY rewards every epoch (5 days) for delegating your ADA coins to any RAY pool.
+                Receive additional RAY rewards every epoch (5 days) for delegating your ADA coins to
+                any RAY pool.
               </div>
             </div>
           </div>

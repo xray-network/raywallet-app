@@ -105,7 +105,7 @@ const Swap = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">You will send</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ADA" withRate large />
+                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" large />
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@ const Swap = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Fee (inlc. in total)</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ADA" />
+                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
                 </div>
               </div>
             </div>
@@ -123,7 +123,7 @@ const Swap = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">You will receive</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ADA" withRate large />
+                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" large />
                 </div>
               </div>
             </div>

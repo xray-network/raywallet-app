@@ -25,7 +25,7 @@ const WalletTransactions = () => {
                 <AmountFormatter
                   amount={Math.abs(tx.value)}
                   ticker="ada"
-                  hash="ada"
+                  hash="lovelace"
                   prefix={tx.type === 'send' ? '-' : '+'}
                   availablePrivate
                 />

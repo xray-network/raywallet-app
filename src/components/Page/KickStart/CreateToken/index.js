@@ -99,7 +99,7 @@ const KickStartCreateToken = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={20.181251} ticker="ADA" withRate large />
+                  <AmountFormatter amount={20.181251} ticker="ada" hash="lovelace" large />
                 </div>
               </div>
             </div>
@@ -107,13 +107,13 @@ const KickStartCreateToken = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={20} ticker="ADA" />
+                  <AmountFormatter amount={20} ticker="ada" hash="lovelace" />
                 </div>
               </div>
               <div className="ray__form__item">
                 <div className="ray__form__label">Network Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0.181251} ticker="ADA" />
+                  <AmountFormatter amount={0.181251} ticker="ada" hash="lovelace" />
                 </div>
               </div>
             </div>

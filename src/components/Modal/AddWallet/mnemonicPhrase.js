@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Tabs, Checkbox, Alert } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'services/ray-cardano-crypto'
+import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/ray-cardano-crypto'
 import style from './style.module.scss'
 
 const MnemonicForm = () => {
@@ -67,8 +67,24 @@ const MnemonicForm = () => {
   return (
     <div>
       <Tabs defaultActiveKey="1" className="ray__tabs" onChange={handleTabs}>
-        <Tabs.TabPane tab="Unlock Wallet" key="1" />
-        <Tabs.TabPane tab="Create New Wallet" key="2" />
+        <Tabs.TabPane
+          tab={
+            <span>
+              <i className="fe fe-unlock mr-2" />
+              Unlock
+            </span>
+          }
+          key="1"
+        />
+        <Tabs.TabPane
+          tab={
+            <span>
+              <i className="fe fe-plus-circle mr-2" />
+              Create New
+            </span>
+          }
+          key="2"
+        />
       </Tabs>
       {currentTab === '1' && (
         <div>

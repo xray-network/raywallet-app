@@ -26,49 +26,54 @@ const AddWalletModal = () => {
 
   return (
     <Modal
-      title={(
-        <Tabs defaultActiveKey={currentTab} className="ray__tabs__card ray__tabs__head" type="card" onChange={handleTabs}>
+      title={
+        <Tabs
+          defaultActiveKey={currentTab}
+          className="ray__tabs__card ray__tabs__head"
+          type="card"
+          onChange={handleTabs}
+        >
           <Tabs.TabPane
-            tab={(
-              <div>
+            tab={
+              <span>
                 <i className="fe fe-align-center mr-2" />
                 Mnemonic
-              </div>
-            )}
+              </span>
+            }
             key="1"
           />
           <Tabs.TabPane
             disabled
-            tab={(
+            tab={
               <Tooltip title="Soon">
-                <div>
+                <span>
                   <i className="fe fe-hard-drive mr-2" />
                   Hardware Wallet
-                </div>
+                </span>
               </Tooltip>
-            )}
+            }
             key="2"
           />
           <Tabs.TabPane
             disabled
-            tab={(
+            tab={
               <Tooltip title="Soon">
-                <div>
+                <span>
                   <i className="fe fe-file-text mr-2" />
                   Key File
-                </div>
+                </span>
               </Tooltip>
-            )}
+            }
             key="3"
           />
         </Tabs>
-      )}
+      }
       visible={isModalVisible}
       onCancel={handleCancel}
       footer={null}
       width={760}
     >
-      <div className="px-3 pt-1 pb-2">
+      <div className="px-3 pb-2">
         {currentTab === '1' && <MnemonicForm />}
         {currentTab === '2' && <HardwareWallet />}
         {currentTab === '3' && <KeyFile />}

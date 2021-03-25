@@ -80,6 +80,7 @@ const WalletSend = () => {
                 </div>
               </Select.Option>
               {walletAssetsSummary.tokens.map((token, tokenIndex) => {
+                console.log(token)
                 return (
                   <Select.Option key={tokenIndex}>
                     <div className={style.assetTo}>
@@ -132,7 +133,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ADA" withRate large />
+                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" large />
                 </div>
               </div>
             </div>
@@ -140,7 +141,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Fee (inlc. in total)</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ADA" />
+                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
                 </div>
               </div>
             </div>

@@ -3,29 +3,16 @@ import { Tooltip } from 'antd'
 import { useSelector } from 'react-redux'
 import style from './style.module.scss'
 
-const mapExchangeRateToAssetHash = {
-  ada: {
-    usd: 1.2,
-    eur: 1.51,
-  },
-  // '7a920d21f8b6a7edbd8db5d30c36f009fa8ae9028698359697b8a34647ab7b17.ray': {
-  //   usd: 0.34 / 100,
-  //   eur: 0.29 / 100,
-  // },
+const hashMap = {
+  lovelace: 'cardano',
 }
 
-const AmountFormatter = ({
-  amount,
-  ticker,
-  hash = 'ada',
-  withRate,
-  large,
-  prefix,
-  availablePrivate = false,
-}) => {
+const AmountFormatter = ({ amount, ticker, hash, large, prefix, availablePrivate = false }) => {
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
+  const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
   const privateSymbols = '****** '
-  const computedAmount = hash === 'ada' ? amount / 1000000 : amount
+  const computedAmount = hash === 'lovelace' ? amount / 1000000 : amount
+  const mappedHash = hashMap[hash]
 
   const numberWithCommas = (x) => {
     return Number(x)
@@ -39,8 +26,6 @@ const AmountFormatter = ({
     return (value && value.toFixed(count).toString().split('.')[1]) || '000000'
   }
 
-  const exchangeRates = mapExchangeRateToAssetHash[hash]
-
   return (
     <div>
       <div className={`${style.total} ${large ? style.totalLarge : ''}`}>
@@ -51,17 +36,23 @@ const AmountFormatter = ({
         {!isPrivateMode && <small className="mr-2">.{decimal(computedAmount)}</small>}
         <small>
           <span className="text-uppercase">{ticker}</span>
-          {withRate && exchangeRates && (
+          {mappedHash && exchangeRates[mappedHash] && (
             <a className="ray__link ml-2">
               <Tooltip
                 title={
                   <div className={style.exchange}>
                     <span>
-                      $ {isPrivateMode ? privateSymbols : fixed(computedAmount * exchangeRates.usd)}
+                      ${' '}
+                      {isPrivateMode
+                        ? privateSymbols
+                        : fixed(computedAmount * exchangeRates[mappedHash].usd) || 0}
                     </span>
                     <br />
                     <span>
-                      € {isPrivateMode ? privateSymbols : fixed(computedAmount * exchangeRates.eur)}
+                      €{' '}
+                      {isPrivateMode
+                        ? privateSymbols
+                        : fixed(computedAmount * exchangeRates[mappedHash].eur) || 0}
                     </span>
                   </div>
                 }

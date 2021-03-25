@@ -172,8 +172,7 @@ const Menu = () => {
           <AmountFormatter
             amount={walletAssetsSummary.value}
             ticker="ada"
-            hash="ada"
-            withRate
+            hash="lovelace"
             large
             availablePrivate
           />
@@ -184,7 +183,6 @@ const Menu = () => {
                 amount={token.quantity}
                 ticker={token.ticker}
                 hash={token.assetId}
-                withRate
                 large
                 availablePrivate
               />

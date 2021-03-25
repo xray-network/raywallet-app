@@ -9,7 +9,7 @@ const StakeBalances = () => {
   const ada = (walletData.assets && walletData.assets[0]) || {}
   const reward = 7.815125
   const pool = '1c8cd022e993a8366be641c17cb6d9c5d8944e00bfce3189d8b1515a'
-  const [date] = useState(new Date("2021-06-01"))
+  const [date] = useState(new Date('2021-06-01'))
 
   return (
     <div>
@@ -21,12 +21,11 @@ const StakeBalances = () => {
               <div className="ray__form__label">Expected Payout</div>
               <div className="ray__form__amount">
                 <AmountFormatter
-                  amount={(ada.amount + reward) * 0.055 / 73}
+                  amount={((ada.amount + reward) * 0.055) / 73}
                   hash="lovelace"
                   availablePrivate
-                  withRate
                   large
-                  ticker="ADA"
+                  ticker="ada"
                   prefix="~"
                 />
               </div>
@@ -54,8 +53,7 @@ const StakeBalances = () => {
                 <AmountFormatter
                   amount={reward}
                   hash="lovelace"
-                  ticker="ADA"
-                  withRate
+                  ticker="ada"
                   large
                   availablePrivate
                 />
@@ -75,8 +73,7 @@ const StakeBalances = () => {
                 <AmountFormatter
                   amount={ada.amount}
                   hash="lovelace"
-                  withRate
-                  ticker="ADA"
+                  ticker="ada"
                   availablePrivate
                 />
               </div>
@@ -87,8 +84,7 @@ const StakeBalances = () => {
                 <AmountFormatter
                   amount={ada.amount + reward}
                   hash="lovelace"
-                  withRate
-                  ticker="ADA"
+                  ticker="ada"
                   availablePrivate
                 />
               </div>
@@ -114,7 +110,7 @@ const StakeBalances = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Live Stake</div>
               <div className="ray__form__amount">
-                <AmountFormatter amount={75645.125} withRate hash="lovelace" ticker="ADA" />
+                <AmountFormatter amount={75645.125} ticker="ada" hash="lovelace" />
               </div>
             </div>
           </div>
