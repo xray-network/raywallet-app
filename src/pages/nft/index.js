@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
 import { Alert } from 'antd'
 import NFTSubmenu from 'components/Page/NFT/Submenu'
-import NFTList from 'components/Page/NFT/List'
+import NFTMarketplace from 'components/Page/NFT/Marketplace'
 import NFTPurchases from 'components/Page/NFT/Purchases'
 import NFTCreate from 'components/Page/NFT/Create'
 
@@ -26,7 +26,7 @@ const Wallet = () => {
         <Switch>
           <Route exact path={path} render={() => <Redirect to={`${path}/marketplace`} />} />
           <Route exact path={`${path}/marketplace`}>
-            <NFTList />
+            <NFTMarketplace />
           </Route>
           <Route exact path={`${path}/purchases`}>
             <NFTPurchases />

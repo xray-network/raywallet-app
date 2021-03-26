@@ -3,7 +3,7 @@ import { Tooltip } from 'antd'
 import _temp from './_temp'
 import style from './style.module.scss'
 
-const NFTList = () => {
+const NFTMarketplace = () => {
   return (
     <div>
       <div className="ray__heading__nft">
@@ -69,4 +69,4 @@ const NFTList = () => {
   )
 }
 
-export default NFTList
+export default NFTMarketplace
