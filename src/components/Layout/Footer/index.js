@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div>
       <div className={style.logo}>
-        <img src="/resources/logo.svg" alt="" />
+        <img src="/logo.svg" alt="" />
         <span className={style.logoName}>WALLET</span>
         <span className={style.version}>v{version}</span>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Radio, Button, Tooltip, Alert } from 'antd'
+import { Input, Radio, Button, Tooltip } from 'antd'
 import Address from 'components/Layout/Address'
 // import style from './style.module.scss'
 
@@ -19,14 +19,6 @@ const projects = [
 const KickStartList = () => {
   return (
     <div>
-      <div className="mb-4">
-        <Alert
-          message="Funding will be available in the Goguen Era"
-          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen era."
-          type="warning"
-          showIcon
-        />
-      </div>
       <div className="mb-3">
         <Input size="large" placeholder="Search project by name..." />
       </div>

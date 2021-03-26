@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Select, Button, Tooltip, Alert } from 'antd'
+import { Input, Form, Select, Button } from 'antd'
 import { useSelector } from 'react-redux'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
@@ -25,14 +25,6 @@ const Swap = () => {
 
   return (
     <div>
-      <div className="mb-4">
-        <Alert
-          message="Swap feature will be available in the Goguen Era"
-          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen era."
-          type="warning"
-          showIcon
-        />
-      </div>
       <Form form={form} layout="vertical" requiredMark={false}>
         <Input.Group compact className={style.assetGroup}>
           <Form.Item
@@ -99,7 +91,7 @@ const Swap = () => {
               })}
           </Select>
         </Form.Item>
-        <div className="ray__item">
+        <div className="ray__item ray__item--success">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item mb-3">
@@ -138,12 +130,16 @@ const Swap = () => {
           </div>
         </div>
         <Form.Item className="mt-4">
-          <Tooltip title="Waiting for the Goguene era">
-            <Button htmlType="submit" size="large" type="primary" className="ray__btn__send w-100">
-              <i className="fe fe-repeat" />
-              <strong>Swap</strong>
-            </Button>
-          </Tooltip>
+          <Button
+            htmlType="submit"
+            disabled
+            size="large"
+            type="primary"
+            className="ray__btn__send w-100"
+          >
+            <i className="fe fe-repeat" />
+            <strong>Swap</strong>
+          </Button>
         </Form.Item>
       </Form>
     </div>

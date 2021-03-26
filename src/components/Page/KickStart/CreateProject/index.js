@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { Alert, Form, Input, Button, Select, Tooltip, Radio, DatePicker } from 'antd'
+import { Form, Input, Button, Select, Radio, DatePicker } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 // import style from './style.module.scss'
 
@@ -41,14 +41,6 @@ const KickStartCreateProject = () => {
 
   return (
     <div>
-      <div className="mb-4">
-        <Alert
-          message="Funding will be available in the Goguen Era"
-          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen era."
-          type="warning"
-          showIcon
-        />
-      </div>
       <Form
         form={form}
         layout="vertical"
@@ -76,7 +68,7 @@ const KickStartCreateProject = () => {
         <Form.Item
           label="Swap Address"
           name="address"
-          initialValue={`addr1${walletParams.accountId}`}
+          initialValue={`${walletParams.accountId}`}
           rules={[{ required: true, message: 'Please enter address' }]}
         >
           <Input size="large" placeholder="Address" disabled />
@@ -161,7 +153,7 @@ const KickStartCreateProject = () => {
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    amount={formValues.type === 'premium' ? 2300.181251 : 300.181251}
+                    amount={formValues.type === 'premium' ? 0 : 0}
                     ticker="ada"
                     hash="lovelace"
                     large
@@ -174,7 +166,7 @@ const KickStartCreateProject = () => {
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
                   <AmountFormatter
-                    amount={formValues.type === 'premium' ? 2300 : 300}
+                    amount={formValues.type === 'premium' ? 0 : 0}
                     ticker="ada"
                     hash="lovelace"
                   />
@@ -183,26 +175,23 @@ const KickStartCreateProject = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Network Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0.181251} ticker="ada" hash="lovelace" />
+                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <Form.Item className="mt-4">
-          <div>
-            <Tooltip title="Waiting for the Goguene era">
-              <Button
-                htmlType="submit"
-                size="large"
-                type="primary"
-                className="ray__btn__send w-100"
-              >
-                <i className="fe fe-plus-circle" />
-                <strong>Create Project</strong>
-              </Button>
-            </Tooltip>
-          </div>
+          <Button
+            htmlType="submit"
+            size="large"
+            type="primary"
+            className="ray__btn__send w-100"
+            disabled
+          >
+            <i className="fe fe-plus-circle" />
+            <strong>Create Project</strong>
+          </Button>
         </Form.Item>
       </Form>
     </div>

@@ -1,18 +1,22 @@
 @import 'mixins.scss';
 
-#root {
-  min-width: rem(920);
-}
-
 .ray {
   &__layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    &__full {
+      .ray__layout__container {
+        max-width: rem(1440);
+      }
+    }
+
     &__container {
+      max-width: rem(980);
       min-height: 100%;
       width: 100%;
-      max-width: rem(980);
       margin: 0 auto;
-      display: flex;
-      flex-direction: column;
     }
 
     &__menu {

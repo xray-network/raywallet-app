@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Alert } from 'antd'
+import { Form, Input, Button } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 // import style from './style.module.scss'
 
@@ -34,14 +34,6 @@ const KickStartCreateToken = () => {
 
   return (
     <div>
-      <div className="mb-4">
-        <Alert
-          message="Under development"
-          description="Token minting will be added soon. Stay tuned!"
-          type="warning"
-          showIcon
-        />
-      </div>
       <Form
         form={form}
         layout="vertical"
@@ -120,7 +112,13 @@ const KickStartCreateToken = () => {
           </div>
         </div>
         <Form.Item className="mt-4">
-          <Button htmlType="submit" size="large" type="primary" className="ray__btn__send w-100">
+          <Button
+            htmlType="submit"
+            size="large"
+            disabled
+            type="primary"
+            className="ray__btn__send w-100"
+          >
             <i className="fe fe-plus-circle" />
             <strong>Create Token</strong>
           </Button>

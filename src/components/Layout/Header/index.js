@@ -3,10 +3,10 @@ import { NavLink } from 'react-router-dom'
 import style from './style.module.scss'
 
 const Header = () => {
-  const toggleTheme = (e) => {
-    e.preventDefault()
-    console.log('lock wallet')
-  }
+  // const toggleTheme = (e) => {
+  //   e.preventDefault()
+  //   console.log('lock wallet')
+  // }
 
   const openSettings = (e) => {
     e.preventDefault()
@@ -47,9 +47,9 @@ const Header = () => {
         </NavLink>
       </div>
       <div className={style.icons}>
-        <a href="/" onClick={(e) => toggleTheme(e)}>
+        {/* <a href="/" onClick={(e) => toggleTheme(e)}>
           <i className="fe fe-sun" />
-        </a>
+        </a> */}
         <a href="/" onClick={(e) => openSettings(e)}>
           <i className="fe fe-settings" />
         </a>

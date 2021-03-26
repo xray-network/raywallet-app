@@ -24,11 +24,21 @@
     border-radius: 14px;
     box-shadow: rgba(0, 0, 0, 0.01) 0 0 1px, rgba(0, 0, 0, 0.04) 0 4px 8px,
       rgba(0, 0, 0, 0.04) 0 16px 24px, rgba(0, 0, 0, 0.01) 0 24px 32px;
+
+    &__full {
+      padding: rem(10) rem(0);
+    }
   }
 
   &__heading {
     margin-bottom: rem(20);
     font-weight: 700;
+
+    &__page {
+      font-weight: 700;
+      font-size: rem(18);
+      margin-right: rem(25);
+    }
   }
 
   &__line {
@@ -100,6 +110,8 @@
     color: $white;
     padding: rem(10) rem(20);
     text-align: center;
+    border-radius: 12px;
+    margin-bottom: rem(30);
   }
 
   &__item {

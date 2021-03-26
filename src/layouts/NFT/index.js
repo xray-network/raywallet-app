@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import Footer from 'components/Layout/Footer'
 import Menu from 'components/Layout/Menu'
 
-const LayoutMain = ({ children }) => {
+const LayoutNFT = ({ children }) => {
   return (
     <>
       <div className="ray__layout__container">
@@ -23,4 +23,4 @@ const LayoutMain = ({ children }) => {
   )
 }
 
-export default withRouter(LayoutMain)
+export default withRouter(LayoutNFT)
