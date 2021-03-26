@@ -8,12 +8,14 @@
 
     &__full {
       .ray__layout__container {
-        max-width: rem(1440);
+        max-width: rem(1340);
+        min-width: rem(980);
       }
     }
 
     &__container {
       max-width: rem(980);
+      min-width: rem(980);
       min-height: 100%;
       width: 100%;
       margin: 0 auto;
@@ -23,6 +25,11 @@
       min-width: 300px;
       max-width: 300px;
       padding: rem(30) rem(20);
+
+      &__sticky {
+        position: sticky;
+        top: 20px;
+      }
     }
 
     &__page {

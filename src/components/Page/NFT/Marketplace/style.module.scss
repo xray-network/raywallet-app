@@ -1,0 +1,79 @@
+@import 'mixins.scss';
+
+.category {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: rem(30);
+}
+
+.item {
+  display: block;
+  width: rem(196);
+  height: rem(355);
+  border: 1px solid $border;
+  border-radius: 10px;
+  padding: rem(15) rem(20);
+  color: $dark;
+  background: $white;
+  font-size: rem(16);
+  @include transition-middle();
+
+  &Image {
+    height: rem(220);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: rem(10);
+    user-select: none;
+    pointer-events: none;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+    }
+  }
+
+  &Collection {
+    width: rem(30);
+    height: rem(30);
+    border-radius: 20px;
+    border: 1px solid $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $white;
+    background: $gray-2;
+
+    + .itemCollection {
+      margin-left: rem(-10);
+    }
+  }
+
+  &Title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &Link {
+    pointer-events: all;
+  }
+}
+
+// dark theme
+[data-theme='dark'] {
+  .item {
+    background: $dark-gray-5;
+    border-color: $dark-gray-5;
+    color: $white;
+
+    &Collection {
+      border-color: darken($dark-gray-3, 15%);
+      background: $dark-gray-4;
+      color: $dark-gray-2;
+    }
+  }
+}
