@@ -169,13 +169,15 @@ const Menu = () => {
           </div>
         )}
         <div className="mb-3">
-          <AmountFormatter
-            amount={walletAssetsSummary.value}
-            ticker="ada"
-            hash="lovelace"
-            large
-            availablePrivate
-          />
+          {walletParams.accountId && (
+            <AmountFormatter
+              amount={walletAssetsSummary.value}
+              ticker="ada"
+              hash="lovelace"
+              large
+              availablePrivate
+            />
+          )}
           {walletAssetsSummary.tokens.map((token, tokenIndex) => {
             return (
               <AmountFormatter
