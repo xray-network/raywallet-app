@@ -14,7 +14,7 @@ const WalletTransactions = () => {
       {!transactions.length && <Empty title="No transactions found" />}
       {!!transactions.length > 0 &&
         transactions.map((tx, txIndex) => {
-          const date = format(new Date(), 'dd/MM/Y HH:mm:ss')
+          const date = format(new Date(tx.includedAt), 'dd/MM/Y HH:mm:ss')
           return (
             <div key={txIndex} className="ray__tx">
               <div className="font-size-36 mr-3">
