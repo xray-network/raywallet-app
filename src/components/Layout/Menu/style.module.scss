@@ -118,6 +118,7 @@
 .status {
   &Unlocked {
     position: relative;
+    color: $danger;
 
     &:before,
     &:after {
@@ -128,7 +129,7 @@
       background: $danger;
       border-radius: 10px;
       left: -1px;
-      bottom: 1px;
+      bottom: 2px;
       pointer-events: none;
     }
 
@@ -148,7 +149,7 @@
       background: $success;
       border-radius: 10px;
       left: -1px;
-      bottom: 1px;
+      bottom: 2px;
       pointer-events: none;
     }
   }

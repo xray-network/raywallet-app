@@ -5,6 +5,10 @@ import { version } from '../../../../package.json'
 const Footer = () => {
   return (
     <div>
+      <div className={style.cardano}>
+        <span>Powered with </span>
+        <img src="/cardano.png" alt="" />
+      </div>
       <div className={style.logo}>
         <img src="/logo.svg" alt="" />
         <span className={style.logoName}>WALLET</span>
