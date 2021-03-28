@@ -24,30 +24,30 @@ export default {
       name: 'Horror Dog',
       src: '6.gif',
     },
-    {
-      name: 'Uniswap Cupcake',
-      src: '7.gif',
-    },
-    {
-      name: 'Ace',
-      src: '8.gif',
-    },
-    {
-      name: 'Cardano Head',
-      src: '9.gif',
-    },
-    {
-      name: 'Confusion of life',
-      src: '10.gif',
-    },
-    {
-      name: 'NFT God',
-      src: '11.png',
-    },
-    {
-      name: 'Zebra Fly',
-      src: '12.png',
-    },
+    // {
+    //   name: 'Uniswap Cupcake',
+    //   src: '7.gif',
+    // },
+    // {
+    //   name: 'Ace',
+    //   src: '8.gif',
+    // },
+    // {
+    //   name: 'Cardano Head',
+    //   src: '9.gif',
+    // },
+    // {
+    //   name: 'Confusion of life',
+    //   src: '10.gif',
+    // },
+    // {
+    //   name: 'NFT God',
+    //   src: '11.png',
+    // },
+    // {
+    //   name: 'Zebra Fly',
+    //   src: '12.png',
+    // },
   ],
   spaceBudz: [
     '1230',
@@ -56,11 +56,11 @@ export default {
     '8633',
     '2712',
     '3859',
-    '8593',
-    '5302',
-    '3220',
-    '6809',
-    '2301',
-    '400',
+    // '8593',
+    // '5302',
+    // '3220',
+    // '6809',
+    // '2301',
+    // '400',
   ],
 }

@@ -16,7 +16,7 @@ const DeFi = () => {
         <Alert
           message="RAY Swap will be available in the Goguen Era"
           description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
-          type="warning"
+          type="info"
           showIcon
         />
       </div>

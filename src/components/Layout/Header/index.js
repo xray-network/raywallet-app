@@ -1,26 +1,15 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import Switcher from './Switcher'
 import style from './style.module.scss'
 
 const Header = () => {
-  // const toggleTheme = (e) => {
-  //   e.preventDefault()
-  //   console.log('lock wallet')
-  // }
-
-  const openSettings = (e) => {
-    e.preventDefault()
-    console.log('lock wallet')
-  }
-
-  const logoutWallet = (e) => {
-    e.preventDefault()
-    console.log('lock wallet')
-  }
-
   return (
     <div className={style.header}>
       <div className={style.menu}>
+        <NavLink to="/wallet">
+          <img className={style.letter} src="/logo_letter.svg" alt="" />
+        </NavLink>
         <NavLink activeClassName={style.active} to="/wallet">
           <span>Wallet</span>
           <span>Wallet</span>
@@ -46,16 +35,8 @@ const Header = () => {
           <span>NFT</span>
         </NavLink>
       </div>
-      <div className={style.icons}>
-        {/* <a href="/" onClick={(e) => toggleTheme(e)}>
-          <i className="fe fe-sun" />
-        </a> */}
-        <a href="/" onClick={(e) => openSettings(e)}>
-          <i className="fe fe-settings" />
-        </a>
-        <a href="/" onClick={(e) => logoutWallet(e)}>
-          <i className="fe fe-log-out" />
-        </a>
+      <div className="ml-auto">
+        <Switcher />
       </div>
     </div>
   )

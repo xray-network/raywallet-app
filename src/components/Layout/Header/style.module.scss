@@ -1,5 +1,11 @@
 @import 'mixins.scss';
 
+.letter {
+  height: rem(30);
+  width: rem(30);
+  margin: -15px -8px -10px 0;
+}
+
 .header {
   display: flex;
   padding: rem(15) rem(20);

@@ -1,5 +1,7 @@
 import { all, takeEvery, put, take, call, select } from 'redux-saga/effects'
 import store from 'store'
+import { AES, enc as EncodeTo } from 'crypto-js'
+import { message } from 'antd'
 // import * as CardanoUtils from 'utils/ray-cardano-utils'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
@@ -22,6 +24,12 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
 
   const accountInfo = yield call(Cardano.CardanoGetAccountInfo, mnemonic)
 
+  const walletExist = walletList.some((item) => item.accountId === accountInfo.rewardAddressBech32)
+  if (walletExist) {
+    message.warning('Wallet already added')
+    return
+  }
+
   const newWallet = {
     order: walletList.length,
     accountId: accountInfo.rewardAddressBech32,
@@ -31,8 +39,6 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
     name: `${firstWord.charAt(0).toUpperCase() + firstWord.slice(1)} Wallet`,
     encrypted: false,
   }
-
-  store.set('RAY.walletList', [...walletList, newWallet])
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -65,6 +71,99 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
   yield put({
     type: 'wallets/FETCH_WALLET_DATA',
   })
+}
+
+export function* ENCRYPT_WALLET({ payload: { password } }) {
+  const { walletList, walletParams } = yield select((state) => state.wallets)
+
+  const encryptedWalletList = walletList.filter((item) => item.encrypted)
+  const encryptedWallet = {
+    ...walletParams,
+    privateKey: AES.encrypt(walletParams.privateKey, password).toString(),
+    password: AES.encrypt(password, password).toString(),
+    encrypted: true,
+  }
+
+  // replace wallet with encrypted
+  const updatedWallet = walletList.filter((item) => item.accountId === walletParams.accountId)
+  const updatedWalletIndex = walletList.indexOf(updatedWallet[0])
+  walletList[updatedWalletIndex] = encryptedWallet
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletList',
+      value: walletList,
+    },
+  })
+
+  // save encrypted wallets to localstorage
+  store.set('RAY.walletList', [...encryptedWalletList, encryptedWallet])
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletParams',
+      value: encryptedWallet,
+    },
+  })
+
+  message.success('Wallet was saved')
+}
+
+export function* DECRYPT_WALLET({ payload: { password } }) {
+  const { walletList, walletParams } = yield select((state) => state.wallets)
+
+  try {
+    const pass = AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8)
+    if (pass !== password) {
+      message.error('Wrong password')
+    }
+  } catch {
+    message.error('Wrong password')
+    return
+  }
+
+  if (AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8) !== password) {
+    return
+  }
+
+  const decryptedWallet = {
+    ...walletParams,
+    privateKey: AES.decrypt(walletParams.privateKey, password).toString(EncodeTo.Utf8),
+    password: '',
+    encrypted: false,
+  }
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletParams',
+      value: decryptedWallet,
+    },
+  })
+
+  // update wallets list
+  const updatedWallet = walletList.filter((item) => item.accountId === walletParams.accountId)
+  const updatedWalletIndex = walletList.indexOf(updatedWallet[0])
+  walletList[updatedWalletIndex] = decryptedWallet
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletList',
+      value: walletList,
+    },
+  })
+
+  // remove from localstorage array
+  const storedWalletList = store.get('RAY.walletList') || []
+  const storedWallet = storedWalletList.filter((item) => item.accountId === walletParams.accountId)
+  const storedWalletIndex = storedWalletList.indexOf(storedWallet[0])
+  storedWalletList.splice(storedWalletIndex, 1)
+  store.set('RAY.walletList', storedWalletList)
+
+  message.success('Wallet was disconnected')
 }
 
 export function* GET_PUBLIC_ADRESSES() {
@@ -348,6 +447,8 @@ export default function* rootSaga() {
     takeEvery(actions.GET_VERIFIED_TOKENS_LIST, GET_VERIFIED_TOKENS_LIST),
     takeEvery(actions.GET_EXCHANGE_RATES, GET_EXCHANGE_RATES),
     takeEvery(actions.GET_UTXO_STATE, GET_UTXO_STATE),
+    takeEvery(actions.ENCRYPT_WALLET, ENCRYPT_WALLET),
+    takeEvery(actions.DECRYPT_WALLET, DECRYPT_WALLET),
     SETUP(), // run once on app load to init listeners
   ])
 }

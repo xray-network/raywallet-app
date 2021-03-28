@@ -9,6 +9,8 @@ const actions = {
   GET_VERIFIED_TOKENS_LIST: 'wallets/GET_VERIFIED_TOKENS_LIST',
   GET_EXCHANGE_RATES: 'wallets/GET_EXCHANGE_RATES',
   GET_UTXO_STATE: 'wallets/GET_UTXO_STATE',
+  ENCRYPT_WALLET: 'wallets/ENCRYPT_WALLET',
+  DECRYPT_WALLET: 'wallets/DECRYPT_WALLET',
 }
 
 export default actions

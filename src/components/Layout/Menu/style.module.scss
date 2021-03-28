@@ -115,6 +115,63 @@
   }
 }
 
+.status {
+  &Unlocked {
+    position: relative;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: $danger;
+      border-radius: 10px;
+      left: -1px;
+      bottom: 1px;
+      pointer-events: none;
+    }
+
+    &:before {
+      animation: animation 2s ease infinite;
+    }
+  }
+
+  &Locked {
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: $success;
+      border-radius: 10px;
+      left: -1px;
+      bottom: 1px;
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes animation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
 // dark theme
 // [data-vb-theme='dark'] {
 

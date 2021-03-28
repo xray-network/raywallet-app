@@ -1,0 +1,62 @@
+@import 'mixins.scss';
+
+.switcher {
+  padding-top: rem(2);
+  display: flex;
+}
+
+.flag {
+  display: flex;
+  margin-left: rem(15);
+
+  i {
+    font-size: rem(20);
+  }
+}
+
+.mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: rem(20);
+  cursor: pointer;
+  outline: none;
+}
+
+.flag,
+.mode {
+  color: $gray-4;
+  @include transition-middle();
+
+  &:hover {
+    color: $primary;
+  }
+}
+
+.dropdown {
+  position: relative;
+  cursor: pointer;
+  @include transition-slow;
+
+  &:after {
+    display: none;
+  }
+
+  &:hover {
+    color: $blue;
+
+    &::after {
+      color: $gray-6;
+    }
+  }
+}
+
+.menuIcon {
+  img {
+    height: rem(21);
+    margin-right: rem(10);
+  }
+}
+
+// dark theme
+// [data-theme='dark'] { }

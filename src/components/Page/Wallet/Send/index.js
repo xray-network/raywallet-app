@@ -80,7 +80,6 @@ const WalletSend = () => {
                 </div>
               </Select.Option>
               {walletAssetsSummary.tokens.map((token, tokenIndex) => {
-                console.log(token)
                 return (
                   <Select.Option key={tokenIndex}>
                     <div className={style.assetTo}>

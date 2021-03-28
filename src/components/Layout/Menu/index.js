@@ -54,6 +54,26 @@ const Menu = () => {
     })
   }
 
+  const openSettings = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'modalSettings',
+        value: true,
+      },
+    })
+  }
+
+  const openEncrypt = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'modalEncrypt',
+        value: true,
+      },
+    })
+  }
+
   return (
     <div>
       <div className={style.negativeSpace}>
@@ -147,17 +167,6 @@ const Menu = () => {
               className={`${style.btnRefresh} mr-3`}
               onClick={(e) => {
                 e.preventDefault()
-              }}
-            >
-              <Tooltip title={<div>Wallet is not saved on this device</div>}>
-                <i className="fe fe-unlock" />
-              </Tooltip>
-            </a>
-            <a
-              href="#"
-              className={`${style.btnRefresh} mr-3`}
-              onClick={(e) => {
-                e.preventDefault()
                 togglePrivateMode()
               }}
             >
@@ -165,6 +174,41 @@ const Menu = () => {
                 {!isPrivateMode && <i className="fe fe-eye-off" />}
                 {isPrivateMode && <i className="fe fe-eye" />}
               </Tooltip>
+            </a>
+            <a
+              href="#"
+              className={`${style.btnRefresh} mr-3`}
+              onClick={(e) => {
+                e.preventDefault()
+                openSettings()
+              }}
+            >
+              <Tooltip title={<div>Wallet settings</div>}>
+                <i className="fe fe-settings" />
+              </Tooltip>
+            </a>
+            <a
+              href="#"
+              className={`${style.btnRefresh} mr-3`}
+              onClick={(e) => {
+                e.preventDefault()
+                openEncrypt()
+              }}
+            >
+              {!walletParams.encrypted && (
+                <span className={style.statusUnlocked}>
+                  <Tooltip title={<div>Wallet is not saved on this device</div>}>
+                    <i className="fe fe-unlock" />
+                  </Tooltip>
+                </span>
+              )}
+              {walletParams.encrypted && (
+                <span className={style.statusLocked}>
+                  <Tooltip title={<div>Wallet encrypted</div>}>
+                    <i className="fe fe-lock" />
+                  </Tooltip>
+                </span>
+              )}
             </a>
           </div>
         )}
