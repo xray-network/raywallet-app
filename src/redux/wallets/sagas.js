@@ -27,6 +27,12 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
   const walletExist = walletList.some((item) => item.accountId === accountInfo.rewardAddressBech32)
   if (walletExist) {
     message.warning('Wallet already added')
+    yield put({
+      type: 'wallets/CHANGE_WALLET',
+      payload: {
+        accountId: accountInfo.rewardAddressBech32,
+      },
+    })
     return
   }
 
@@ -54,6 +60,44 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
       accountId: newWallet.accountId,
     },
   })
+}
+
+export function* IMPORT_WALLET({ payload: { data } }) {
+  const { walletList } = yield select((state) => state.wallets)
+
+  const walletExist = walletList.some((item) => item.accountId === data.accountId)
+  if (walletExist) {
+    message.warning('Wallet already added')
+    yield put({
+      type: 'wallets/CHANGE_WALLET',
+      payload: {
+        accountId: data.accountId,
+      },
+    })
+    return
+  }
+
+  const newWallet = {
+    ...data,
+    order: walletList.length,
+  }
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletList',
+      value: [...walletList, newWallet],
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_WALLET',
+    payload: {
+      accountId: newWallet.accountId,
+    },
+  })
+
+  message.success('Wallet was added')
 }
 
 export function* DELETE_WALLET() {
@@ -586,6 +630,7 @@ export default function* rootSaga() {
     takeEvery(actions.DECRYPT_WALLET, DECRYPT_WALLET),
     takeEvery(actions.CHANGE_WALLET_NAME, CHANGE_WALLET_NAME),
     takeEvery(actions.DELETE_WALLET, DELETE_WALLET),
+    takeEvery(actions.IMPORT_WALLET, IMPORT_WALLET),
     SETUP(), // run once on app load to init listeners
   ])
 }

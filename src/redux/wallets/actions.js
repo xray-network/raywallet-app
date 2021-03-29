@@ -13,6 +13,7 @@ const actions = {
   DECRYPT_WALLET: 'wallets/DECRYPT_WALLET',
   CHANGE_WALLET_NAME: 'wallets/CHANGE_WALLET_NAME',
   DELETE_WALLET: 'wallets/DELETE_WALLET',
+  IMPORT_WALLET: 'wallets/IMPORT_WALLET',
 }
 
 export default actions

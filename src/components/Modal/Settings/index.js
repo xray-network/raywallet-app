@@ -3,6 +3,7 @@ import { Modal, Input, Button, Popconfirm } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { saveAs } from 'file-saver'
 import { kebabCase } from 'lodash'
+import { stringToBinary } from 'utils/utils'
 import style from './style.module.scss'
 
 const SettingsModal = () => {
@@ -30,7 +31,7 @@ const SettingsModal = () => {
   }
 
   const getKeyFile = () => {
-    const file = new Blob([JSON.stringify(walletParams, undefined, 2)], {
+    const file = new Blob([stringToBinary(JSON.stringify(walletParams, undefined, 2))], {
       type: 'application/json',
       name: `ray-${kebabCase(walletParams.name)}.key`,
     })

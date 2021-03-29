@@ -130,6 +130,9 @@ const Menu = () => {
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
                   <div className={style.selectWalletsItem}>
+                    {item.encrypted && (
+                      <i className={`fe fe-lock ${style.selectWalletsItemLock}`} />
+                    )}
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
                       <span className="badge badge-light">

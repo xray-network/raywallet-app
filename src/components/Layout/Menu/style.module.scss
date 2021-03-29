@@ -15,6 +15,7 @@
     font-size: rem(18);
     color: $dark;
     font-weight: normal;
+    position: relative;
 
     &Name {
       white-space: nowrap;
@@ -32,6 +33,18 @@
       font-size: rem(12);
       color: $gray-5;
     }
+
+    &Lock {
+      position: absolute;
+      top: rem(6);
+      right: rem(4);
+      color: $gray-5;
+      font-size: rem(12);
+    }
+  }
+
+  .selectWalletsItemLock {
+    display: none;
   }
 
   &Arrow {
