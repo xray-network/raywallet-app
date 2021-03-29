@@ -5,15 +5,16 @@
   <meta charset="utf-8" />
   <title>RAY</title>
   <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' 'unsafe-eval'
+    default-src 'self' 'unsafe-eval' 'unsafe-inline'
       https://graphql-api.testnet.dandelion.link
       https://graphql-api.mainnet.dandelion.link
       https://graphql.rraayy.com
       https://api.coingecko.com
       https://raw.githubusercontent.com;
-    object-src 'self';
-    img-src 'unsafe-inline' *;
-    style-src 'unsafe-inline' *;">
+    script-src 'self' 'unsafe-eval' 'unsafe-inline';
+    img-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+  " />
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="theme-color" content="#ffffff" />
