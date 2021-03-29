@@ -43,6 +43,15 @@ const AddWalletModal = () => {
             key="1"
           />
           <Tabs.TabPane
+            tab={
+              <span>
+                <i className="fe fe-file-text mr-2" />
+                Key File
+              </span>
+            }
+            key="3"
+          />
+          <Tabs.TabPane
             disabled
             tab={
               <Tooltip title="Soon">
@@ -53,18 +62,6 @@ const AddWalletModal = () => {
               </Tooltip>
             }
             key="2"
-          />
-          <Tabs.TabPane
-            disabled
-            tab={
-              <Tooltip title="Soon">
-                <span>
-                  <i className="fe fe-file-text mr-2" />
-                  Key File
-                </span>
-              </Tooltip>
-            }
-            key="3"
           />
         </Tabs>
       }

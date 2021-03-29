@@ -73,22 +73,19 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
   })
 }
 
-export function* ENCRYPT_WALLET({ payload: { password } }) {
+export function* CHANGE_WALLET_NAME({ payload: { name } }) {
   const { walletList, walletParams } = yield select((state) => state.wallets)
 
-  const encryptedWalletList = walletList.filter((item) => item.encrypted)
-  const encryptedWallet = {
+  // replace values with changed
+  const changedWallet = {
     ...walletParams,
-    privateKey: AES.encrypt(walletParams.privateKey, password).toString(),
-    password: AES.encrypt(password, password).toString(),
-    encrypted: true,
+    name,
   }
 
-  // replace wallet with encrypted
-  const updatedWallet = walletList.filter((item) => item.accountId === walletParams.accountId)
-  const updatedWalletIndex = walletList.indexOf(updatedWallet[0])
-  walletList[updatedWalletIndex] = encryptedWallet
+  // replace wallet with changed
+  walletList[walletParams.order] = changedWallet
 
+  // update in-memory wallet list
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
@@ -97,9 +94,44 @@ export function* ENCRYPT_WALLET({ payload: { password } }) {
     },
   })
 
-  // save encrypted wallets to localstorage
-  store.set('RAY.walletList', [...encryptedWalletList, encryptedWallet])
+  // update current wallet
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletParams',
+      value: changedWallet,
+    },
+  })
 
+  // save encrypted wallets to localstorage
+  const encryptedWalletList = walletList.filter((item) => item.encrypted)
+  store.set('RAY.walletList', encryptedWalletList)
+}
+
+export function* ENCRYPT_WALLET({ payload: { password } }) {
+  const { walletList, walletParams } = yield select((state) => state.wallets)
+
+  // replace values with encrypted
+  const encryptedWallet = {
+    ...walletParams,
+    privateKey: AES.encrypt(walletParams.privateKey, password).toString(),
+    password: AES.encrypt(password, password).toString(),
+    encrypted: true,
+  }
+
+  // replace wallet with encrypted
+  walletList[walletParams.order] = encryptedWallet
+
+  // update in-memory wallet list
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletList',
+      value: walletList,
+    },
+  })
+
+  // update current wallet
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
@@ -108,12 +140,18 @@ export function* ENCRYPT_WALLET({ payload: { password } }) {
     },
   })
 
+  // save encrypted wallets to localstorage
+  const encryptedWalletList = walletList.filter((item) => item.encrypted)
+  store.set('RAY.walletList', encryptedWalletList)
+
+  // success message
   message.success('Wallet was saved')
 }
 
 export function* DECRYPT_WALLET({ payload: { password } }) {
   const { walletList, walletParams } = yield select((state) => state.wallets)
 
+  // check if password is valid
   try {
     const pass = AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8)
     if (pass !== password) {
@@ -123,11 +161,11 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
     message.error('Wrong password')
     return
   }
-
   if (AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8) !== password) {
     return
   }
 
+  // replace values with decrypted
   const decryptedWallet = {
     ...walletParams,
     privateKey: AES.decrypt(walletParams.privateKey, password).toString(EncodeTo.Utf8),
@@ -135,19 +173,10 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
     encrypted: false,
   }
 
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'walletParams',
-      value: decryptedWallet,
-    },
-  })
+  // replace wallet with decrypted
+  walletList[walletParams.order] = decryptedWallet
 
-  // update wallets list
-  const updatedWallet = walletList.filter((item) => item.accountId === walletParams.accountId)
-  const updatedWalletIndex = walletList.indexOf(updatedWallet[0])
-  walletList[updatedWalletIndex] = decryptedWallet
-
+  // update in-memory wallet list
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
@@ -156,13 +185,20 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
     },
   })
 
-  // remove from localstorage array
-  const storedWalletList = store.get('RAY.walletList') || []
-  const storedWallet = storedWalletList.filter((item) => item.accountId === walletParams.accountId)
-  const storedWalletIndex = storedWalletList.indexOf(storedWallet[0])
-  storedWalletList.splice(storedWalletIndex, 1)
-  store.set('RAY.walletList', storedWalletList)
+  // update current wallet
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletParams',
+      value: decryptedWallet,
+    },
+  })
 
+  // remove wallet from localstorage
+  const encryptedWalletList = walletList.filter((item) => item.encrypted)
+  store.set('RAY.walletList', encryptedWalletList)
+
+  // success message
   message.success('Wallet was disconnected')
 }
 
@@ -449,6 +485,7 @@ export default function* rootSaga() {
     takeEvery(actions.GET_UTXO_STATE, GET_UTXO_STATE),
     takeEvery(actions.ENCRYPT_WALLET, ENCRYPT_WALLET),
     takeEvery(actions.DECRYPT_WALLET, DECRYPT_WALLET),
+    takeEvery(actions.CHANGE_WALLET_NAME, CHANGE_WALLET_NAME),
     SETUP(), // run once on app load to init listeners
   ])
 }

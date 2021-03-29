@@ -11,6 +11,7 @@ const actions = {
   GET_UTXO_STATE: 'wallets/GET_UTXO_STATE',
   ENCRYPT_WALLET: 'wallets/ENCRYPT_WALLET',
   DECRYPT_WALLET: 'wallets/DECRYPT_WALLET',
+  CHANGE_WALLET_NAME: 'wallets/CHANGE_WALLET_NAME',
 }
 
 export default actions
