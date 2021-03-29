@@ -56,7 +56,106 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
   })
 }
 
+export function* DELETE_WALLET() {
+  const { walletList, walletParams } = yield select((state) => state.wallets)
+  const prevWallet = walletList[walletParams.order - 1]
+  const nextWallet = walletList[walletParams.order + 1]
+
+  const walletToLoad = prevWallet || nextWallet || {}
+
+  // delete from wallet list
+  walletList.splice(walletParams.order, 1)
+
+  // recalculate order
+  const reorderedWalletList = walletList.map((item, index) => {
+    return {
+      ...item,
+      order: index,
+    }
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletList',
+      value: reorderedWalletList,
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_WALLET',
+    payload: {
+      accountId: walletToLoad.accountId ? walletToLoad.accountId : 'empty',
+    },
+  })
+
+  yield put({
+    type: 'settings/CHANGE_SETTING',
+    payload: {
+      setting: 'modalSettings',
+      value: false,
+    },
+  })
+
+  // save encrypted wallets to localstorage
+  const encryptedWalletList = reorderedWalletList.filter((item) => item.encrypted)
+  store.set('RAY.walletList', encryptedWalletList)
+
+  // success message
+  message.success('Wallet was deleted')
+}
+
 export function* CHANGE_WALLET({ payload: { accountId } }) {
+  if (accountId === 'empty') {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletParams',
+        value: {
+          name: '',
+          order: 0,
+          accountId: '', // stake key address
+          publicKey: '', // xpub
+          privateKey: '', // xprv :: encrypted
+          password: '', // password :: encrypted
+          encrypted: false,
+        },
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletUTXOs',
+        value: [],
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletAssetsSummary',
+        value: {
+          value: 0,
+          tokens: [],
+        },
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletAddresses',
+        value: [],
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletTransactions',
+        value: [],
+      },
+    })
+    return
+  }
+
   const { walletList } = yield select((state) => state.wallets)
   const selectedWallet = walletList.filter((item) => item.accountId === accountId)[0]
 
@@ -486,6 +585,7 @@ export default function* rootSaga() {
     takeEvery(actions.ENCRYPT_WALLET, ENCRYPT_WALLET),
     takeEvery(actions.DECRYPT_WALLET, DECRYPT_WALLET),
     takeEvery(actions.CHANGE_WALLET_NAME, CHANGE_WALLET_NAME),
+    takeEvery(actions.DELETE_WALLET, DELETE_WALLET),
     SETUP(), // run once on app load to init listeners
   ])
 }

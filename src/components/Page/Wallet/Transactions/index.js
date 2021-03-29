@@ -58,7 +58,7 @@ const WalletTransactions = () => {
           {count < transactions.length && (
             <div className="mb-3">
               <Button onClick={() => setCount(count + 5)} className="w-100">
-                Show next 5 transactions
+                <strong>Show next 5 transactions</strong>
               </Button>
             </div>
           )}

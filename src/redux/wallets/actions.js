@@ -12,6 +12,7 @@ const actions = {
   ENCRYPT_WALLET: 'wallets/ENCRYPT_WALLET',
   DECRYPT_WALLET: 'wallets/DECRYPT_WALLET',
   CHANGE_WALLET_NAME: 'wallets/CHANGE_WALLET_NAME',
+  DELETE_WALLET: 'wallets/DELETE_WALLET',
 }
 
 export default actions
