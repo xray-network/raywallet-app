@@ -97,6 +97,9 @@ export function* IMPORT_WALLET({ payload: { data } }) {
     },
   })
 
+  const encryptedWalletList = [...walletList, newWallet].filter((item) => item.encrypted)
+  store.set('RAY.walletList', encryptedWalletList)
+
   message.success('Wallet was added')
 }
 

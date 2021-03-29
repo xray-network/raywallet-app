@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Input, Button, Popconfirm } from 'antd'
+import { Modal, Input, Button, Popconfirm, Tooltip } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { saveAs } from 'file-saver'
 import { kebabCase } from 'lodash'
@@ -69,22 +69,31 @@ const SettingsModal = () => {
             <div>
               <strong>Export .key file</strong>
             </div>
-            {!walletParams.encrypted && <div>Your wallet should be encrypted for export</div>}
-            {walletParams.encrypted && <div>Your wallet is encrypted and ready to be exported</div>}
+            <div>Export the .key file if you want to back up your data</div>
           </div>
           <div className="ml-auto pl-3">
-            <Popconfirm
-              placement="topRight"
-              title="Export the .key file of this wallet?"
-              onConfirm={getKeyFile}
-              okText="Export"
-              cancelText="Cancel"
-            >
-              <Button disabled={!walletParams.encrypted}>
-                <i className="fe fe-download mr-2" />
-                Export .key
-              </Button>
-            </Popconfirm>
+            {walletParams.encrypted && (
+              <Popconfirm
+                placement="topRight"
+                title="Export the .key file of this wallet?"
+                onConfirm={getKeyFile}
+                okText="Export"
+                cancelText="Cancel"
+              >
+                <Button disabled={!walletParams.encrypted}>
+                  <i className="fe fe-download mr-2" />
+                  Export .key
+                </Button>
+              </Popconfirm>
+            )}
+            {!walletParams.encrypted && (
+              <Tooltip title="Wallet must be encrypted">
+                <Button disabled={!walletParams.encrypted}>
+                  <i className="fe fe-download mr-2" />
+                  Export .key
+                </Button>
+              </Tooltip>
+            )}
           </div>
         </div>
         <div className={style.dangerItem}>
