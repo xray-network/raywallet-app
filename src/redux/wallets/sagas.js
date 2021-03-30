@@ -443,8 +443,8 @@ export function* GET_UTXO_STATE() {
           assetsSummary.tokens[assetId].name = 'Testcoint'
           assetsSummary.tokens[assetId].fingerprint = fingerprint
           assetsSummary.tokens[assetId].quantity = assetsSummary.tokens[assetId].quantity
-            ? parseInt(assetsSummary.tokens[assetId].quantity, 10) + parseInt(quantity, 10)
-            : parseInt(quantity, 10)
+            ? BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity)
+            : BigInt(quantity)
         })
       }
     })
@@ -572,7 +572,10 @@ export function* GET_UTXO_STATE() {
   const walletStore = yield select((state) => state.wallets.walletStore)
   const walletStoreUpdated = {
     ...walletStore,
-    [accountId]: assetsSummary,
+    [accountId]: {
+      value: !!assetsSummary.value,
+      tokens: assetsSummary.tokens.length,
+    },
   }
   store.set('RAY.walletStore', walletStoreUpdated)
   yield put({

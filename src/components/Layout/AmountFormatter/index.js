@@ -19,7 +19,6 @@ const AmountFormatter = ({
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
   const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
   const privateSymbols = '****** '
-  const computedAmount = hash === 'lovelace' ? amount / 1000000 : amount
   const mappedHash = hashMap[hash]
 
   const numberWithCommas = (x) => {
@@ -38,10 +37,23 @@ const AmountFormatter = ({
     <div>
       <div className={`${style.total} ${large ? style.totalLarge : ''}`}>
         {prefix && <span className={style.prefix}>{prefix}</span>}
-        <span>
-          <strong>{isPrivateMode ? privateSymbols : integer(computedAmount)}</strong>
-        </span>
-        {!isPrivateMode && !noDecimals && <small>.{decimal(computedAmount)}</small>}
+        {hash === 'lovelace' && (
+          <span>
+            <span>
+              <strong>{isPrivateMode ? privateSymbols : integer(amount / 1000000)}</strong>
+            </span>
+            {!isPrivateMode && !noDecimals && <small>.{decimal(amount / 1000000)}</small>}
+          </span>
+        )}
+        {hash !== 'lovelace' && (
+          <span>
+            <strong>
+              {isPrivateMode
+                ? privateSymbols
+                : amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            </strong>
+          </span>
+        )}
         <small>
           <span className="text-uppercase ml-2">{ticker}</span>
           {mappedHash && exchangeRates[mappedHash] && (
@@ -53,14 +65,14 @@ const AmountFormatter = ({
                       ${' '}
                       {isPrivateMode
                         ? privateSymbols
-                        : fixed(computedAmount * exchangeRates[mappedHash].usd) || 0}
+                        : fixed(1 * exchangeRates[mappedHash].usd) || 0}
                     </span>
                     <br />
                     <span>
                       €{' '}
                       {isPrivateMode
                         ? privateSymbols
-                        : fixed(computedAmount * exchangeRates[mappedHash].eur) || 0}
+                        : fixed(1 * exchangeRates[mappedHash].eur) || 0}
                     </span>
                   </div>
                 }

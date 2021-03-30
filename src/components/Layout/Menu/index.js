@@ -124,7 +124,7 @@ const Menu = () => {
           >
             {walletList.map((item) => {
               const totalTickers = walletStore[item.accountId]
-                ? walletStore[item.accountId].tokens.length +
+                ? Number(!!walletStore[item.accountId].tokens) +
                   Number(!!walletStore[item.accountId].value)
                 : '?'
               return (

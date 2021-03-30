@@ -51,7 +51,7 @@ const KeyFile = () => {
           <i className="fe fe-file-plus font-size-32" />
         </p>
         <p className="ant-upload-text">Click or drag .key file to this area to upload</p>
-        <p className="ant-upload-hint">Your wallet will be added instantly</p>
+        <p className="ant-upload-hint">Your wallet will be added immediately</p>
       </Upload.Dragger>
     </div>
   )
