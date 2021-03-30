@@ -10683,6 +10683,11 @@ react-copy-to-clipboard@^5.0.3:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"
 
+react-detect-offline@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/react-detect-offline/-/react-detect-offline-2.4.3.tgz#167c340f86adba719b7d57acef69a2f5664412fa"
+  integrity sha512-YDJRJ1qbCcwCV37yiBGEzC+SeHtqe2kKV9EVYDEo77gm9QFLa2tZesF6ciOSx1A+tmMAZGtBD38VHdBQVe4yAA==
+
 react-dev-utils@^11.0.1:
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"

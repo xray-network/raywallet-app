@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
+import { Offline } from 'react-detect-offline'
 import Header from 'components/Layout/Header'
 import AddWalletModal from 'components/Modal/AddWallet'
 import QRModal from 'components/Modal/QR'
@@ -35,6 +36,11 @@ const LayoutIndex = ({ children, title, location: { pathname } }) => {
       <SettingsModal />
       <EncryptModal />
       <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
+        <Offline>
+          <div className="ray__banner">
+            Wallet is offline. Please check your internet connection.
+          </div>
+        </Offline>
         <div className="ray__layout__container">
           <div className="ray__layout__header">
             <Header />
