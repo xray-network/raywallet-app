@@ -80,7 +80,7 @@ const SettingsModal = () => {
                 okText="Export"
                 cancelText="Cancel"
               >
-                <Button disabled={!walletParams.encrypted}>
+                <Button>
                   <i className="fe fe-download mr-2" />
                   Export .key
                 </Button>
@@ -88,7 +88,7 @@ const SettingsModal = () => {
             )}
             {!walletParams.encrypted && (
               <Tooltip title="Wallet must be encrypted">
-                <Button disabled={!walletParams.encrypted}>
+                <Button disabled>
                   <i className="fe fe-download mr-2" />
                   Export .key
                 </Button>

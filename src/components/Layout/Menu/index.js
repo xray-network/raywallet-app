@@ -233,6 +233,7 @@ const Menu = () => {
                 ticker={token.ticker}
                 hash={token.assetId}
                 large
+                noDecimals
                 availablePrivate
               />
             )

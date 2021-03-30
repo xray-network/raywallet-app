@@ -1,8 +1,9 @@
 import { all, takeEvery, put, take, call, select } from 'redux-saga/effects'
 import store from 'store'
 import { AES, enc as EncodeTo } from 'crypto-js'
+import AssetFingerprint from '@emurgo/cip14-js'
 import { message } from 'antd'
-// import * as CardanoUtils from 'utils/ray-cardano-utils'
+import * as CardanoUtils from 'utils/ray-cardano-utils'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
 import * as Github from 'services/api/github'
@@ -30,7 +31,9 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
     yield put({
       type: 'wallets/CHANGE_WALLET',
       payload: {
-        accountId: accountInfo.rewardAddressBech32,
+        accountId: CardanoUtils.bechAddressToHex(accountInfo.rewardAddressBech32)
+          .data.toString('hex')
+          .slice(2),
       },
     })
     return
@@ -38,7 +41,10 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
 
   const newWallet = {
     order: walletList.length,
-    accountId: accountInfo.rewardAddressBech32,
+    accountId: CardanoUtils.bechAddressToHex(accountInfo.rewardAddressBech32)
+      .data.toString('hex')
+      .slice(2),
+    rewardAddress: accountInfo.rewardAddressBech32,
     publicKey: accountInfo.publicKeyBech32,
     privateKey: accountInfo.privateKeyBech32,
     password: '',
@@ -422,12 +428,20 @@ export function* GET_UTXO_STATE() {
       const { tokens } = addr
       if (tokens.length) {
         tokens.forEach((token) => {
-          const { assetId, quantity, assetName } = token
+          const { assetId, quantity, assetName, policyId } = token
           if (!assetsSummary.tokens[assetId]) {
             assetsSummary.tokens[assetId] = {}
           }
+
+          const fingerprint = new AssetFingerprint(
+            Buffer.from(policyId, 'hex'),
+            assetName ? Buffer.from(assetName.substr(2), 'hex') : undefined,
+          ).fingerprint()
+
           assetsSummary.tokens[assetId].assetId = assetId
-          assetsSummary.tokens[assetId].ticker = assetName
+          assetsSummary.tokens[assetId].ticker = 'TEST'
+          assetsSummary.tokens[assetId].name = 'Testcoint'
+          assetsSummary.tokens[assetId].fingerprint = fingerprint
           assetsSummary.tokens[assetId].quantity = assetsSummary.tokens[assetId].quantity
             ? parseInt(assetsSummary.tokens[assetId].quantity, 10) + parseInt(quantity, 10)
             : parseInt(quantity, 10)
@@ -495,7 +509,9 @@ export function* GET_UTXO_STATE() {
             }
           }
           tokens[token.assetId].assetId = token.assetId
-          tokens[token.assetId].ticker = token.assetName
+          tokens[token.assetId].ticker = new TextDecoder().decode(
+            Buffer.from(token.assetName.substr(2), 'hex'),
+          )
           tokens[token.assetId].quantity =
             parseInt(tokens[token.assetId].quantity, 10) - parseInt(token.quantity, 10)
         })
@@ -511,7 +527,9 @@ export function* GET_UTXO_STATE() {
             }
           }
           tokens[token.assetId].assetId = token.assetId
-          tokens[token.assetId].ticker = token.assetName
+          tokens[token.assetId].ticker = new TextDecoder().decode(
+            Buffer.from(token.assetName.substr(2), 'hex'),
+          )
           tokens[token.assetId].quantity =
             parseInt(tokens[token.assetId].quantity, 10) + parseInt(token.quantity, 10)
         })

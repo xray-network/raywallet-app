@@ -7,7 +7,15 @@ const hashMap = {
   lovelace: 'cardano',
 }
 
-const AmountFormatter = ({ amount, ticker, hash, large, prefix, availablePrivate = false }) => {
+const AmountFormatter = ({
+  amount,
+  ticker,
+  hash,
+  large,
+  prefix,
+  availablePrivate = false,
+  noDecimals,
+}) => {
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
   const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
   const privateSymbols = '****** '
@@ -33,9 +41,9 @@ const AmountFormatter = ({ amount, ticker, hash, large, prefix, availablePrivate
         <span>
           <strong>{isPrivateMode ? privateSymbols : integer(computedAmount)}</strong>
         </span>
-        {!isPrivateMode && <small className="mr-2">.{decimal(computedAmount)}</small>}
+        {!isPrivateMode && !noDecimals && <small>.{decimal(computedAmount)}</small>}
         <small>
-          <span className="text-uppercase">{ticker}</span>
+          <span className="text-uppercase ml-2">{ticker}</span>
           {mappedHash && exchangeRates[mappedHash] && (
             <a className="ray__link ml-2">
               <Tooltip

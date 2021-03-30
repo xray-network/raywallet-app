@@ -96,6 +96,7 @@ export async function GetAdressesUTXO(addresses) {
             tokens {
               assetId
               assetName
+              policyId
               quantity
             }
           }

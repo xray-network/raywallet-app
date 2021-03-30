@@ -15,6 +15,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-export const hex2String = (hex) => Buffer.from(hex, 'hex').toString()
-export const xpub2pub = (xpub) => xpub.slice(0, 32)
-// const xpub2blake2b224Hash = (xpub) => getPubKeyBlake2b224Hash(xpub2pub(xpub))
+import { bech32 } from 'bech32'
+
+export const bechAddressToHex = (str) => {
+  const tmp = bech32.decode(str, 1000)
+
+  return {
+    prefix: tmp.prefix,
+    data: Buffer.from(bech32.fromWords(tmp.words)),
+  }
+}
+
+export const hello = () => undefined
