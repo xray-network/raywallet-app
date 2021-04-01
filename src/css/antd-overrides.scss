@@ -1,0 +1,58 @@
+@import 'mixins.scss';
+
+.ant-form-item-label label {
+  color: $dark !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: rem(12) !important;
+}
+
+.ant-form {
+  color: $dark !important;
+}
+
+.ant-btn[disabled],
+.ant-input[disabled],
+.ant-input-affix-wrapper-disabled {
+  color: $gray-4 !important;
+  background: $gray-1 !important;
+}
+
+.ant-select {
+  &-dropdown {
+    z-index: 990 !important;
+  }
+
+  &-selection-placeholder {
+    color: $gray-5 !important;
+  }
+}
+
+.ant-modal {
+  &-content {
+    border-radius: 12px !important;
+  }
+
+  &-header {
+    background: transparent !important;
+  }
+
+  &-body {
+    font-size: rem(16) !important;
+    color: $black;
+  }
+
+  &-title {
+    color: $black !important;
+  }
+}
+
+.ant-tabs {
+  font-size: rem(16) !important;
+}
+
+.ant-checkbox {
+  &-inner {
+    border-radius: 5px !important;
+  }
+}

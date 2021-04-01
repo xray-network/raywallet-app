@@ -1,0 +1,53 @@
+@import 'mixins.scss';
+
+.ray {
+  &__layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    &__full {
+      .ray__layout__container {
+        max-width: rem(1340);
+        min-width: rem(980);
+      }
+    }
+
+    &__container {
+      max-width: rem(980);
+      min-width: rem(980);
+      min-height: 100%;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    &__menu {
+      min-width: 300px;
+      max-width: 300px;
+      padding: rem(30) rem(20);
+
+      &__sticky {
+        position: sticky;
+        top: 20px;
+      }
+    }
+
+    &__page {
+      padding: rem(30) rem(20);
+      flex-grow: 1;
+    }
+
+    &__header {
+      border-bottom: 1px solid $border;
+    }
+
+    &__content {
+      display: flex;
+    }
+
+    &__footer {
+      margin-top: auto;
+      padding: 0 rem(20) rem(20);
+    }
+  }
+}

@@ -1,31 +1,42 @@
-import React, { lazy, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import { ConnectedRouter } from 'connected-react-router'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
+import Wallet from 'pages/wallet'
+import Stake from 'pages/stake'
+import Rewards from 'pages/rewards'
+import Swap from 'pages/swap'
+import KickStart from 'pages/kickstart'
+import NFT from 'pages/nft'
+
 import Layout from 'layouts'
 
 const routes = [
   {
-    path: '/wallets',
-    Component: lazy(() => import('pages/wallets')),
-    exact: true,
+    path: '/wallet',
+    Component: Wallet,
   },
   {
-    path: '/staking-center',
-    Component: lazy(() => import('pages/staking')),
-    exact: true,
+    path: '/stake',
+    Component: Stake,
   },
   {
     path: '/rewards',
-    Component: lazy(() => import('pages/rewards')),
-    exact: true,
+    Component: Rewards,
   },
   {
-    path: '/kick-starter',
-    Component: lazy(() => import('pages/kickstarter')),
-    exact: true,
+    path: '/swap',
+    Component: Swap,
+  },
+  {
+    path: '/kickstart',
+    Component: KickStart,
+  },
+  {
+    path: '/nft',
+    Component: NFT,
   },
 ]
 
@@ -40,16 +51,17 @@ const Router = ({ history, routerAnimation }) => {
         <Route
           render={(state) => {
             const { location } = state
+            const animationKey = location.pathname.slice(1).split('/')[0]
             return (
               <SwitchTransition>
                 <CSSTransition
-                  key={location.pathname}
+                  key={animationKey}
                   appear
                   classNames={routerAnimation}
                   timeout={routerAnimation === 'none' ? 0 : 300}
                 >
                   <Switch location={location}>
-                    <Route exact path="/" render={() => <Redirect to="/wallets" />} />
+                    <Route exact path="/" render={() => <Redirect to="/wallet/send" />} />
                     {routes.map(({ path, Component, exact }) => (
                       <Route
                         path={path}

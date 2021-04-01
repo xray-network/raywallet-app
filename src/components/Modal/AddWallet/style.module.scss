@@ -1,0 +1,15 @@
+@import 'mixins.scss';
+
+.mnemonicArea {
+  padding: rem(15) rem(25);
+  border: 1px solid $border;
+  border-radius: 8px;
+  font-family: monospace;
+  font-weight: 600;
+  background: $pastel-1;
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

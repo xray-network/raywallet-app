@@ -1,0 +1,44 @@
+@import 'mixins.scss';
+
+.total {
+  font-size: rem(16);
+
+  strong {
+    font-weight: 700;
+  }
+
+  small {
+    font-size: rem(16);
+    white-space: nowrap;
+  }
+
+  :global(.badge) {
+    font-size: rem(14);
+    background: $white;
+  }
+
+  sup {
+    font-size: 60%;
+  }
+
+  &Large {
+    font-size: rem(24);
+  }
+}
+
+.exchange {
+  span {
+    margin-right: rem(15);
+    font-size: rem(14);
+  }
+}
+
+.prefix {
+  display: inline-block;
+  width: rem(15);
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

@@ -5,9 +5,9 @@
 }
 
 html {
-  font-size: 14px;
+  font-size: 16px;
   @media (max-width: $sm-max-width) {
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 
@@ -15,21 +15,27 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   font-family: $base-font;
-  color: $text;
-  overflow-x: hidden !important;
-  position: relative;
+  color: $dark;
   font-variant: normal;
   font-feature-settings: normal;
+  background: $pastel-1;
+  overflow-y: scroll;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
   text-decoration: none;
-  color: $text;
+  color: $primary;
   @include transition-color();
   &:hover,
   &:active,
   &:focus {
-    color: $blue;
+    color: $blue-dark;
     text-decoration: none;
   }
 }
@@ -42,7 +48,6 @@ input {
 
 button,
 input {
-  box-shadow: none !important;
   outline: none !important;
 }
 
@@ -69,11 +74,11 @@ svg {
 
 b,
 strong {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 ::placeholder {
-  color: $gray-2;
+  color: $gray-5 !important;
 }
 
 // dark theme

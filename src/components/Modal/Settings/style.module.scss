@@ -1,0 +1,22 @@
+@import 'mixins.scss';
+
+.danger {
+  border: 1px solid $danger;
+  border-radius: 8px;
+  font-size: rem(14);
+
+  &Item {
+    display: flex;
+    border-bottom: 1px solid $border;
+    padding: rem(15) rem(20);
+
+    &:last-child {
+      border: 0;
+    }
+  }
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

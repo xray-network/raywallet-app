@@ -1,21 +1,25 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import Footer from 'components/Footer'
-import Header from 'components/Header'
-import style from './style.module.scss'
+import Footer from 'components/Layout/Footer'
+import Menu from 'components/Layout/Menu'
 
 const LayoutMain = ({ children }) => {
   return (
-    <div className={style.container}>
-      <div className={style.bg} />
-      <div className={style.header}>
-        <Header />
+    <>
+      <div className="ray__layout__container">
+        <div className="ray__layout__content">
+          <div className="ray__layout__menu">
+            <Menu />
+          </div>
+          <div className="ray__layout__page">{children}</div>
+        </div>
       </div>
-      <div className={style.content}>{children}</div>
-      <div className={style.footer}>
-        <Footer />
+      <div className="ray__layout__container mt-auto">
+        <div className="ray__layout__footer">
+          <Footer />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

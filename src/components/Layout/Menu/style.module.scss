@@ -1,0 +1,192 @@
+@import 'mixins.scss';
+
+.selectWallets {
+  width: 100%;
+
+  :global(.ant-select-selector) {
+    padding-top: rem(9) !important;
+    height: rem(64) !important;
+    border-radius: 14px !important;
+  }
+
+  &Item {
+    padding: rem(3) rem(8) rem(7);
+    line-height: 1.2;
+    font-size: rem(18);
+    color: $dark;
+    font-weight: normal;
+    position: relative;
+
+    &Name {
+      white-space: nowrap;
+      display: block;
+      float: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 90px);
+      margin-right: rem(10);
+    }
+
+    &Descr {
+      padding-top: rem(3);
+      display: block;
+      font-size: rem(12);
+      color: $gray-5;
+    }
+
+    &Lock {
+      position: absolute;
+      top: rem(6);
+      right: rem(4);
+      color: $gray-5;
+      font-size: rem(12);
+    }
+  }
+
+  .selectWalletsItemLock {
+    display: none;
+  }
+
+  &Arrow {
+    display: block;
+    position: relative;
+    right: 7px;
+    top: 3px;
+    width: 14px;
+
+    &:before,
+    &:after {
+      content: '';
+      width: 9px;
+      height: 3px;
+      border-radius: 5px;
+      background: $primary;
+      transform: rotate(45deg);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+      left: auto;
+      right: 0;
+    }
+  }
+}
+
+.negativeSpace {
+  margin: 0 rem(-10) 0 rem(-20);
+}
+
+.btnRefresh {
+  font-size: rem(18);
+}
+
+.walletInfo {
+  color: $gray-5;
+}
+
+.walletMenu {
+  a {
+    display: block;
+    margin-bottom: rem(10);
+
+    i {
+      color: $gray-5;
+      @include transition-middle();
+    }
+
+    &:hover {
+      i {
+        color: $primary;
+      }
+    }
+  }
+}
+
+.loader {
+  position: relative;
+
+  &Icon {
+    position: absolute;
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    width: rem(20);
+    height: rem(20);
+    margin: rem(-10) 0 0 rem(-10);
+    opacity: 0;
+    pointer-events: none;
+    @include transition-middle();
+  }
+
+  &Active {
+    .loaderIcon {
+      opacity: 1;
+    }
+  }
+}
+
+.status {
+  &Unlocked {
+    position: relative;
+    color: $danger;
+
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: $danger;
+      border-radius: 10px;
+      left: -1px;
+      bottom: 2px;
+      pointer-events: none;
+    }
+
+    &:before {
+      animation: animation 2s ease infinite;
+    }
+  }
+
+  &Locked {
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: $success;
+      border-radius: 10px;
+      left: -1px;
+      bottom: 2px;
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes animation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

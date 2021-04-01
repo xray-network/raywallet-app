@@ -3,7 +3,11 @@ import actions from './actions'
 
 const STORED_SETTINGS = (storedSettings) => {
   const settings = {}
+  const skip = ['modalEncrypt']
   Object.keys(storedSettings).forEach((key) => {
+    if (skip.includes(key)) {
+      return
+    }
     const item = store.get(`app.settings.${key}`)
     settings[key] = typeof item !== 'undefined' ? item : storedSettings[key]
   })
@@ -12,11 +16,16 @@ const STORED_SETTINGS = (storedSettings) => {
 
 const initialState = {
   ...STORED_SETTINGS({
-    title: 'RAY Wallet',
+    title: 'RAY',
     theme: 'default',
     locale: 'en-US',
-    routerAnimation: 'slide-fadein-right',
+    routerAnimation: 'slide-fadein-up',
     primaryColor: '#017AFF',
+    modalAddWallet: false,
+    modalSettings: false,
+    modalEncrypt: false,
+    isPrivateMode: false,
+    QRCodeAddress: '',
   }),
 }
 

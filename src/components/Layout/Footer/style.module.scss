@@ -1,0 +1,42 @@
+@import 'mixins.scss';
+
+.logo {
+  img {
+    height: rem(18);
+    margin-right: rem(6);
+    position: relative;
+    top: -1px;
+  }
+
+  &Name {
+    font-weight: bold;
+    color: $black;
+    letter-spacing: 2px;
+    margin-right: rem(10);
+    font-size: rem(14);
+  }
+}
+
+.version {
+  font-size: rem(12);
+}
+
+.cardano {
+  margin: rem(4) 0 rem(5) rem(10);
+  font-size: rem(12);
+  margin-left: auto;
+  display: flex;
+
+  span {
+    margin-right: rem(10);
+  }
+
+  img {
+    height: rem(18);
+  }
+}
+
+// dark theme
+// [data-vb-theme='dark'] {
+
+// }

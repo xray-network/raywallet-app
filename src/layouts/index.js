@@ -1,67 +1,55 @@
 import React, { Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import NProgress from 'nprogress'
 import { Helmet } from 'react-helmet'
-
+import { Offline } from 'react-detect-offline'
+import Header from 'components/Layout/Header'
+import AddWalletModal from 'components/Modal/AddWallet'
+import QRModal from 'components/Modal/QR'
+import SettingsModal from 'components/Modal/Settings'
+import EncryptModal from 'components/Modal/Encrypt'
 import LayoutMain from './Main'
-// import PublicLayout from './Public'
-// import LayoutStaking from './Staking'
-// import LayoutRewards from './Rewards'
-// import LayoutKickStarter from './KickStarter'
-// import LayoutWallets from './Wallets'
+import LayoutNFT from './NFT'
 
-// const Layouts = {
-//   public: PublicLayout,
-//   staking: LayoutStaking,
-//   rewards: LayoutRewards,
-//   kickstarter: LayoutKickStarter,
-//   wallets: LayoutWallets,
-// }
+const Layouts = {
+  main: LayoutMain,
+  nft: LayoutNFT,
+}
 
 const mapStateToProps = ({ settings }) => ({ title: settings.title })
-let previousPath = ''
 
-const Layout = ({ children, title, location: { pathname, search } }) => {
-  // NProgress & ScrollTop Management
-  const currentPath = pathname + search
-  if (currentPath !== previousPath) {
-    window.scrollTo(0, 0)
-    NProgress.start()
+const LayoutIndex = ({ children, title, location: { pathname } }) => {
+  const isNftSection = /^\/nft(?=\/|$)/i.test(pathname)
+  const getLayoutName = () => {
+    if (isNftSection) {
+      return 'nft'
+    }
+    return 'main'
   }
-  setTimeout(() => {
-    NProgress.done()
-    previousPath = currentPath
-  }, 300)
-
-  // Layout Rendering
-  // const getLayout = () => {
-  //   if (pathname === '/') {
-  //     return 'public'
-  //   }
-  //   if (/^\/staking-center(?=\/|$)/i.test(pathname)) {
-  //     return 'staking'
-  //   }
-  //   if (/^\/rewards(?=\/|$)/i.test(pathname)) {
-  //     return 'rewards'
-  //   }
-  //   if (/^\/kickstarter(?=\/|$)/i.test(pathname)) {
-  //     return 'kickstarter'
-  //   }
-  //   if (/^\/wallets(?=\/|$)/i.test(pathname)) {
-  //     return 'wallets'
-  //   }
-  //   return 'main'
-  // }
-
-  // const Container = Layouts[getLayout()]
+  const Layout = Layouts[getLayoutName()]
 
   return (
     <Fragment>
-      <Helmet titleTemplate={`${title} | %s`} title={title} />
-      <LayoutMain>{children}</LayoutMain>
+      <Helmet titleTemplate={`${title} | %s`} />
+      <AddWalletModal />
+      <QRModal />
+      <SettingsModal />
+      <EncryptModal />
+      <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
+        <Offline>
+          <div className="ray__banner">
+            Wallet is offline. Please check your internet connection.
+          </div>
+        </Offline>
+        <div className="ray__layout__container">
+          <div className="ray__layout__header">
+            <Header />
+          </div>
+        </div>
+        <Layout>{children}</Layout>
+      </div>
     </Fragment>
   )
 }
 
-export default withRouter(connect(mapStateToProps)(Layout))
+export default withRouter(connect(mapStateToProps)(LayoutIndex))

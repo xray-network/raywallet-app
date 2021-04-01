@@ -1,9 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" data-vb-theme="default" data-vb-version="pro">
+<html lang="en" data-vb-theme="default">
 
 <head>
   <meta charset="utf-8" />
-  <title>Ray Wallet</title>
+  <title>RAY</title>
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' 'unsafe-eval' 'unsafe-inline'
+      https://graphql-api.testnet.dandelion.link
+      https://graphql-api.mainnet.dandelion.link
+      https://graphql.rraayy.com
+      https://raywallet.io
+      https://api.coingecko.com
+      https://raw.githubusercontent.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline';
+    img-src 'self' 'unsafe-inline' *;
+    style-src 'self' 'unsafe-inline';
+  " />
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="theme-color" content="#ffffff" />
