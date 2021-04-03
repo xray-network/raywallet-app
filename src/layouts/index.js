@@ -36,6 +36,9 @@ const LayoutIndex = ({ children, title, location: { pathname } }) => {
       <SettingsModal />
       <EncryptModal />
       <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
+        {/* <div className="ray__banner">
+          The RAY Wallet is scheduled for release on April 15, 2021. Stay tuned!
+        </div> */}
         <Offline>
           <div className="ray__banner">
             Wallet is offline. Please check your internet connection.

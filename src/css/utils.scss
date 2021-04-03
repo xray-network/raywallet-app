@@ -92,7 +92,11 @@
   }
 
   &__count {
+    font-feature-settings: normal !important;
+    font-variant: normal !important;
+
     .ant-statistic-content {
+      font-size: rem(24);
       color: $black;
       font-weight: 700;
     }
@@ -136,7 +140,7 @@
       border-top: 4px solid $success;
     }
 
-    &--border {
+    &--gray {
       border-top: 4px solid $border;
     }
 

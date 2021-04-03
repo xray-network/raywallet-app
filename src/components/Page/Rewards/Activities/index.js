@@ -1,27 +1,51 @@
-import React, { useState } from 'react'
-import { Button, Input, Form, Tooltip, Statistic } from 'antd'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Button, Input, Form, Tooltip, Statistic, Alert } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 
 const RewardsActivities = () => {
-  const [date] = useState(new Date('2021-06-01'))
+  const networkInfo = useSelector((state) => state.wallets.networkInfo)
+  const walletStake = useSelector((state) => state.wallets.walletStake)
+  const walletPools = useSelector((state) => state.wallets.walletPools)
+  const startedAt = networkInfo.currentEpoch?.startedAt
+  const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
+  const rewardsAmount = parseInt((walletStake.activeStakeAmount || 0) / 100000000, 10) * 10
+
+  const inRayPools = !(
+    !walletPools.some((item) => item.hash === walletStake.stakePoolHash) && !!walletPools.length
+  )
 
   return (
     <div>
       <div className="ray__heading">Live Activities</div>
       <div className="ray__item ray__item--success">
+        <Alert
+          message="All rewards from November 1, 2020 will be recalculated and added to your account after the withdrawal feature is launched. Your rewards are safe."
+          className="mb-4"
+        />
+        {!inRayPools && (
+          <Alert
+            message="Your funds are delegated to non-RAY pools. RAY rewards are not calculated."
+            className="mb-4"
+          />
+        )}
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3 mb-lg-0">
               <div className="ray__form__label">Expected Payout</div>
               <div className="ray__form__amount">
-                <AmountFormatter
-                  amount={15158}
-                  ticker="ray"
-                  hash="__RAYHASH__"
-                  large
-                  prefix="~"
-                  availablePrivate
-                />
+                {(!walletStake.hasStakingKey || !inRayPools) && (
+                  <strong className="font-size-24">Not delegated</strong>
+                )}
+                {walletStake.hasStakingKey && inRayPools && (
+                  <AmountFormatter
+                    amount={rewardsAmount}
+                    ticker="ray"
+                    hash="__RAYHASH__"
+                    large
+                    availablePrivate
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -44,32 +68,30 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
+                <AmountFormatter amount={0} hash="ray" ticker="ray" large availablePrivate />
+              </div>
+            </div>
+            <div className="mb-3 mb-lg-2">
+              <Tooltip title="Soon">
+                <Button type="primary" disabled>
+                  <i className="fe fe-arrow-down-circle mr-1" />
+                  Withdraw Rewards
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Controlled total stake</div>
+              <div className="ray__form__amount">
                 <AmountFormatter
-                  amount={1725491.8542}
-                  hash="ray"
-                  ticker="ray"
+                  amount={walletStake.activeStakeAmount || 0}
+                  hash="lovelace"
+                  ticker="ada"
                   large
                   availablePrivate
                 />
               </div>
-            </div>
-            <div className="mb-3 mb-lg-2">
-              <Button type="primary">
-                <i className="fe fe-arrow-down-circle mr-1" />
-                Withdraw Rewards
-              </Button>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
-              <div className="ray__form__label">Processing Fees</div>
-              <small>
-                <p className="mb-0">
-                  To receive withdrawal bonuses, you must send 2 ADA to cover txs commissions. These
-                  funds, excluding Cardano txs commissions (~0.4 ADA), will be returned to you along
-                  with RAY tokens
-                </p>
-              </small>
             </div>
           </div>
         </div>
@@ -100,8 +122,20 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0 mb-lg-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">100 ADA = 1 RAY</span>
+                <span className="badge badge-light">10 ADA = 1 RAY</span>
               </div>
+            </div>
+          </div>
+          <div className="col-lg-12">
+            <div className="ray__form__item mb-3 mb-lg-0">
+              <div className="ray__form__label">Processing Fees</div>
+              <small>
+                <p className="mb-0">
+                  To receive withdrawal bonuses, you must send 2 ADA to cover txs commissions. These
+                  funds, excluding Cardano txs commissions (~0.4 ADA), will be returned to you along
+                  with RAY tokens
+                </p>
+              </small>
             </div>
           </div>
         </div>

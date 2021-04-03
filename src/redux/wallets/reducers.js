@@ -6,7 +6,8 @@ const initialState = {
   walletParams: {
     name: '',
     order: 0,
-    accountId: '', // stake key address
+    accountId: '', // stake key hash
+    rewardAddress: '', // stake key
     publicKey: '', // xpub
     privateKey: '', // xprv :: encrypted
     password: '', // password :: encrypted
@@ -19,6 +20,9 @@ const initialState = {
   },
   walletAddresses: [],
   walletTransactions: [],
+  walletStake: {},
+  walletStakeRewards: [],
+  walletPools: [],
   walletData: {
     assets: [],
     addresses: [],

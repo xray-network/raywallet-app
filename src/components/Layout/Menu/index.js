@@ -11,6 +11,7 @@ const Menu = () => {
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
+  const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
@@ -242,9 +243,25 @@ const Menu = () => {
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
-              <div>Staking: Not delegated</div>
-              <div>RAY Rewards: Not delegated</div>
-              <div>Transactions: {walletTransactions.length}</div>
+              <div>
+                Stake Rewards: {!walletStake.hasStakingKey && <span>Not delegated</span>}
+                {walletStake.hasStakingKey && (
+                  <Link to="/stake/delegation">
+                    {parseInt(walletStake.rewardsAmount / 1000000, 10) || 0} <sup>ADA</sup>
+                  </Link>
+                )}
+              </div>
+              <div>
+                RAY Rewards: {!walletStake.hasStakingKey && <span>Not delegated</span>}
+                {walletStake.hasStakingKey && (
+                  <Link to="/rewards/activities">
+                    0 <sup>RAY</sup>
+                  </Link>
+                )}
+              </div>
+              <div>
+                Transactions: <Link to="/wallet/transactions">{walletTransactions.length}</Link>
+              </div>
             </div>
           </div>
         )}
@@ -265,7 +282,7 @@ const Menu = () => {
               Tokens Exchange
             </Link>
             <Link to="/kickstart/token/create">
-              <i className="fe fe-arrow-up-circle mr-2" />
+              <i className="fe fe-upload mr-2" />
               Create Token
             </Link>
             <Link to="/rewards/activities">

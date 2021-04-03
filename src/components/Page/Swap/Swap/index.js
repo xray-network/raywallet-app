@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, Select, Button } from 'antd'
+import { Input, Form, Select, Button, Alert } from 'antd'
 import { useSelector } from 'react-redux'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 import style from './style.module.scss'
@@ -25,6 +25,14 @@ const Swap = () => {
 
   return (
     <div>
+      <div className="mb-4">
+        <Alert
+          message="RAY Swap will be available in the Goguen Era"
+          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
+          type="info"
+          showIcon
+        />
+      </div>
       <Form form={form} layout="vertical" requiredMark={false}>
         <Input.Group compact className={style.assetGroup}>
           <Form.Item

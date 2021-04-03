@@ -12,7 +12,7 @@ const WalletsAddresses = () => {
       {!walletAddresses.length && <Empty title="No addresses found" />}
       {!!walletAddresses.length &&
         walletAddresses.map((address, index) => (
-          <div>
+          <div key={index}>
             <AddressQR key={index} index={index} address={address} />
             <div className="ray__line" />
           </div>

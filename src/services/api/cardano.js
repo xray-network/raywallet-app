@@ -202,3 +202,97 @@ export async function GetTransactionsIO(hashes) {
     })
     .catch((err) => console.log(err))
 }
+
+export async function GetStakeAddressInfo(address, epoch) {
+  return apiClient
+    .post('/', {
+      query: `
+        query activeStakeForAddress($epoch: Int, $address: StakeAddress) {
+          activeStake(
+            limit: 1
+            where: { epochNo: { _eq: $epoch }, address: { _eq: $address } }
+          ) {
+            amount
+            stakePoolHash
+          }
+        }
+      `,
+      variables: {
+        address,
+        epoch,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
+export async function GetPoolsInfo(hashes, epoch) {
+  return apiClient
+    .post('/', {
+      query: `
+        query allStakePoolFields($hashes: [Hash28Hex], $epoch: Int) {
+          stakePools(where: { hash: { _in: $hashes } }) {
+            activeStake_aggregate(where: { epoch: { number: { _eq: $epoch } } }) {
+              aggregate {
+                count
+                sum {
+                  amount
+                }
+              }
+            }
+            fixedCost
+            hash
+            id
+            margin
+            pledge
+            url
+          }
+        }
+      `,
+      variables: {
+        hashes,
+        epoch,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
+export async function GetRewardsForAddress(address) {
+  return apiClient
+    .post('/', {
+      query: `
+        query rewardsForAddress($address: StakeAddress) {
+          rewards(limit: 10, where: { address: { _eq: $address } }) {
+            address
+            amount
+            earnedIn {
+              number
+              startedAt
+              lastBlockTime
+            }
+          }
+        }
+      `,
+      variables: {
+        address,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}

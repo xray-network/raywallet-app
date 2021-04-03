@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Select, Radio, DatePicker } from 'antd'
+import { Form, Input, Button, Select, Radio, DatePicker, Alert } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
 // import style from './style.module.scss'
 
@@ -41,6 +41,14 @@ const KickStartCreateProject = () => {
 
   return (
     <div>
+      <div className="mb-4">
+        <Alert
+          message="Start Funding will be available in the Goguen Era"
+          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
+          type="info"
+          showIcon
+        />
+      </div>
       <Form
         form={form}
         layout="vertical"

@@ -55,7 +55,7 @@ const AmountFormatter = ({
           </span>
         )}
         <small>
-          <span className="text-uppercase ml-2">{ticker}</span>
+          <sup className="text-uppercase ml-2">{ticker}</sup>
           {mappedHash && exchangeRates[mappedHash] && (
             <a className="ray__link ml-2">
               <Tooltip

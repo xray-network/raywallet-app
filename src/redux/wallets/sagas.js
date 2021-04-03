@@ -167,7 +167,8 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
         value: {
           name: '',
           order: 0,
-          accountId: '', // stake key address
+          accountId: '', // stake key hash
+          rewardAddress: '', // stake key
           publicKey: '', // xpub
           privateKey: '', // xprv :: encrypted
           password: '', // password :: encrypted
@@ -587,6 +588,133 @@ export function* GET_UTXO_STATE() {
   })
 }
 
+export function* GET_STAKE_STATE() {
+  const walletAssetsSummary = yield select((state) => state.wallets.walletAssetsSummary)
+  // const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
+  // const rawStakeInfo = yield call(Explorer.GetStakeAddressInfo, rewardAddress, currentEpoch.number)
+  const rawStakeInfo = {
+    data: {
+      activeStake: [
+        {
+          amount: '1756862531',
+          stakePoolHash: '1c8cd022e993a8366be641c17cb6d9c5d8944e00bfce3189d8b1515a',
+        },
+      ],
+      stakeRegistrations: [
+        {
+          address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
+          transaction: {
+            block: {
+              number: 5014835,
+            },
+          },
+        },
+      ],
+      stakeDeregistrations: [],
+    },
+  }
+  const stakeRegistrationBlock =
+    rawStakeInfo.data?.stakeRegistrations[0]?.transaction.block.number || 0
+  const stakeDeregistrationBlock =
+    rawStakeInfo.data?.stakeDeregistrations[0]?.transaction.block.number || 0
+  const hasStakingKey = stakeRegistrationBlock > stakeDeregistrationBlock
+  const stakeData = {
+    activeStakeAmount: hasStakingKey
+      ? parseInt(rawStakeInfo.data?.activeStake[0]?.amount || 0, 10)
+      : 0,
+    rewardsAmount: hasStakingKey
+      ? parseInt(rawStakeInfo.data?.activeStake[0]?.amount - walletAssetsSummary.value || 0, 10)
+      : 0,
+    stakePoolHash: rawStakeInfo.data?.activeStake[0]?.stakePoolHash || false,
+    hasStakingKey,
+  }
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStake',
+      value: stakeData,
+    },
+  })
+}
+
+export function* GET_POOLS_INFO() {
+  const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
+  const pools = {
+    '1c8cd022e993a8366be641c17cb6d9c5d8944e00bfce3189d8b1515a': {
+      ticker: 'RAY',
+      name: 'RAY Network',
+    },
+  }
+
+  let poolsInfo = yield call(Explorer.GetPoolsInfo, Object.keys(pools), currentEpoch.number)
+  poolsInfo = [
+    {
+      activeStake_aggregate: {
+        aggregate: {
+          count: '8',
+          sum: {
+            amount: '31936229742',
+          },
+        },
+      },
+      fixedCost: '340000000',
+      hash: '1c8cd022e993a8366be641c17cb6d9c5d8944e00bfce3189d8b1515a',
+      id: 'pool1rjxdqghfjw5rv6lxg8qhedkechvfgnsqhl8rrzwck9g45n43yql',
+      margin: 0,
+      pledge: '1000000000',
+      url: 'https://rraayy.com/poolmeta.json',
+    },
+  ]
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletPools',
+      value: poolsInfo.map((item) => {
+        return {
+          ...item,
+          ...pools[item.hash],
+        }
+      }),
+    },
+  })
+}
+
+export function* GET_STAKE_REWARDS_HISTORY() {
+  const { rewardAddress } = yield select((state) => state.wallets.walletParams)
+
+  let walletStakeRewards = yield call(Explorer.GetRewardsForAddress, rewardAddress)
+  walletStakeRewards = [
+    {
+      address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
+      amount: '8608',
+      earnedIn: {
+        number: 234,
+        startedAt: '2020-12-06T21:44:51Z',
+        lastBlockTime: '2020-12-11T21:44:50Z',
+      },
+    },
+    {
+      address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
+      amount: '2552755',
+      earnedIn: {
+        number: 235,
+        startedAt: '2020-12-11T21:45:01Z',
+        lastBlockTime: '2020-12-16T21:43:48Z',
+      },
+    },
+  ]
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStakeRewards',
+      value: walletStakeRewards,
+    },
+  })
+}
+
 export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
   if (!publicKey) {
@@ -611,7 +739,9 @@ export function* FETCH_WALLET_DATA() {
   const { tip } = yield select((state) => state.wallets.networkInfo)
   if (tip) {
     yield call(GET_UTXO_STATE)
-    // yield call(GET_STAKE_STATE)
+    yield call(GET_STAKE_STATE)
+    yield call(GET_POOLS_INFO)
+    yield call(GET_STAKE_REWARDS_HISTORY)
   }
 
   yield put({
@@ -655,6 +785,9 @@ export default function* rootSaga() {
     takeEvery(actions.CHANGE_WALLET_NAME, CHANGE_WALLET_NAME),
     takeEvery(actions.DELETE_WALLET, DELETE_WALLET),
     takeEvery(actions.IMPORT_WALLET, IMPORT_WALLET),
+    takeEvery(actions.GET_STAKE_STATE, GET_STAKE_STATE),
+    takeEvery(actions.GET_POOLS_INFO, GET_POOLS_INFO),
+    takeEvery(actions.GET_STAKE_REWARDS_HISTORY, GET_STAKE_REWARDS_HISTORY),
     SETUP(), // run once on app load to init listeners
   ])
 }
