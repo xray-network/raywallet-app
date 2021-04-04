@@ -1,5 +1,33 @@
 @import 'mixins.scss';
 
+.asset {
+  &Ticker {
+    width: 160px;
+  }
+  &Amount {
+    width: calc(100% - 280px);
+  }
+  &Donate {
+    width: 120px;
+  }
+  &To {
+    color: $black;
+    font-weight: 700;
+  }
+  &Icon {
+    display: inline-block;
+    height: 26px;
+    width: 26px;
+    background: $pastel-1;
+    border-radius: 20px;
+    margin-right: rem(10);
+    border: 1px solid $border;
+    text-align: center;
+    line-height: 24px;
+    font-weight: normal;
+  }
+}
+
 // dark theme
 // [data-vb-theme='dark'] {
 

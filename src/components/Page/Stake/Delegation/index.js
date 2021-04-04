@@ -101,7 +101,7 @@ const StakeBalances = () => {
           </div>
         </div>
       </div>
-      <div className="ray__heading">Delegation Pools</div>
+      <div className="ray__heading">RAY Pools</div>
       {!walletPools.length && (
         <div className="ray__item py-5 text-center">
           <Spin indicator={<LoadingOutlined style={{ fontSize: 32 }} spin />} />

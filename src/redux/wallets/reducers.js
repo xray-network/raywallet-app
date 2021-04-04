@@ -22,12 +22,8 @@ const initialState = {
   walletTransactions: [],
   walletStake: {},
   walletStakeRewards: [],
+  walletRayRewards: [],
   walletPools: [],
-  walletData: {
-    assets: [],
-    addresses: [],
-    transactions: [],
-  },
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
   networkInfo: {},

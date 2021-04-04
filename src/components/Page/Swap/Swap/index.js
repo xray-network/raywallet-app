@@ -21,7 +21,7 @@ const swapAssets = [
 
 const Swap = () => {
   const [form] = Form.useForm()
-  const walletData = useSelector((state) => state.wallets.walletData)
+  const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
 
   return (
     <div>
@@ -42,17 +42,16 @@ const Swap = () => {
             rules={[{ required: true, message: 'Required' }]}
           >
             <Select size="large" placeholder="Select">
-              {walletData.assets &&
-                walletData.assets.map((asset, index) => {
-                  return (
-                    <Select.Option key={index}>
-                      <div className={style.assetTo}>
-                        <span className={style.assetIcon}>?</span>
-                        <span className={style.assetTo}>{asset.ticker}</span>
-                      </div>
-                    </Select.Option>
-                  )
-                })}
+              {walletAssetsSummary.tokens.map((token, index) => {
+                return (
+                  <Select.Option key={index}>
+                    <div className={style.assetTo}>
+                      <span className={style.assetIcon}>?</span>
+                      <span className={style.assetTo}>{token.ticker}</span>
+                    </div>
+                  </Select.Option>
+                )
+              })}
             </Select>
           </Form.Item>
           <Form.Item

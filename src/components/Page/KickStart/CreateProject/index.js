@@ -3,11 +3,11 @@ import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { Form, Input, Button, Select, Radio, DatePicker, Alert } from 'antd'
 import AmountFormatter from 'components/Layout/AmountFormatter'
-// import style from './style.module.scss'
+import style from './style.module.scss'
 
 const KickStartCreateProject = () => {
   const walletParams = useSelector((state) => state.wallets.walletParams)
-  const walletData = useSelector((state) => state.wallets.walletData)
+  const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
@@ -89,14 +89,16 @@ const KickStartCreateProject = () => {
               rules={[{ required: true, message: 'Please enter address' }]}
             >
               <Select size="large" placeholder="Select token">
-                {walletData.assets &&
-                  walletData.assets.map((asset, index) => {
-                    return (
-                      <Select.Option key={index} value={asset.ticker}>
-                        {asset.ticker}
-                      </Select.Option>
-                    )
-                  })}
+                {walletAssetsSummary.tokens.map((token, index) => {
+                  return (
+                    <Select.Option key={index} value={token.ticker}>
+                      <div className={style.assetTo}>
+                        <span className={style.assetIcon}>?</span>
+                        <span className={style.assetTo}>{token.ticker}</span>
+                      </div>
+                    </Select.Option>
+                  )
+                })}
               </Select>
             </Form.Item>
           </div>

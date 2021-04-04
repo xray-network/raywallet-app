@@ -207,6 +207,34 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
         value: [],
       },
     })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletStake',
+        value: {},
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletStakeRewards',
+        value: [],
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletRayRewards',
+        value: [],
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletPools',
+        value: [],
+      },
+    })
     return
   }
 
