@@ -1,51 +1,34 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Input, Form, Tooltip, Statistic, Alert } from 'antd'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import { Button, Input, Form, Tooltip, Statistic } from 'antd'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 
 const RewardsActivities = () => {
   const networkInfo = useSelector((state) => state.wallets.networkInfo)
   const walletStake = useSelector((state) => state.wallets.walletStake)
-  const walletPools = useSelector((state) => state.wallets.walletPools)
+  const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
   const startedAt = networkInfo.currentEpoch?.startedAt
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
-  const rewardsAmount = parseInt((walletStake.activeStakeAmount || 0) / 100000000, 10) * 10
 
-  const inRayPools = !(
-    !walletPools.some((item) => item.hash === walletStake.stakePoolHash) && !!walletPools.length
-  )
+  const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
+  const expectedPayout = walletStake.activeStakeAmount
 
   return (
     <div>
       <div className="ray__heading">Live Activities</div>
-      <div className="ray__item ray__item--success">
-        <Alert
-          message="All rewards from November 1, 2020 will be recalculated and added to your account after the withdrawal feature is launched. Your rewards are safe."
-          className="mb-4"
-        />
-        {!inRayPools && (
-          <Alert
-            message="Your funds are delegated to non-RAY pools. RAY rewards are not calculated."
-            className="mb-4"
-          />
-        )}
+      <div
+        className={`ray__item ${
+          walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
+        }`}
+      >
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3 mb-lg-0">
               <div className="ray__form__label">Expected Payout</div>
               <div className="ray__form__amount">
-                {(!walletStake.hasStakingKey || !inRayPools) && (
-                  <strong className="font-size-24">Not delegated</strong>
-                )}
-                {walletStake.hasStakingKey && inRayPools && (
-                  <AmountFormatter
-                    amount={rewardsAmount}
-                    ticker="ray"
-                    hash="__RAYHASH__"
-                    large
-                    availablePrivate
-                  />
-                )}
+                {!inRayPools && <strong className="font-size-24">Not in RAY pools</strong>}
+                {inRayPools && <AmountFormatterAsset amount={expectedPayout} />}
               </div>
             </div>
           </div>
@@ -68,7 +51,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatter amount={0} hash="ray" ticker="ray" large availablePrivate />
+                <AmountFormatterAsset amount={0} />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -84,13 +67,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Controlled total stake</div>
               <div className="ray__form__amount">
-                <AmountFormatter
-                  amount={walletStake.activeStakeAmount || 0}
-                  hash="lovelace"
-                  ticker="ada"
-                  large
-                  availablePrivate
-                />
+                <AmountFormatterAda amount={walletStake.activeStakeAmount} />
               </div>
             </div>
           </div>
@@ -99,17 +76,34 @@ const RewardsActivities = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
+              <div className="ray__form__label text-danger">Launching Information</div>
+              <small>
+                <p className="mb-0">
+                  All rewards from November 1, 2020 will be recalculated and added to your account
+                  after the withdrawal feature is launched. Your rewards are safe.
+                </p>
+              </small>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
-                Receive additional RAY rewards every epoch (5 days) for delegating your ADA coins to
-                any RAY pool
+                <small>
+                  <p className="mb-0">
+                    Receive additional RAY rewards every epoch (5 days) for delegating your ADA
+                    coins to any RAY pool
+                  </p>
+                </small>
               </div>
             </div>
           </div>
         </div>
         <div className="row">
           <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
+            <div className="ray__form__item mb-3">
               <div className="ray__form__label">Conditions</div>
               <div className="ray__form__amount">
                 <small>
@@ -119,13 +113,15 @@ const RewardsActivities = () => {
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="ray__form__item mb-0 mb-lg-0">
+            <div className="ray__form__item mb-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
                 <span className="badge badge-light">10 ADA = 1 RAY</span>
               </div>
             </div>
           </div>
+        </div>
+        <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3 mb-lg-0">
               <div className="ray__form__label">Processing Fees</div>
@@ -141,12 +137,16 @@ const RewardsActivities = () => {
         </div>
       </div>
       <div className="ray__heading">Upcoming Activities</div>
-      <div className="ray__item">
+      <div className="ray__item ray__item--gray">
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
-              <div className="ray__form__amount">Airdrop to early RAY token users</div>
+              <div className="ray__form__amount">
+                <small>
+                  <div>Airdrop to early RAY token users</div>
+                </small>
+              </div>
             </div>
           </div>
           <div className="col-lg-6">
@@ -182,20 +182,24 @@ const RewardsActivities = () => {
           </div>
         </div>
       </div>
-      <div className="ray__item">
+      <div className="ray__item ray__item--gray">
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
-                Tweet about your experience with the RAY Network or any positive feedback with the
-                hashtags below
-                <div className="pt-2">
-                  <code>
-                    #giveaway #crypto #coinbase #binance $ray $btc $eth $ada $dot $usdt $xrp $link
-                    $eos $ltc $sushi $uni
-                  </code>
-                </div>
+                <small>
+                  <div>
+                    Tweet about your experience with the RAY Network or any positive feedback with
+                    the hashtags below
+                    <div className="pt-2">
+                      <code>
+                        #giveaway #crypto #coinbase #binance $ray $btc $eth $ada $dot $usdt $xrp
+                        $link $eos $ltc $sushi $uni
+                      </code>
+                    </div>
+                  </div>
+                </small>
               </div>
             </div>
           </div>

@@ -2,29 +2,23 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { format } from 'date-fns'
 import Empty from 'components/Layout/Empty'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const StakeHistory = () => {
-  const walletStakeRewards = useSelector((state) => state.wallets.walletStakeRewards)
+  const walletStakeRewardsHistory = useSelector((state) => state.wallets.walletStakeRewardsHistory)
 
   return (
     <div>
       <div className="ray__heading">Recently Rewards</div>
-      {!walletStakeRewards.length && <Empty title="No transactions" />}
-      {walletStakeRewards.map((reward, index) => {
+      {!walletStakeRewardsHistory.length && <Empty title="No transactions" />}
+      {walletStakeRewardsHistory.map((reward, index) => {
         return (
           <div key={index} className="ray__tx">
             <div className="font-size-36 mr-3">
               <i className="fe fe-arrow-down-circle text-success" />
             </div>
             <div>
-              <AmountFormatter
-                amount={reward.amount}
-                ticker="ADA"
-                hash="lovelace"
-                prefix="+"
-                availablePrivate
-              />
+              <AmountFormatterAda amount={reward.amount} />
               <div className="ray__address mt-2">
                 <span className="mr-3">Epoch: {reward.earnedIn.number}</span>
                 <span>

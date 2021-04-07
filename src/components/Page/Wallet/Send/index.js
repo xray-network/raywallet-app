@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Form, Input, Button, Tooltip, Select, Empty } from 'antd'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AssetImage from 'components/Layout/AssetImage'
 import style from './style.module.scss'
 
 const WalletSend = () => {
@@ -73,18 +74,22 @@ const WalletSend = () => {
                 />
               }
             >
-              <Select.Option key="ada">
+              <Select.Option value="ada">
                 <div className={style.assetTo}>
-                  <span className={style.assetIcon}>?</span>
-                  <span className={style.assetTo}>ada</span>
+                  <span className={style.assetIcon}>
+                    <AssetImage fingerprint="ada" />
+                  </span>
+                  <span className={style.assetName}>ADA</span>
                 </div>
               </Select.Option>
-              {walletAssetsSummary.tokens.map((token, tokenIndex) => {
+              {walletAssetsSummary.tokens.map((token) => {
                 return (
-                  <Select.Option key={tokenIndex}>
+                  <Select.Option key={token.fingerprint} value={token.fingerprint}>
                     <div className={style.assetTo}>
-                      <span className={style.assetIcon}>?</span>
-                      <span className={style.assetTo}>{token.ticker}</span>
+                      <span className={style.assetIcon}>
+                        <AssetImage fingerprint={token.fingerprint} />
+                      </span>
+                      <span className={style.assetName}>{token.ticker}</span>
                     </div>
                   </Select.Option>
                 )
@@ -132,7 +137,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" large />
+                  <AmountFormatterAda amount={0} />
                 </div>
               </div>
             </div>
@@ -140,7 +145,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Fee (inlc. in total)</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
+                  <AmountFormatterAda amount={0} />
                 </div>
               </div>
             </div>

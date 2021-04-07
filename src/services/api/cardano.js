@@ -18,9 +18,13 @@
 import axios from 'axios'
 import { notification } from 'antd'
 
+const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
+
 const apiClient = axios.create({
-  // baseURL: 'https://graphql-api.mainnet.dandelion.link', // mainnet
-  baseURL: 'https://graphql-api.testnet.dandelion.link', // testnet
+  baseURL:
+    CARDANO_NETWORK === 'mainnet'
+      ? 'https://graphql.rraayy.com'
+      : 'https://graphql-testnet.rraayy.com', // testnet
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
@@ -94,10 +98,19 @@ export async function GetAdressesUTXO(addresses) {
             address
             value
             tokens {
-              assetId
-              assetName
-              policyId
               quantity
+              asset {
+                assetId
+                fingerprint
+                assetName
+                description
+                name
+                policyId
+                ticker
+                metadataHash
+                logo
+                url
+              }
             }
           }
         }
@@ -173,18 +186,38 @@ export async function GetTransactionsIO(hashes) {
               address
               value
               tokens {
-                assetId
-                assetName
                 quantity
+                asset {
+                  assetId
+                  fingerprint
+                  assetName
+                  description
+                  name
+                  policyId
+                  ticker
+                  metadataHash
+                  logo
+                  url
+                }
               }
             }
             outputs {
               address
               value
               tokens {
-                assetId
-                assetName
                 quantity
+                asset {
+                  assetId
+                  fingerprint
+                  assetName
+                  description
+                  name
+                  policyId
+                  ticker
+                  metadataHash
+                  logo
+                  url
+                }
               }
             }
           }
@@ -213,7 +246,45 @@ export async function GetStakeAddressInfo(address, epoch) {
             where: { epochNo: { _eq: $epoch }, address: { _eq: $address } }
           ) {
             amount
-            stakePoolHash
+            stakePoolId
+          }
+          stakeRegistrations (
+            limit: 1
+            where: { address: { _eq: $address } }
+            order_by: { 
+              transaction: {
+                block : {
+                  number: desc
+                }
+              }
+            }
+          ) {
+            address
+            transaction {
+              includedAt
+              block {
+                number
+              }
+            }
+          }
+          stakeDeregistrations (
+            limit: 1
+            where: { address: { _eq: $address } }
+            order_by: { 
+              transaction: {
+                block : {
+                  number: desc
+                }
+              }
+            }
+          ) {
+            address
+            transaction {
+              includedAt
+              block {
+                number
+              }
+            }
           }
         }
       `,
@@ -231,12 +302,12 @@ export async function GetStakeAddressInfo(address, epoch) {
     .catch((err) => console.log(err))
 }
 
-export async function GetPoolsInfo(hashes, epoch) {
+export async function GetPoolsInfo(ids, epoch) {
   return apiClient
     .post('/', {
       query: `
-        query allStakePoolFields($hashes: [Hash28Hex], $epoch: Int) {
-          stakePools(where: { hash: { _in: $hashes } }) {
+        query allStakePoolFields($ids: [StakePoolID], $epoch: Int) {
+          stakePools(where: { id: { _in: $ids } }) {
             activeStake_aggregate(where: { epoch: { number: { _eq: $epoch } } }) {
               aggregate {
                 count
@@ -255,7 +326,7 @@ export async function GetPoolsInfo(hashes, epoch) {
         }
       `,
       variables: {
-        hashes,
+        ids,
         epoch,
       },
     })

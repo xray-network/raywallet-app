@@ -13,6 +13,9 @@
   &To {
     color: $black;
     font-weight: 700;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
   }
   &Icon {
     display: inline-block;
@@ -20,11 +23,27 @@
     width: 26px;
     background: $pastel-1;
     border-radius: 20px;
-    margin-right: rem(10);
+    margin-right: rem(7);
     border: 1px solid $border;
     text-align: center;
-    line-height: 24px;
     font-weight: normal;
+    overflow: hidden;
+
+    span {
+      float: left;
+      display: block;
+      height: 24px;
+      width: 24px;
+      text-align: center;
+      line-height: 24px;
+      font-size: rem(14);
+    }
+
+    img {
+      height: 24px;
+      width: 24px;
+      float: left;
+    }
   }
 }
 

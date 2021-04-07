@@ -161,10 +161,10 @@
 
   &__form {
     &__label {
-      color: $dark !important;
+      color: $dark;
       text-transform: uppercase;
       font-weight: 700;
-      font-size: rem(12) !important;
+      font-size: rem(12);
       padding-top: rem(3);
       margin-bottom: rem(9);
       line-height: 1.5715;
@@ -175,6 +175,10 @@
     padding: rem(30) 0 rem(50);
     text-align: center;
     color: $gray-3;
+  }
+
+  &__shadow {
+    box-shadow: $shadow-ant;
   }
 
   &__submenu {

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { useRouteMatch, Switch, Route, Redirect } from 'react-router-dom'
+import { Alert } from 'antd'
 import SwapSubmenu from 'components/Page/Swap/Submenu'
 import Swap from 'components/Page/Swap/Swap'
 import SwapLiquidityPools from 'components/Page/Swap/LiquidityPools'
@@ -14,6 +15,14 @@ const DeFi = () => {
       <div className="ray__wrapper">
         <Helmet title="Swap DeFi" />
         <SwapSubmenu />
+        <div className="mb-4">
+          <Alert
+            message="RAY Swap will be available in the Goguen Era"
+            description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
+            type="info"
+            showIcon
+          />
+        </div>
         <Switch>
           <Route exact path={path} render={() => <Redirect to={`${path}/swap`} />} />
           <Route exact path={`${path}/swap`}>

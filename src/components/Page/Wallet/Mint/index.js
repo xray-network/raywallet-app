@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Form, Input, Button } from 'antd'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 // import style from './style.module.scss'
 
-const KickStartCreateToken = () => {
+const WalleMint = () => {
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
@@ -85,13 +85,13 @@ const KickStartCreateToken = () => {
         >
           <Input size="large" placeholder="Address" disabled />
         </Form.Item>
-        <div className="ray__item mt-4">
+        <div className="ray__item ray__item--success mt-4">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" large />
+                  <AmountFormatterAda amount={0} />
                 </div>
               </div>
             </div>
@@ -99,13 +99,13 @@ const KickStartCreateToken = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
+                  <AmountFormatterAda amount={0} />
                 </div>
               </div>
               <div className="ray__form__item">
                 <div className="ray__form__label">Network Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
+                  <AmountFormatterAda amount={0} />
                 </div>
               </div>
             </div>
@@ -119,8 +119,8 @@ const KickStartCreateToken = () => {
             type="primary"
             className="ray__btn__send w-100"
           >
-            <i className="fe fe-plus-circle" />
-            <strong>Create Token</strong>
+            <i className="fe fe-upload" />
+            <strong>Mint Token</strong>
           </Button>
         </Form.Item>
       </Form>
@@ -128,4 +128,4 @@ const KickStartCreateToken = () => {
   )
 }
 
-export default KickStartCreateToken
+export default WalleMint

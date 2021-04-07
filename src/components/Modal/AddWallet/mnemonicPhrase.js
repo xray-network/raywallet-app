@@ -120,17 +120,7 @@ const MnemonicForm = () => {
             <div className="mb-3">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
-                <a
-                  href="https://rraayy.com/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Privacy Policy
-                </a>{' '}
-                and{' '}
-                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">
-                  Terms of Use
-                </a>
+                <a className="ray__link">Terms of Use & Privacy Policy</a>
               </Checkbox>
             </div>
             <Form.Item className="mb-0">
@@ -172,17 +162,7 @@ const MnemonicForm = () => {
             <div className="mb-1">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
-                <a
-                  href="https://rraayy.com/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Privacy Policy
-                </a>{' '}
-                and{' '}
-                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">
-                  Terms of Use
-                </a>
+                <a className="ray__link">Terms of Use & Privacy Policy</a>
               </Checkbox>
             </div>
             <div className="mb-3">

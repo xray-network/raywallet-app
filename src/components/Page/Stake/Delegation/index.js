@@ -3,24 +3,28 @@ import { useSelector } from 'react-redux'
 import { Button, Form, Input, Statistic, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import Address from 'components/Layout/Address'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const StakeBalances = () => {
+  const walletParams = useSelector((state) => state.wallets.walletParams)
   const networkInfo = useSelector((state) => state.wallets.networkInfo)
   const walletStake = useSelector((state) => state.wallets.walletStake)
-  const walletPools = useSelector((state) => state.wallets.walletPools)
+  const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
   const startedAt = networkInfo.currentEpoch?.startedAt
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
-  const maxSaturation = 64000000000000
-  const inRayPools = !(
-    !walletPools.some((item) => item.hash === walletStake.stakePoolHash) && !!walletPools.length
-  )
+  const hasStakeKey = walletStake.stakePoolId
+  const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
+  const expectedPayout = walletStake.activeStakeAmount
 
   return (
     <div>
       <div className="ray__heading">Stake Balances</div>
-      <div className="ray__item ray__item--success mb-4">
+      <div
+        className={`ray__item mb-4 ${
+          walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
+        }`}
+      >
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3 mb-lg-0">
@@ -29,16 +33,7 @@ const StakeBalances = () => {
                 {!walletStake.hasStakingKey && (
                   <strong className="font-size-24">Not delegated</strong>
                 )}
-                {walletStake.hasStakingKey && (
-                  <AmountFormatter
-                    amount={(walletStake.activeStakeAmount * 0.05) / 365 / 5 || 0}
-                    hash="lovelace"
-                    availablePrivate
-                    large
-                    ticker="ada"
-                    prefix="~"
-                  />
-                )}
+                {walletStake.hasStakingKey && <AmountFormatterAda amount={expectedPayout} />}
               </div>
             </div>
           </div>
@@ -69,13 +64,7 @@ const StakeBalances = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatter
-                  amount={walletStake.rewardsAmount || 0}
-                  hash="lovelace"
-                  ticker="ada"
-                  large
-                  availablePrivate
-                />
+                <AmountFormatterAda amount={walletStake.rewardsAmount} />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -89,69 +78,72 @@ const StakeBalances = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Controlled total stake</div>
               <div className="ray__form__amount">
-                <AmountFormatter
-                  amount={walletStake.activeStakeAmount || 0}
-                  hash="lovelace"
-                  ticker="ada"
-                  large
-                  availablePrivate
-                />
+                <AmountFormatterAda amount={walletStake.activeStakeAmount} />
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className="ray__heading">RAY Pools</div>
-      {!walletPools.length && (
+      {!poolsInfo.length && (
         <div className="ray__item py-5 text-center">
           <Spin indicator={<LoadingOutlined style={{ fontSize: 32 }} spin />} />
         </div>
       )}
-      {walletPools.map((pool, index) => {
-        const amount = pool.activeStake_aggregate?.aggregate?.sum?.amount
+      {poolsInfo.map((pool, index) => {
+        const amount = pool.activeStake_aggregate?.aggregate?.sum?.amount || '?'
         return (
-          <div className="ray__item" key={index}>
+          <div
+            className={`ray__item ${
+              pool.id === walletStake.stakePoolId
+                ? 'ray__item--tinted ray__item--success'
+                : 'ray__item--gray'
+            }`}
+            key={index}
+          >
             <div className="mb-1 d-flex">
               <div>
-                <span className="badge badge-success mr-2">RAY</span>
+                <span className="badge badge-success mr-2">{pool.ticker}</span>
               </div>
               <div>
-                <strong>RAY Network</strong>
+                <strong>{pool.name}</strong>
               </div>
             </div>
             <div className="mb-3">
-              <Address address={pool.hash} cut prefix="Pool ID:" />
+              <Address address={pool.id} cut prefix="Pool ID:" />
             </div>
             <div className="row">
               <div className="col-lg-6">
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Active Stake</div>
                   <div className="ray__form__amount">
-                    <AmountFormatter amount={amount} ticker="ada" hash="lovelace" />
+                    <AmountFormatterAda amount={amount} />
                   </div>
                 </div>
               </div>
               <div className="col-lg-3">
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Saturation</div>
-                  <div className="ray__form__amount">{(amount / maxSaturation).toFixed(4)}%</div>
+                  <div className="ray__form__amount">
+                    {((amount / 64000000 / 1000000) * 100).toFixed(2)}%
+                  </div>
                 </div>
               </div>
               <div className="col-lg-3">
                 <div className="ray__form__item mb-3">
-                  <div className="ray__form__label">Tax</div>
+                  <div className="ray__form__label">Fee</div>
                   <div className="ray__form__amount">{pool.margin * 100}%</div>
                 </div>
               </div>
             </div>
-            {pool.hash === walletStake.stakePoolHash && (
+            {pool.id === walletStake.stakePoolId && (
               <Button type="primary" disabled>
                 <i className="fe fe-arrow-up-circle mr-1" />
                 Delagated
               </Button>
             )}
-            {pool.hash !== walletStake.stakePoolHash && (
-              <Button type="primary">
+            {pool.id !== walletStake.stakePoolId && (
+              <Button type="primary" disabled={!walletParams.accountId}>
                 <i className="fe fe-arrow-up-circle mr-1" />
                 Delegate
               </Button>
@@ -160,13 +152,13 @@ const StakeBalances = () => {
         )
       })}
       <div className="ray__item">
-        {!inRayPools && (
+        {!inRayPools && hasStakeKey && (
           <div>
             <div className="row">
               <div className="col-lg-12">
                 <div className="ray__form__label">Delegated to</div>
                 <div className="ray__form__amount">
-                  <Address address={walletStake.stakePoolHash || ''} cut prefix="Pool ID: " />
+                  <Address address={walletStake.stakePoolId || ''} cut prefix="Pool ID: " />
                 </div>
               </div>
             </div>
@@ -175,10 +167,10 @@ const StakeBalances = () => {
         )}
         <Form layout="vertical" requiredMark={false}>
           <Form.Item name="toAddress" rules={[{ required: true, message: 'Please enter pool id' }]}>
-            <Input size="large" placeholder="Delegate by pool ID" allowClear />
+            <Input size="large" placeholder="Delegate by Pool ID" allowClear />
           </Form.Item>
           <Form.Item className="mb-0">
-            <Button htmlType="submit">
+            <Button htmlType="submit" disabled={!hasStakeKey}>
               <i className="fe fe-arrow-up-circle mr-1" />
               <strong>Delegate</strong>
             </Button>

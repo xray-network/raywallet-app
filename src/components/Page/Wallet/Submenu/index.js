@@ -17,6 +17,10 @@ const WalletSubmenu = () => {
           <span>Receive</span>
           <span>Receive</span>
         </NavLink>
+        <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/mint`}>
+          <span>Mint</span>
+          <span>Mint</span>
+        </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/transactions`}>
           <span>Transactions ({walletTransactions.length})</span>
           <span>Transactions ({walletTransactions.length})</span>

@@ -4,7 +4,9 @@ import { format } from 'date-fns'
 import { Button } from 'antd'
 import Empty from 'components/Layout/Empty'
 import Address from 'components/Layout/Address'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
+import { BigIntAbs } from 'utils/utils'
 
 const WalletTransactions = () => {
   const [count, setCount] = useState(5)
@@ -25,23 +27,10 @@ const WalletTransactions = () => {
                   {tx.type === 'receive' && <i className="fe fe-arrow-down-circle text-success" />}
                 </div>
                 <div>
-                  <AmountFormatter
-                    amount={Math.abs(tx.value)}
-                    ticker="ada"
-                    hash="lovelace"
-                    prefix={tx.type === 'send' ? '-' : '+'}
-                    availablePrivate
-                  />
+                  <AmountFormatterAda amount={tx.value} />
                   {tx.tokens.map((token, tokenIndex) => {
                     return (
-                      <AmountFormatter
-                        key={tokenIndex}
-                        amount={Math.abs(token.quantity)}
-                        ticker={token.ticker}
-                        hash={token.assetId}
-                        prefix={tx.type === 'send' ? '-' : '+'}
-                        availablePrivate
-                      />
+                      <AmountFormatterAsset key={tokenIndex} amount={BigIntAbs(token.quantity)} />
                     )
                   })}
                   <div className="ray__address mt-2">

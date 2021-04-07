@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Select, Spin, Tooltip, Empty } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 import style from './style.module.scss'
 
 const Menu = () => {
@@ -16,6 +17,7 @@ const Menu = () => {
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
+  const sections = useSelector((state) => state.settings.sections)
 
   const selectRef = useRef()
 
@@ -52,6 +54,9 @@ const Menu = () => {
   const refreshData = () => {
     dispatch({
       type: 'wallets/FETCH_WALLET_DATA',
+    })
+    dispatch({
+      type: 'wallets/FETCH_SIDE_DATA',
     })
   }
 
@@ -217,27 +222,9 @@ const Menu = () => {
           </div>
         )}
         <div className="mb-3">
-          {walletParams.accountId && (
-            <AmountFormatter
-              amount={walletAssetsSummary.value}
-              ticker="ada"
-              hash="lovelace"
-              large
-              availablePrivate
-            />
-          )}
+          {walletParams.accountId && <AmountFormatterAda amount={walletAssetsSummary.value} />}
           {walletAssetsSummary.tokens.map((token, tokenIndex) => {
-            return (
-              <AmountFormatter
-                key={tokenIndex}
-                amount={token.quantity}
-                ticker={token.ticker}
-                hash={token.assetId}
-                large
-                noDecimals
-                availablePrivate
-              />
-            )
+            return <AmountFormatterAsset key={tokenIndex} amount={token.quantity} />
           })}
         </div>
         {walletParams.accountId && (
@@ -246,22 +233,20 @@ const Menu = () => {
               <div>
                 Stake Rewards: {!walletStake.hasStakingKey && <span>Not delegated</span>}
                 {walletStake.hasStakingKey && (
-                  <Link to="/stake/delegation">
-                    {parseInt(walletStake.rewardsAmount / 1000000, 10) || 0} <sup>ADA</sup>
-                  </Link>
+                  <span>
+                    {(parseInt(walletStake.rewardsAmount, 10) || 0).toString()} <sup>ADA</sup>
+                  </span>
                 )}
               </div>
               <div>
                 RAY Rewards: {!walletStake.hasStakingKey && <span>Not delegated</span>}
                 {walletStake.hasStakingKey && (
-                  <Link to="/rewards/activities">
+                  <span>
                     0 <sup>RAY</sup>
-                  </Link>
+                  </span>
                 )}
               </div>
-              <div>
-                Transactions: <Link to="/wallet/transactions">{walletTransactions.length}</Link>
-              </div>
+              <div>Transactions: {walletTransactions.length}</div>
             </div>
           </div>
         )}
@@ -277,17 +262,21 @@ const Menu = () => {
               <i className="fe fe-plus-circle mr-2" />
               Add Wallet
             </a>
-            <Link to="/swap">
-              <i className="fe fe-repeat mr-2" />
-              Tokens Exchange
-            </Link>
-            <Link to="/kickstart/token/create">
+            {sections.includes('rewards') && (
+              <Link to="/rewards/activities">
+                <i className="fe fe-activity mr-2" />
+                RAY Rewards Program
+              </Link>
+            )}
+            {sections.includes('swap') && (
+              <Link to="/swap/swap">
+                <i className="fe fe-repeat mr-2" />
+                Tokens Exchange
+              </Link>
+            )}
+            <Link to="/wallet/mint">
               <i className="fe fe-upload mr-2" />
-              Create Token
-            </Link>
-            <Link to="/rewards/activities">
-              <i className="fe fe-activity mr-2" />
-              RAY Rewards Program
+              Mint Token
             </Link>
           </div>
         </div>

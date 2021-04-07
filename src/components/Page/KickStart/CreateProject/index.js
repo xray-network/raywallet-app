@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Select, Radio, DatePicker, Alert } from 'antd'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import { Form, Input, Button, Select, Radio, DatePicker } from 'antd'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AssetImage from 'components/Layout/AssetImage'
 import style from './style.module.scss'
 
 const KickStartCreateProject = () => {
@@ -41,14 +42,6 @@ const KickStartCreateProject = () => {
 
   return (
     <div>
-      <div className="mb-4">
-        <Alert
-          message="Start Funding will be available in the Goguen Era"
-          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
-          type="info"
-          showIcon
-        />
-      </div>
       <Form
         form={form}
         layout="vertical"
@@ -89,11 +82,21 @@ const KickStartCreateProject = () => {
               rules={[{ required: true, message: 'Please enter address' }]}
             >
               <Select size="large" placeholder="Select token">
-                {walletAssetsSummary.tokens.map((token, index) => {
+                <Select.Option value="ada">
+                  <div className={style.assetTo}>
+                    <span className={style.assetIcon}>
+                      <AssetImage fingerprint="ada" />
+                    </span>
+                    <span className={style.assetTo}>ADA</span>
+                  </div>
+                </Select.Option>
+                {walletAssetsSummary.tokens.map((token) => {
                   return (
-                    <Select.Option key={index} value={token.ticker}>
+                    <Select.Option key={token.fingerprint} value={token.fingerprint}>
                       <div className={style.assetTo}>
-                        <span className={style.assetIcon}>?</span>
+                        <span className={style.assetIcon}>
+                          <AssetImage fingerprint={token.fingerprint} />
+                        </span>
                         <span className={style.assetTo}>{token.ticker}</span>
                       </div>
                     </Select.Option>
@@ -156,18 +159,13 @@ const KickStartCreateProject = () => {
             <Radio value="premium">Premium</Radio>
           </Radio.Group>
         </Form.Item>
-        <div className="ray__item mt-4">
+        <div className="ray__item ray__item--gray mt-4">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter
-                    amount={formValues.type === 'premium' ? 0 : 0}
-                    ticker="ada"
-                    hash="lovelace"
-                    large
-                  />
+                  <AmountFormatterAda amount={formValues.type === 'premium' ? 0 : 0} />
                 </div>
               </div>
             </div>
@@ -175,17 +173,13 @@ const KickStartCreateProject = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter
-                    amount={formValues.type === 'premium' ? 0 : 0}
-                    ticker="ada"
-                    hash="lovelace"
-                  />
+                  <AmountFormatterAda amount={formValues.type === 'premium' ? 0 : 0} />
                 </div>
               </div>
               <div className="ray__form__item">
                 <div className="ray__form__label">Network Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatter amount={0} ticker="ada" hash="lovelace" />
+                  <AmountFormatterAda amount={0} />
                 </div>
               </div>
             </div>

@@ -1,0 +1,23 @@
+@import 'mixins.scss';
+
+.button {
+  display: inline-block;
+  width: rem(22);
+  height: rem(21);
+  cursor: pointer;
+  font-size: rem(14);
+  color: $primary;
+  background: $white;
+  border: 1px solid $border;
+  text-align: center;
+  border-radius: 4px;
+  margin-top: rem(3);
+  @include transition-middle();
+
+  &:hover {
+    border-color: $primary;
+  }
+}
+
+// dark theme
+// [data-theme='dark'] { }
