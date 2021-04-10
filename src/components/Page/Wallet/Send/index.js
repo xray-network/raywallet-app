@@ -145,7 +145,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Fee (inlc. in total)</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={0} />
+                  <AmountFormatterAda amount={0} small />
                 </div>
               </div>
             </div>

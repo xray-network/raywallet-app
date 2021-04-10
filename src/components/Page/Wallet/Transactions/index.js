@@ -27,10 +27,21 @@ const WalletTransactions = () => {
                   {tx.type === 'receive' && <i className="fe fe-arrow-down-circle text-success" />}
                 </div>
                 <div>
-                  <AmountFormatterAda amount={tx.value} />
+                  <AmountFormatterAda
+                    amount={Math.abs(tx.value)}
+                    prefix={tx.type === 'send' ? '-' : '+'}
+                    small
+                  />
                   {tx.tokens.map((token, tokenIndex) => {
                     return (
-                      <AmountFormatterAsset key={tokenIndex} amount={BigIntAbs(token.quantity)} />
+                      <AmountFormatterAsset
+                        key={tokenIndex}
+                        amount={BigIntAbs(token.quantity)}
+                        ticker={token.ticker}
+                        fingerprint={token.fingerprint}
+                        prefix={tx.type === 'send' ? '-' : '+'}
+                        small
+                      />
                     )
                   })}
                   <div className="ray__address mt-2">

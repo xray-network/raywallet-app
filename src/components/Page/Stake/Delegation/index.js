@@ -15,7 +15,7 @@ const StakeBalances = () => {
 
   const hasStakeKey = walletStake.stakePoolId
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = walletStake.activeStakeAmount
+  const expectedPayout = (walletStake.activeStakeAmount * 0.057) / 73
 
   return (
     <div>
@@ -29,12 +29,22 @@ const StakeBalances = () => {
           <div className="col-lg-6">
             <div className="ray__form__item mb-3 mb-lg-0">
               <div className="ray__form__label">Expected Payout</div>
-              <div className="ray__form__amount">
-                {!walletStake.hasStakingKey && (
-                  <strong className="font-size-24">Not delegated</strong>
-                )}
-                {walletStake.hasStakingKey && <AmountFormatterAda amount={expectedPayout} />}
-              </div>
+              {!!poolsInfo.length && (
+                <div className="ray__form__amount">
+                  {!walletStake.hasStakingKey && (
+                    <strong className="font-size-24">Not delegated</strong>
+                  )}
+                  {walletStake.hasStakingKey && !inRayPools && (
+                    <strong className="font-size-24">Not in RAY pool</strong>
+                  )}
+                  {walletStake.hasStakingKey && <AmountFormatterAda amount={expectedPayout} />}
+                </div>
+              )}
+              {!poolsInfo.length && (
+                <div className="ray__form__amount">
+                  <strong className="font-size-24">Loading...</strong>
+                </div>
+              )}
             </div>
           </div>
           <div className="col-lg-6">
@@ -68,7 +78,10 @@ const StakeBalances = () => {
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
-              <Button type="primary" disabled={!walletStake.hasStakingKey}>
+              <Button
+                type="primary"
+                disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
+              >
                 <i className="fe fe-arrow-down-circle mr-1" />
                 Withdraw Rewards
               </Button>
@@ -94,13 +107,16 @@ const StakeBalances = () => {
         const amount = pool.activeStake_aggregate?.aggregate?.sum?.amount || '?'
         return (
           <div
-            className={`ray__item ${
-              pool.id === walletStake.stakePoolId
-                ? 'ray__item--tinted ray__item--success'
-                : 'ray__item--gray'
+            className={`ray__item position ${
+              pool.id === walletStake.currentPoolId ? 'ray__item--success' : 'ray__item--gray'
             }`}
             key={index}
           >
+            {pool.id === walletStake.currentPoolId && (
+              <div className="ray__item__check">
+                <i className="fe fe-check-circle" />
+              </div>
+            )}
             <div className="mb-1 d-flex">
               <div>
                 <span className="badge badge-success mr-2">{pool.ticker}</span>
@@ -136,13 +152,13 @@ const StakeBalances = () => {
                 </div>
               </div>
             </div>
-            {pool.id === walletStake.stakePoolId && (
+            {pool.id === walletStake.currentPoolId && (
               <Button type="primary" disabled>
                 <i className="fe fe-arrow-up-circle mr-1" />
                 Delagated
               </Button>
             )}
-            {pool.id !== walletStake.stakePoolId && (
+            {pool.id !== walletStake.currentPoolId && (
               <Button type="primary" disabled={!walletParams.accountId}>
                 <i className="fe fe-arrow-up-circle mr-1" />
                 Delegate

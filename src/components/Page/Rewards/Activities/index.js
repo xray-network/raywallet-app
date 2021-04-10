@@ -12,7 +12,7 @@ const RewardsActivities = () => {
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = walletStake.activeStakeAmount
+  const expectedPayout = parseInt(walletStake.activeStakeAmount / 100000000, 10) * 10
 
   return (
     <div>
@@ -26,10 +26,19 @@ const RewardsActivities = () => {
           <div className="col-lg-6">
             <div className="ray__form__item mb-3 mb-lg-0">
               <div className="ray__form__label">Expected Payout</div>
-              <div className="ray__form__amount">
-                {!inRayPools && <strong className="font-size-24">Not in RAY pools</strong>}
-                {inRayPools && <AmountFormatterAsset amount={expectedPayout} />}
-              </div>
+              {!!poolsInfo.length && (
+                <div className="ray__form__amount">
+                  {!inRayPools && <strong className="font-size-24">Not in RAY pool</strong>}
+                  {inRayPools && (
+                    <AmountFormatterAsset amount={expectedPayout} fingerprint="" ticker="RAY" />
+                  )}
+                </div>
+              )}
+              {!poolsInfo.length && (
+                <div className="ray__form__amount">
+                  <strong className="font-size-24">Loading...</strong>
+                </div>
+              )}
             </div>
           </div>
           <div className="col-lg-6">
@@ -51,7 +60,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatterAsset amount={0} />
+                <AmountFormatterAsset amount={0} fingerprint="" ticker="RAY" />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">

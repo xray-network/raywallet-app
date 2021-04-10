@@ -212,20 +212,26 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
       type: 'wallets/CHANGE_SETTING',
       payload: {
         setting: 'walletStake',
-        value: {},
+        value: {
+          hasStakingKey: false,
+          rewardsAmount: 0,
+          activeStakeAmount: 0,
+          currentPoolId: '',
+          activePoolId: '',
+        },
       },
     })
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
-        setting: 'walletStakeRewards',
+        setting: 'walletStakeRewardsHistory',
         value: [],
       },
     })
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
-        setting: 'walletRayRewards',
+        setting: 'walletRayRewardsHistory',
         value: [],
       },
     })

@@ -99,13 +99,13 @@ const WalleMint = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={0} />
+                  <AmountFormatterAda amount={0} small />
                 </div>
               </div>
               <div className="ray__form__item">
                 <div className="ray__form__label">Network Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={0} />
+                  <AmountFormatterAda amount={0} small />
                 </div>
               </div>
             </div>

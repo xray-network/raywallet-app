@@ -95,7 +95,7 @@ const Swap = () => {
                       </span>
                       <span className="mr-2">{item.ticker}</span>
                       <span className="badge badge-light">
-                        {item.fingerprint.slice(0, 5)}...{item.fingerprint.slice(-10)}
+                        {item.fingerprint.slice(0, 9)}...{item.fingerprint.slice(-4)}
                       </span>
                     </div>
                   </Select.Option>

@@ -40,21 +40,21 @@ const initialState = {
   walletAddresses: [],
   walletTransactions: [],
   walletStake: {
-    hasStakingKey: false,
-    rewardsAmount: 0,
-    activeStakeAmount: 0,
-    currentPoolId: '',
-    activePoolId: '',
+    hasStakingKey: true,
+    rewardsAmount: 176000000,
+    activeStakeAmount: 2786000000,
+    currentPoolId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
+    activePoolId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
   },
   walletStakeRewardsHistory: [],
   walletRayRewardsHistory: [],
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
   networkInfo: {},
-  poolsInfo: [],
   verifiedTokensList: [],
   exchangeRates: {},
   pools,
+  poolsInfo: [],
 }
 
 export default function settingsReducer(state = initialState, action) {

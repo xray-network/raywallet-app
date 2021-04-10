@@ -1,5 +1,49 @@
 @import 'mixins.scss';
 
+.formatter {
+  display: flex;
+  align-items: center;
+}
+
+.total {
+  font-size: rem(24);
+
+  strong {
+    font-weight: 700;
+  }
+
+  small {
+    font-size: rem(16);
+    white-space: nowrap;
+
+    sup {
+      font-size: rem(12);
+    }
+  }
+
+  &Small {
+    font-size: rem(16);
+  }
+}
+
+.prefix {
+  display: inline-block;
+  width: rem(12);
+}
+
+.ticker {
+  text-transform: uppercase;
+  font-size: rem(12);
+  font-weight: 700;
+  display: inline-block;
+  padding: 0 rem(4);
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 4px;
+  margin-left: rem(7);
+  cursor: pointer;
+}
+
 // dark theme
 // [data-vb-theme='dark'] {
 

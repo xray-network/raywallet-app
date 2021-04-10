@@ -126,6 +126,15 @@
     padding: rem(20) rem(20);
     margin-bottom: rem(30);
     background: $white;
+    position: relative;
+
+    &__check {
+      position: absolute;
+      top: rem(15);
+      right: rem(25);
+      color: $success;
+      font-size: rem(27);
+    }
 
     &--current {
       border-color: $primary;
@@ -241,6 +250,18 @@
         }
       }
     }
+  }
+
+  &__testnet {
+    position: fixed;
+    top: rem(14);
+    right: rem(20);
+    background: $danger;
+    color: $white;
+    border-radius: 4px;
+    font-size: rem(12);
+    text-transform: uppercase;
+    padding: 0 rem(4);
   }
 
   &__tabs__pills {
