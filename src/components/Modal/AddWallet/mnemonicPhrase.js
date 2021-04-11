@@ -64,6 +64,17 @@ const MnemonicForm = () => {
     setGeneratedMnemonic(mnemonicPhrase)
   }
 
+  const showTermsModal = (e) => {
+    e.preventDefault()
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'modalTerms',
+        value: true,
+      },
+    })
+  }
+
   return (
     <div>
       <Tabs defaultActiveKey="1" className="ray__tabs" onChange={handleTabs}>
@@ -120,7 +131,15 @@ const MnemonicForm = () => {
             <div className="mb-3">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
-                <a className="ray__link">Terms of Use & Privacy Policy</a>
+                <a
+                  className="ray__link__line"
+                  onClick={showTermsModal}
+                  onKeyPress={showTermsModal}
+                  role="button"
+                  tabIndex="0"
+                >
+                  Terms of Use & Privacy Policy
+                </a>
               </Checkbox>
             </div>
             <Form.Item className="mb-0">
@@ -162,7 +181,15 @@ const MnemonicForm = () => {
             <div className="mb-1">
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
-                <a className="ray__link">Terms of Use & Privacy Policy</a>
+                <a
+                  className="ray__link__line"
+                  onClick={showTermsModal}
+                  onKeyPress={showTermsModal}
+                  role="button"
+                  tabIndex="0"
+                >
+                  Terms of Use & Privacy Policy
+                </a>
               </Checkbox>
             </div>
             <div className="mb-3">

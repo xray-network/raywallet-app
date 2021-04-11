@@ -6,6 +6,20 @@
     margin: 0 auto;
   }
 
+  &__link {
+    color: $primary;
+    &:hover,
+    &:active,
+    &:focus {
+      color: $blue;
+    }
+
+    &__line {
+      display: inline-block;
+      border-bottom: 1px solid $primary;
+    }
+  }
+
   &__btn {
     &__send {
       padding-left: rem(30) !important;

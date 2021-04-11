@@ -208,12 +208,13 @@ const Menu = () => {
                 <span className={style.statusUnlocked}>
                   <Tooltip title={<div>Wallet is not saved on this device</div>}>
                     <i className="fe fe-unlock" />
+                    <i className="fe fe-unlock" />
                   </Tooltip>
                 </span>
               )}
               {walletParams.encrypted && (
                 <span className={style.statusLocked}>
-                  <Tooltip title={<div>Wallet encrypted</div>}>
+                  <Tooltip title={<div>Wallet is encrypted</div>}>
                     <i className="fe fe-lock" />
                   </Tooltip>
                 </span>
@@ -239,22 +240,35 @@ const Menu = () => {
           <div className="mb-5">
             <div className={style.walletInfo}>
               <div>
-                Stake Rewards: {!walletStake.hasStakingKey && <span>Not delegated</span>}
+                Stake Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
                 {walletStake.hasStakingKey && (
                   <span>
-                    {(parseInt(walletStake.rewardsAmount, 10) || 0).toString()} <sup>ADA</sup>
+                    <AmountFormatterAda
+                      amount={walletStake.rewardsAmount}
+                      noDecimals
+                      small
+                      inline
+                    />
                   </span>
                 )}
               </div>
               <div>
-                RAY Rewards: {!walletStake.hasStakingKey && <span>Not delegated</span>}
+                RAY Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
                 {walletStake.hasStakingKey && (
                   <span>
-                    0 <sup>RAY</sup>
+                    <AmountFormatterAsset
+                      amount="0"
+                      fingerprint="asset1ray"
+                      ticker="RAY"
+                      small
+                      inline
+                    />
                   </span>
                 )}
               </div>
-              <div>Transactions: {walletTransactions.length}</div>
+              <div>
+                Transactions: <strong>{walletTransactions.length}</strong>
+              </div>
             </div>
           </div>
         )}

@@ -41,8 +41,8 @@ const initialState = {
   walletTransactions: [],
   walletStake: {
     hasStakingKey: true,
-    rewardsAmount: 176000000,
-    activeStakeAmount: 2786000000,
+    rewardsAmount: 0,
+    activeStakeAmount: 1000000000,
     currentPoolId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
     activePoolId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
   },

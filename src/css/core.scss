@@ -98,12 +98,11 @@ strong {
   }
 
   a {
-    color: $dark-gray-1;
+    color: $primary;
     &:hover,
     &:active,
     &:focus {
       color: $blue;
-      text-decoration: none;
     }
   }
 

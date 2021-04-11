@@ -12,7 +12,7 @@ const RewardsActivities = () => {
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = parseInt(walletStake.activeStakeAmount / 100000000, 10) * 10
+  const expectedPayout = parseInt(walletStake.activeStakeAmount / 1000000 / 20, 10)
 
   return (
     <div>
@@ -28,9 +28,18 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Expected Payout</div>
               {!!poolsInfo.length && (
                 <div className="ray__form__amount">
-                  {!inRayPools && <strong className="font-size-24">Not in RAY pool</strong>}
-                  {inRayPools && (
-                    <AmountFormatterAsset amount={expectedPayout} fingerprint="" ticker="RAY" />
+                  {!walletStake.hasStakingKey && (
+                    <strong className="font-size-24">Not delegated</strong>
+                  )}
+                  {walletStake.hasStakingKey && !inRayPools && (
+                    <strong className="font-size-24">Not in RAY pool</strong>
+                  )}
+                  {walletStake.hasStakingKey && inRayPools && (
+                    <AmountFormatterAsset
+                      amount={expectedPayout}
+                      fingerprint="asset1ray"
+                      ticker="RAY"
+                    />
                   )}
                 </div>
               )}
@@ -60,7 +69,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatterAsset amount={0} fingerprint="" ticker="RAY" />
+                <AmountFormatterAsset amount={0} fingerprint="asset1ray" ticker="RAY" />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -125,7 +134,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">10 ADA = 1 RAY</span>
+                <span className="badge badge-light">20 ADA = 1 RAY</span>
               </div>
             </div>
           </div>

@@ -3,10 +3,20 @@
 .formatter {
   display: flex;
   align-items: center;
+
+  &Inline {
+    display: inline-block;
+
+    .ticker {
+      position: relative;
+      top: -2px;
+    }
+  }
 }
 
 .total {
   font-size: rem(24);
+  display: inline-block;
 
   strong {
     font-weight: 700;
@@ -42,6 +52,34 @@
   border-radius: 4px;
   margin-left: rem(7);
   cursor: pointer;
+}
+
+.info {
+  :global(.badge) {
+    font-size: 100%;
+    cursor: pointer;
+  }
+
+  &Item {
+    font-size: rem(12);
+    color: $black;
+    display: flex;
+    align-items: center;
+    // padding-bottom: rem(5);
+    // border-bottom: 1px solid $border;
+  }
+
+  &Ticker {
+    font-size: rem(16);
+    font-weight: 700;
+  }
+
+  &Verified {
+    margin-left: rem(10);
+    svg {
+      fill: $success;
+    }
+  }
 }
 
 // dark theme

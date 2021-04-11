@@ -414,7 +414,9 @@ export function* GET_NETWORK_STATE() {
 export function* GET_VERIFIED_TOKENS_LIST() {
   const verifiedTokensList = yield call(
     Github.GetRawUrl,
-    '/ray-network/cardano-verified-tokens-list/main/list.json',
+    CARDANO_NETWORK === 'testnet'
+      ? '/ray-network/cardano-verified-tokens-list/main/list-testnet.json'
+      : '/ray-network/cardano-verified-tokens-list/main/list.json',
   )
   if (verifiedTokensList) {
     yield put({

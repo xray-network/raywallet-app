@@ -3,10 +3,20 @@
 .formatter {
   display: flex;
   align-items: center;
+
+  &Inline {
+    display: inline-block;
+
+    .ticker {
+      position: relative;
+      top: -2px;
+    }
+  }
 }
 
 .total {
   font-size: rem(24);
+  display: inline-block;
 
   strong {
     font-weight: 700;
@@ -42,6 +52,28 @@
   border-radius: 4px;
   margin-left: rem(7);
   cursor: pointer;
+}
+
+.info {
+  &Item {
+    font-size: rem(12);
+    color: $black;
+    display: flex;
+    align-items: center;
+    // padding-bottom: rem(5);
+    // border-bottom: 1px solid $border;
+  }
+
+  &Ticker {
+    font-size: rem(18);
+    margin-right: rem(10);
+  }
+
+  &Verified {
+    svg {
+      fill: $success;
+    }
+  }
 }
 
 // dark theme
