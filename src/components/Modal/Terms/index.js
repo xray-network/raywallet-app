@@ -40,7 +40,7 @@ const TermsModal = () => {
           AGREEMENT, THE USER SHALL NOT BE AUTHORIZED TO ACCESS, USE OR INSTALL ANY PART OF THE
           SOFTWARE.
         </p>
-        <div className="mb-5" />
+        <div className="mb-4" />
         <h5 className="mb-4">1. Rights and Obligations</h5>
         <ol type="a">
           <li>

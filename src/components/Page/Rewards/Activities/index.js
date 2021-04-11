@@ -39,6 +39,7 @@ const RewardsActivities = () => {
                       amount={expectedPayout}
                       fingerprint="asset1ray"
                       ticker="RAY"
+                      availablePrivate
                     />
                   )}
                 </div>
@@ -69,7 +70,12 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatterAsset amount={0} fingerprint="asset1ray" ticker="RAY" />
+                <AmountFormatterAsset
+                  amount={0}
+                  fingerprint="asset1ray"
+                  ticker="RAY"
+                  availablePrivate
+                />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -85,7 +91,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Controlled total stake</div>
               <div className="ray__form__amount">
-                <AmountFormatterAda amount={walletStake.activeStakeAmount} />
+                <AmountFormatterAda amount={walletStake.activeStakeAmount} availablePrivate />
               </div>
             </div>
           </div>

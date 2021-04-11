@@ -37,7 +37,9 @@ const StakeBalances = () => {
                   {walletStake.hasStakingKey && !inRayPools && (
                     <strong className="font-size-24">Not in RAY pool</strong>
                   )}
-                  {walletStake.hasStakingKey && <AmountFormatterAda amount={expectedPayout} />}
+                  {walletStake.hasStakingKey && (
+                    <AmountFormatterAda amount={expectedPayout} availablePrivate />
+                  )}
                 </div>
               )}
               {!poolsInfo.length && (
@@ -74,7 +76,7 @@ const StakeBalances = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatterAda amount={walletStake.rewardsAmount} />
+                <AmountFormatterAda amount={walletStake.rewardsAmount} availablePrivate />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -91,7 +93,7 @@ const StakeBalances = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Controlled total stake</div>
               <div className="ray__form__amount">
-                <AmountFormatterAda amount={walletStake.activeStakeAmount} />
+                <AmountFormatterAda amount={walletStake.activeStakeAmount} availablePrivate />
               </div>
             </div>
           </div>

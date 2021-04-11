@@ -6,7 +6,7 @@ import style from './style.module.scss'
 
 const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availablePrivate }) => {
   const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
-  const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
+  const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && !!availablePrivate
   const privateSymbols = '******'
 
   const computedAmount = amount / 1000000
@@ -25,7 +25,12 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
       </div>
       <div className={style.infoItem}>
         <div>
-          <strong>${price(computedAmount * exchangeRates.cardano?.usd || 0)}</strong>
+          <strong>
+            $
+            {isPrivateMode
+              ? privateSymbols
+              : price(computedAmount * exchangeRates.cardano?.usd || 0)}
+          </strong>
         </div>
       </div>
       <div className={style.infoItem}>

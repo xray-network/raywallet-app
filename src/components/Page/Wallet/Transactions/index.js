@@ -31,6 +31,7 @@ const WalletTransactions = () => {
                     amount={Math.abs(tx.value)}
                     prefix={tx.type === 'send' ? '-' : '+'}
                     small
+                    availablePrivate
                   />
                   {tx.tokens.map((token, tokenIndex) => {
                     return (
@@ -41,6 +42,7 @@ const WalletTransactions = () => {
                         fingerprint={token.fingerprint}
                         prefix={tx.type === 'send' ? '-' : '+'}
                         small
+                        availablePrivate
                       />
                     )
                   })}

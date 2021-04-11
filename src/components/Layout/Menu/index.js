@@ -223,7 +223,9 @@ const Menu = () => {
           </div>
         )}
         <div className="mb-3">
-          {walletParams.accountId && <AmountFormatterAda amount={walletAssetsSummary.value} />}
+          {walletParams.accountId && (
+            <AmountFormatterAda amount={walletAssetsSummary.value} availablePrivate />
+          )}
           {walletAssetsSummary.tokens.map((token, tokenIndex) => {
             return (
               <AmountFormatterAsset
@@ -232,6 +234,7 @@ const Menu = () => {
                 ticker={token.ticker}
                 fingerprint={token.fingerprint}
                 small
+                availablePrivate
               />
             )
           })}
