@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Form, Input, Statistic, Spin } from 'antd'
+import { Button, Form, Input, Statistic, Spin, Tooltip } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
@@ -115,9 +115,11 @@ const StakeBalances = () => {
             key={index}
           >
             {pool.id === walletStake.currentPoolId && (
-              <div className="ray__item__check">
-                <i className="fe fe-check-circle" />
-              </div>
+              <Tooltip title="Delegated to this pool" placement="left">
+                <div className="ray__item__check">
+                  <i className="fe fe-check-circle" />
+                </div>
+              </Tooltip>
             )}
             <div className="mb-1 d-flex">
               <div>

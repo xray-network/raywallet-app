@@ -17,7 +17,7 @@ const AmountFormatterAsset = ({
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
   const verifiedTokensList = useSelector((state) => state.wallets.verifiedTokensList)
   const isVerified = verifiedTokensList.some((item) => item.fingerprint === fingerprint)
-  const privateSymbols = '******'
+  const privateSymbols = '••••••'
 
   const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 

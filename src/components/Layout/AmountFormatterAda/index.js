@@ -7,7 +7,7 @@ import style from './style.module.scss'
 const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availablePrivate }) => {
   const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && !!availablePrivate
-  const privateSymbols = '******'
+  const privateSymbols = '••••••'
 
   const computedAmount = amount / 1000000
   const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
