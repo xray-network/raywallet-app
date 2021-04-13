@@ -58,6 +58,16 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
+[data-vb-theme='dark'] {
+  .menu {
+    a {
+      &:hover {
+        color: $blue-dark;
+      }
 
-// }
+      &.active {
+        color: $white;
+      }
+    }
+  }
+}

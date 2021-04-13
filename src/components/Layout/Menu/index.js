@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Select, Spin, Tooltip, Empty } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
-import AmountFormatter from 'components/Layout/AmountFormatter'
+import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 import style from './style.module.scss'
 
 const Menu = () => {
@@ -11,10 +12,12 @@ const Menu = () => {
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
+  const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
+  const sections = useSelector((state) => state.settings.sections)
 
   const selectRef = useRef()
 
@@ -51,6 +54,9 @@ const Menu = () => {
   const refreshData = () => {
     dispatch({
       type: 'wallets/FETCH_WALLET_DATA',
+    })
+    dispatch({
+      type: 'wallets/FETCH_SIDE_DATA',
     })
   }
 
@@ -136,8 +142,9 @@ const Menu = () => {
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
                       <span className="badge badge-light">
-                        {totalTickers}
-                        <small> {totalTickers === 1 ? 'token' : 'tokens'}</small>
+                        <small>
+                          {totalTickers} {totalTickers === 1 ? 'token' : 'tokens'}
+                        </small>
                       </span>
                     </div>
                     <div className={style.selectWalletsItemDescr}>
@@ -202,12 +209,13 @@ const Menu = () => {
                 <span className={style.statusUnlocked}>
                   <Tooltip title={<div>Wallet is not saved on this device</div>}>
                     <i className="fe fe-unlock" />
+                    <i className="fe fe-unlock" />
                   </Tooltip>
                 </span>
               )}
               {walletParams.encrypted && (
                 <span className={style.statusLocked}>
-                  <Tooltip title={<div>Wallet encrypted</div>}>
+                  <Tooltip title={<div>Wallet is encrypted</div>}>
                     <i className="fe fe-lock" />
                   </Tooltip>
                 </span>
@@ -215,25 +223,18 @@ const Menu = () => {
             </a>
           </div>
         )}
-        <div className="mb-3">
+        <div className={style.walletAssets}>
           {walletParams.accountId && (
-            <AmountFormatter
-              amount={walletAssetsSummary.value}
-              ticker="ada"
-              hash="lovelace"
-              large
-              availablePrivate
-            />
+            <AmountFormatterAda amount={walletAssetsSummary.value} availablePrivate />
           )}
           {walletAssetsSummary.tokens.map((token, tokenIndex) => {
             return (
-              <AmountFormatter
+              <AmountFormatterAsset
                 key={tokenIndex}
                 amount={token.quantity}
                 ticker={token.ticker}
-                hash={token.assetId}
-                large
-                noDecimals
+                fingerprint={token.fingerprint}
+                small
                 availablePrivate
               />
             )
@@ -242,9 +243,39 @@ const Menu = () => {
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
-              <div>Staking: Not delegated</div>
-              <div>RAY Rewards: Not delegated</div>
-              <div>Transactions: {walletTransactions.length}</div>
+              <div>
+                Stake Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
+                {walletStake.hasStakingKey && (
+                  <span>
+                    <AmountFormatterAda
+                      amount={walletStake.rewardsAmount}
+                      noDecimals
+                      small
+                      inline
+                    />
+                  </span>
+                )}
+              </div>
+              {sections.includes('rewards') && (
+                <div>
+                  RAY Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
+                  {walletStake.hasStakingKey && (
+                    <span>
+                      <AmountFormatterAsset
+                        amount="0"
+                        fingerprint="asset1ray"
+                        ticker="RAY"
+                        small
+                        inline
+                      />
+                    </span>
+                  )}
+                </div>
+              )}
+              <div>
+                Transactions:{' '}
+                <AmountFormatterAsset amount={walletTransactions.length} small inline />
+              </div>
             </div>
           </div>
         )}
@@ -260,17 +291,21 @@ const Menu = () => {
               <i className="fe fe-plus-circle mr-2" />
               Add Wallet
             </a>
-            <Link to="/swap">
-              <i className="fe fe-repeat mr-2" />
-              Tokens Exchange
-            </Link>
-            <Link to="/kickstart/token/create">
-              <i className="fe fe-arrow-up-circle mr-2" />
-              Create Token
-            </Link>
-            <Link to="/rewards/activities">
-              <i className="fe fe-activity mr-2" />
-              RAY Rewards Program
+            {sections.includes('rewards') && (
+              <Link to="/rewards/activities">
+                <i className="fe fe-activity mr-2" />
+                RAY Rewards Program
+              </Link>
+            )}
+            {sections.includes('swap') && (
+              <Link to="/swap/swap">
+                <i className="fe fe-repeat mr-2" />
+                Tokens Exchange
+              </Link>
+            )}
+            <Link to="/wallet/mint">
+              <i className="fe fe-upload mr-2" />
+              Mint Token
             </Link>
           </div>
         </div>

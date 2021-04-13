@@ -37,6 +37,14 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
+[data-vb-theme='dark'] {
+  .footer {
+    color: $dark-gray-2;
+  }
 
-// }
+  .logo {
+    &Name {
+      color: $white;
+    }
+  }
+}

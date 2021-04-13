@@ -5,6 +5,7 @@ import WalletSubmenu from 'components/Page/Wallet/Submenu'
 import WalletSend from 'components/Page/Wallet/Send'
 import WalletAddresses from 'components/Page/Wallet/Addresses'
 import WalletTransactions from 'components/Page/Wallet/Transactions'
+import WalletMint from 'components/Page/Wallet/Mint'
 
 const Wallet = () => {
   const { path } = useRouteMatch()
@@ -23,6 +24,9 @@ const Wallet = () => {
         </Route>
         <Route path={`${path}/transactions`}>
           <WalletTransactions />
+        </Route>
+        <Route path={`${path}/mint`}>
+          <WalletMint />
         </Route>
       </Switch>
     </div>

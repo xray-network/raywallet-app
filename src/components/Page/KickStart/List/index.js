@@ -1,19 +1,20 @@
 import React from 'react'
 import { Input, Radio, Button, Tooltip } from 'antd'
 import Address from 'components/Layout/Address'
+import Empty from 'components/Layout/Empty'
 // import style from './style.module.scss'
 
 const projects = [
-  {
-    id: '0x717824329859127359871235189717824329859127359871235189',
-    name: 'RAY Network (phase 1)',
-    url: 'https://rraayy.com',
-    rate: '100',
-    type: 'not-end',
-    end: '',
-    descriptionShort:
-      'RAY Network is a Cardano services ecosystem with an assets exchange with a decentralized protocol for automated liquidity provision.',
-  },
+  // {
+  //   id: '0x717824329859127359871235189717824329859127359871235189',
+  //   name: 'RAY Network (phase 1)',
+  //   url: 'https://rraayy.com',
+  //   rate: '100',
+  //   type: 'not-end',
+  //   end: '',
+  //   descriptionShort:
+  //     'RAY Network is a Cardano services ecosystem with an assets exchange with a decentralized protocol for automated liquidity provision.',
+  // },
 ]
 
 const KickStartList = () => {
@@ -30,6 +31,7 @@ const KickStartList = () => {
           <Radio value="Completed">Completed</Radio>
         </Radio.Group>
       </div>
+      {!projects.length && <Empty title="No Projects Yet" />}
       {projects.map((project, index) => {
         return (
           <div key={index} className="ray__item ray__item--success">

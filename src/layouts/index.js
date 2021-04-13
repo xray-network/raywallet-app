@@ -8,6 +8,7 @@ import AddWalletModal from 'components/Modal/AddWallet'
 import QRModal from 'components/Modal/QR'
 import SettingsModal from 'components/Modal/Settings'
 import EncryptModal from 'components/Modal/Encrypt'
+import TermsModal from 'components/Modal/Terms'
 import LayoutMain from './Main'
 import LayoutNFT from './NFT'
 
@@ -35,7 +36,12 @@ const LayoutIndex = ({ children, title, location: { pathname } }) => {
       <QRModal />
       <SettingsModal />
       <EncryptModal />
+      <TermsModal />
       <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
+        {process.env.REACT_APP_NETWORK !== 'mainnet' && <div className="ray__testnet">testnet</div>}
+        <div className="ray__banner">
+          The RAY Wallet is scheduled for release on April 15, 2021. Stay tuned!
+        </div>
         <Offline>
           <div className="ray__banner">
             Wallet is offline. Please check your internet connection.

@@ -64,10 +64,10 @@
 }
 
 // dark theme
-[data-theme='dark'] {
+[data-vb-theme='dark'] {
   .item {
-    background: $dark-gray-5;
-    border-color: $dark-gray-5;
+    background: $dark-gray-4;
+    border-color: $dark-gray-4;
     color: $white;
 
     &Collection {

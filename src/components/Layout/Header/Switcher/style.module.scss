@@ -59,4 +59,14 @@
 }
 
 // dark theme
-// [data-theme='dark'] { }
+[data-vb-theme='dark'] {
+  .flag,
+  .mode {
+    color: $primary;
+    @include transition-middle();
+
+    &:hover {
+      color: $blue-dark;
+    }
+  }
+}

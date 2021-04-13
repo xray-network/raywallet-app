@@ -60,7 +60,7 @@ export const CardanoValidateMnemonic = (mnemonicPhrase) => {
  * @return {object}
  */
 
-export const CardanoGetAccountInfo = async (mnemonic) => {
+export const CardanoGetAccountInfo = async (network, mnemonic) => {
   await CardanoWasm.load()
 
   const harden = (num) => {
@@ -77,8 +77,13 @@ export const CardanoGetAccountInfo = async (mnemonic) => {
 
   const stakeKey = privateKey.derive(2).derive(0).to_public()
 
+  const currentNetwork =
+    network === 'testnet'
+      ? CardanoWasm.API.NetworkInfo.testnet().network_id()
+      : CardanoWasm.API.NetworkInfo.mainnet().network_id()
+
   const rewardAddress = CardanoWasm.API.RewardAddress.new(
-    CardanoWasm.API.NetworkInfo.testnet().network_id(),
+    currentNetwork,
     CardanoWasm.API.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
   )
   const rewardAddressBech32 = rewardAddress.to_address().to_bech32()
@@ -98,6 +103,7 @@ export const CardanoGetAccountInfo = async (mnemonic) => {
  */
 
 export const CardanoGetAccountAdresses = async (
+  network,
   publicKeyBech32,
   type = 'external',
   shift = 0,
@@ -107,6 +113,11 @@ export const CardanoGetAccountAdresses = async (
 
   const publicKey = CardanoWasm.API.Bip32PublicKey.from_bech32(publicKeyBech32)
   const accountAdresses = []
+
+  const currentNetwork =
+    network === 'testnet'
+      ? CardanoWasm.API.NetworkInfo.testnet().network_id()
+      : CardanoWasm.API.NetworkInfo.mainnet().network_id()
 
   const generateAddresses = (addressType) => {
     const tmpAddresses = []
@@ -118,7 +129,7 @@ export const CardanoGetAccountAdresses = async (
         .derive(2) // chimeric
         .derive(0)
       const baseAddr = CardanoWasm.API.BaseAddress.new(
-        CardanoWasm.API.NetworkInfo.testnet().network_id(),
+        currentNetwork,
         CardanoWasm.API.StakeCredential.from_keyhash(utxoPubKey.to_raw_key().hash()),
         CardanoWasm.API.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
       )

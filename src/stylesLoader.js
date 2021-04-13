@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 // antd core & themes styles
 import 'antd/lib/style/index.less'
 import './css/vendors/antd/themes/default.less'
-// import './css/vendors/antd/themes/dark.less'
+import './css/vendors/antd/themes/dark.less'
 
 // third-party plugins styles
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -28,29 +28,11 @@ const mapStateToProps = ({ settings: { theme, primaryColor } }) => ({
   primaryColor,
 })
 
-let isLoaded = false
-
-const StylesLoader = ({ dispatch, children, theme, primaryColor }) => {
+const StylesLoader = ({ children, theme, primaryColor }) => {
   // listen & set vb-theme (dark, default, ...)
   useEffect(() => {
     document.querySelector('html').setAttribute('data-vb-theme', theme)
-    dispatch({
-      type: 'settings/SET_THEME',
-      payload: {
-        theme,
-      },
-    })
-    if (isLoaded) {
-      dispatch({
-        type: 'settings/CHANGE_SETTING',
-        payload: {
-          setting: 'menuColor',
-          value: theme === 'dark' ? 'dark' : 'white',
-        },
-      })
-    }
-    isLoaded = true
-  }, [theme, dispatch])
+  }, [theme])
 
   // listen & set primaryColor
   useEffect(() => {

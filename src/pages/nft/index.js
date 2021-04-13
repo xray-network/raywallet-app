@@ -12,17 +12,17 @@ const Wallet = () => {
 
   return (
     <>
-      <div className="mb-4">
-        <Alert
-          message="RAY NFT Marketplace will be available in the Goguen Era"
-          description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
-          type="info"
-          showIcon
-        />
-      </div>
       <div className="ray__wrapper__full">
         <Helmet title="NFT Marketplace" />
         <NFTSubmenu />
+        <div className="mb-4">
+          <Alert
+            message="RAY NFT Marketplace will be available in the Goguen Era"
+            description="Since this feature is directly related to smart contracts, it will be released as soon as Cardano brings it to life - in the Goguen Era."
+            type="info"
+            showIcon
+          />
+        </div>
         <Switch>
           <Route exact path={path} render={() => <Redirect to={`${path}/marketplace`} />} />
           <Route exact path={`${path}/marketplace`}>

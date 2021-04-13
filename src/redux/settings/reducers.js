@@ -26,6 +26,7 @@ const initialState = {
     modalEncrypt: false,
     isPrivateMode: false,
     QRCodeAddress: '',
+    sections: ['wallet', 'stake', 'rewards', 'swap', 'kickstart', 'nft'],
   }),
 }
 

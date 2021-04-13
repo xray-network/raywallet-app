@@ -94,20 +94,24 @@ strong {
   h4,
   h5,
   h6 {
-    color: $dark-gray-1;
+    color: $white;
   }
 
   a {
-    color: $dark-gray-1;
+    color: $primary;
     &:hover,
     &:active,
     &:focus {
       color: $blue;
-      text-decoration: none;
     }
   }
 
   ::placeholder {
+    color: $dark-gray-3;
+  }
+
+  .badge.badge-light {
+    background: $dark-gray-5;
     color: $dark-gray-3;
   }
 }

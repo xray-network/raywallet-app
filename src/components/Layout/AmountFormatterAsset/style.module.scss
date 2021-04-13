@@ -1,0 +1,102 @@
+@import 'mixins.scss';
+
+.formatter {
+  display: flex;
+  align-items: center;
+  color: $black;
+
+  &Inline {
+    display: inline-block;
+
+    .ticker {
+      position: relative;
+      top: -2px;
+    }
+  }
+}
+
+.total {
+  font-size: rem(24);
+  display: inline-block;
+
+  strong {
+    font-weight: 700;
+  }
+
+  small {
+    font-size: rem(16);
+    white-space: nowrap;
+
+    sup {
+      font-size: rem(12);
+    }
+  }
+
+  &Small {
+    font-size: rem(16);
+  }
+}
+
+.prefix {
+  display: inline-block;
+  width: rem(12);
+}
+
+.ticker {
+  text-transform: uppercase;
+  font-size: rem(12);
+  font-weight: 700;
+  display: inline-block;
+  padding: 0 rem(4);
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 4px;
+  margin-left: rem(7);
+  cursor: pointer;
+}
+
+.info {
+  :global(.badge) {
+    font-size: 100%;
+    cursor: pointer;
+  }
+
+  &Item {
+    font-size: rem(12);
+    color: $black;
+    display: flex;
+    align-items: center;
+    // padding-bottom: rem(5);
+    // border-bottom: 1px solid $border;
+  }
+
+  &Ticker {
+    font-size: rem(16);
+    font-weight: 700;
+  }
+
+  &Verified {
+    margin-left: rem(10);
+    svg {
+      fill: $success;
+    }
+  }
+}
+
+// dark theme
+[data-vb-theme='dark'] {
+  .formatter {
+    color: $white;
+  }
+
+  .info {
+    &Item {
+      color: $white;
+    }
+  }
+
+  .ticker {
+    background: $dark-gray-4;
+    border-color: $dark-border;
+  }
+}

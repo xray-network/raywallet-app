@@ -1,6 +1,6 @@
 import React from 'react'
 import { Menu, Dropdown, Tooltip } from 'antd'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import style from './style.module.scss'
 
 import FlagEn from './flags/en.svg'
@@ -10,8 +10,19 @@ import FlagJp from './flags/jp.svg'
 import FlagKr from './flags/kr.svg'
 
 export default () => {
+  const dispatch = useDispatch()
   const theme = useSelector((state) => state.settings.theme)
   const isLight = theme === 'default'
+
+  const toggleTheme = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'theme',
+        value: isLight ? 'dark' : 'default',
+      },
+    })
+  }
 
   // const locale = 'en-US'
   // const language = locale.substr(0, 2)
@@ -62,7 +73,13 @@ export default () => {
   return (
     <div className={style.switcher}>
       <Tooltip title="Toggle theme" placement="left">
-        <a role="button" tabIndex="0" className={style.mode}>
+        <a
+          role="button"
+          onClick={toggleTheme}
+          onKeyPress={toggleTheme}
+          tabIndex="0"
+          className={style.mode}
+        >
           {isLight && <i className="fe fe-sun" />}
           {!isLight && <i className="fe fe-moon" />}
         </a>

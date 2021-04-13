@@ -51,3 +51,14 @@
     }
   }
 }
+
+// dark theme
+[data-vb-theme='dark'] {
+  .ray {
+    &__layout {
+      &__header {
+        border-bottom-color: $dark-border;
+      }
+    }
+  }
+}

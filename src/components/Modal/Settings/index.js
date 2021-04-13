@@ -60,7 +60,7 @@ const SettingsModal = () => {
     >
       <div className="ray__form__label">Wallet Name</div>
       <div className="mb-4">
-        <Input value={walletParams.name} onChange={setWalletName} />
+        <Input value={walletParams.name} size="large" onChange={setWalletName} />
       </div>
       <div className="ray__form__label">Danger Zone</div>
       <div className={style.danger}>

@@ -10,6 +10,9 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
-
-// }
+[data-vb-theme='dark'] {
+  .mnemonicArea {
+    border-color: $dark-border;
+    background: $dark-border;
+  }
+}

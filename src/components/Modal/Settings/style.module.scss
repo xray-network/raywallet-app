@@ -17,6 +17,10 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
-
-// }
+[data-vb-theme='dark'] {
+  .danger {
+    &Item {
+      border-bottom-color: $dark-border;
+    }
+  }
+}

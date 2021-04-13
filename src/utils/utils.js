@@ -39,3 +39,5 @@ export const binaryToString = (input) => {
 
   return result
 }
+
+export const BigIntAbs = (value) => (value < BigInt(0) ? -value : value)

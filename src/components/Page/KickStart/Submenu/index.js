@@ -15,10 +15,6 @@ const KickStartSubmenu = () => {
           <span>Start Funding</span>
           <span>Start Funding</span>
         </NavLink>
-        <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/token/create`}>
-          <span>Create Token</span>
-          <span>Create Token</span>
-        </NavLink>
       </div>
     </div>
   )

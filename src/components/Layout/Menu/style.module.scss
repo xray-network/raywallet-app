@@ -17,6 +17,11 @@
     font-weight: normal;
     position: relative;
 
+    :global(.badge) {
+      position: relative;
+      top: -2px;
+    }
+
     &Name {
       white-space: nowrap;
       display: block;
@@ -83,8 +88,15 @@
   font-size: rem(18);
 }
 
-.walletInfo {
-  color: $gray-5;
+.wallet {
+  &Assets {
+    color: $black;
+    margin-bottom: rem(20);
+  }
+
+  &Info {
+    color: $gray-5;
+  }
 }
 
 .walletMenu {
@@ -128,25 +140,30 @@
   }
 }
 
+.rewardTicker {
+  text-transform: uppercase;
+  font-size: rem(12);
+  font-weight: 700;
+  display: inline-block;
+  padding: 0 rem(4);
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 4px;
+  margin-left: 2px;
+  position: relative;
+  top: -2px;
+}
+
 .status {
   &Unlocked {
     position: relative;
     color: $danger;
 
-    &:before,
-    &:after {
-      content: '';
+    i:last-child {
       position: absolute;
-      width: 8px;
-      height: 8px;
-      background: $danger;
-      border-radius: 10px;
-      left: -1px;
-      bottom: 2px;
+      left: 0;
+      top: 0;
       pointer-events: none;
-    }
-
-    &:before {
       animation: animation 2s ease infinite;
     }
   }
@@ -154,17 +171,17 @@
   &Locked {
     position: relative;
 
-    &:before {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: $success;
-      border-radius: 10px;
-      left: -1px;
-      bottom: 2px;
-      pointer-events: none;
-    }
+    // &:before {
+    //   content: '';
+    //   position: absolute;
+    //   width: 8px;
+    //   height: 8px;
+    //   background: $success;
+    //   border-radius: 10px;
+    //   left: -1px;
+    //   bottom: 2px;
+    //   pointer-events: none;
+    // }
   }
 }
 
@@ -177,16 +194,30 @@
     opacity: 0.3;
   }
   50% {
-    transform: scale(3);
+    transform: scale(1.5);
     opacity: 0;
   }
   100% {
-    transform: scale(3);
+    transform: scale(1.5);
     opacity: 0;
   }
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
+[data-vb-theme='dark'] {
+  .wallet {
+    &Assets {
+      color: $white;
+    }
 
-// }
+    &Info {
+      color: $dark-gray-2;
+    }
+  }
+
+  .selectWallets {
+    &Item {
+      color: $white;
+    }
+  }
+}

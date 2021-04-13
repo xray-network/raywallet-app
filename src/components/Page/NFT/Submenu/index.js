@@ -16,8 +16,8 @@ const NFTSubmenu = () => {
           <span>My Purchases</span>
         </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/create`}>
-          <span>Create Item</span>
-          <span>Create Item</span>
+          <span>Create NFT</span>
+          <span>Create NFT</span>
         </NavLink>
       </div>
     </div>

@@ -64,6 +64,17 @@ const MnemonicForm = () => {
     setGeneratedMnemonic(mnemonicPhrase)
   }
 
+  const showTermsModal = (e) => {
+    e.preventDefault()
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'modalTerms',
+        value: true,
+      },
+    })
+  }
+
   return (
     <div>
       <Tabs defaultActiveKey="1" className="ray__tabs" onChange={handleTabs}>
@@ -121,15 +132,13 @@ const MnemonicForm = () => {
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
                 <a
-                  href="https://rraayy.com/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  className="ray__link__line"
+                  onClick={showTermsModal}
+                  onKeyPress={showTermsModal}
+                  role="button"
+                  tabIndex="0"
                 >
-                  Privacy Policy
-                </a>{' '}
-                and{' '}
-                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">
-                  Terms of Use
+                  Terms of Use & Privacy Policy
                 </a>
               </Checkbox>
             </div>
@@ -173,15 +182,13 @@ const MnemonicForm = () => {
               <Checkbox checked={agreeTerms} onChange={handleAgreeTrems}>
                 By using Ray Wallet, or other Ray Network software, I agree to the{' '}
                 <a
-                  href="https://rraayy.com/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  className="ray__link__line"
+                  onClick={showTermsModal}
+                  onKeyPress={showTermsModal}
+                  role="button"
+                  tabIndex="0"
                 >
-                  Privacy Policy
-                </a>{' '}
-                and{' '}
-                <a href="https://rraayy.com/terms-of-use" target="_blank" rel="noopener noreferrer">
-                  Terms of Use
+                  Terms of Use & Privacy Policy
                 </a>
               </Checkbox>
             </div>
