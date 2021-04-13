@@ -17,6 +17,11 @@
     font-weight: normal;
     position: relative;
 
+    :global(.badge) {
+      position: relative;
+      top: -2px;
+    }
+
     &Name {
       white-space: nowrap;
       display: block;
@@ -83,8 +88,15 @@
   font-size: rem(18);
 }
 
-.walletInfo {
-  color: $gray-5;
+.wallet {
+  &Assets {
+    color: $black;
+    margin-bottom: rem(20);
+  }
+
+  &Info {
+    color: $gray-5;
+  }
 }
 
 .walletMenu {
@@ -192,6 +204,20 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
+[data-vb-theme='dark'] {
+  .wallet {
+    &Assets {
+      color: $white;
+    }
 
-// }
+    &Info {
+      color: $dark-gray-2;
+    }
+  }
+
+  .selectWallets {
+    &Item {
+      color: $white;
+    }
+  }
+}

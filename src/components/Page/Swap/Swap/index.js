@@ -70,14 +70,6 @@ const Swap = () => {
               style={{ width: '100%' }}
             />
           </Form.Item>
-          <Form.Item
-            className={style.assetDonate}
-            label="Donate"
-            name="donate"
-            tooltip="This donation will be used for further RAY Network development. Not required."
-          >
-            <Input size="large" placeholder="0" autoComplete="off" style={{ width: '100%' }} />
-          </Form.Item>
         </Input.Group>
         <Form.Item
           label="To"
@@ -131,14 +123,14 @@ const Swap = () => {
                 </div>
               </div>
             </div>
-            <div className="col-lg-6">
+            {/* <div className="col-lg-6">
               <div className="ray__form__item">
                 <div className="ray__form__label mb-3">Rate</div>
                 <div className="ray__form__amount">
                   <strong>0 ADA = 0 RAY</strong>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <Form.Item className="mt-4">

@@ -82,7 +82,7 @@ const RewardsActivities = () => {
               <Tooltip title="Soon">
                 <Button type="primary" disabled>
                   <i className="fe fe-arrow-down-circle mr-1" />
-                  Withdraw Rewards
+                  <strong>Withdraw Rewards</strong>
                 </Button>
               </Tooltip>
             </div>
@@ -198,7 +198,7 @@ const RewardsActivities = () => {
                 <Tooltip title="Soon">
                   <Button type="primary" disabled>
                     <i className="fe fe-arrow-down-circle mr-1" />
-                    Redeem Reward
+                    <strong>Redeem Reward</strong>
                   </Button>
                 </Tooltip>
               </Form.Item>
@@ -268,7 +268,7 @@ const RewardsActivities = () => {
                 <Tooltip title="Soon">
                   <Button type="primary" disabled>
                     <i className="fe fe-arrow-down-circle mr-1" />
-                    Redeem Reward
+                    <strong>Redeem Reward</strong>
                   </Button>
                 </Tooltip>
               </Form.Item>

@@ -85,7 +85,7 @@ const StakeBalances = () => {
                 disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
               >
                 <i className="fe fe-arrow-down-circle mr-1" />
-                Withdraw Rewards
+                <strong>Withdraw Rewards</strong>
               </Button>
             </div>
           </div>
@@ -159,13 +159,13 @@ const StakeBalances = () => {
             {pool.id === walletStake.currentPoolId && (
               <Button type="primary" disabled>
                 <i className="fe fe-arrow-up-circle mr-1" />
-                Delagated
+                <strong>Delagated</strong>
               </Button>
             )}
             {pool.id !== walletStake.currentPoolId && (
               <Button type="primary" disabled={!walletParams.accountId}>
                 <i className="fe fe-arrow-up-circle mr-1" />
-                Delegate
+                <strong>Delegate</strong>
               </Button>
             )}
           </div>
@@ -190,7 +190,7 @@ const StakeBalances = () => {
             <Input size="large" placeholder="Delegate by Pool ID" allowClear />
           </Form.Item>
           <Form.Item className="mb-0">
-            <Button htmlType="submit" disabled={!hasStakeKey}>
+            <Button htmlType="submit">
               <i className="fe fe-arrow-up-circle mr-1" />
               <strong>Delegate</strong>
             </Button>

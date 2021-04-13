@@ -142,8 +142,9 @@ const Menu = () => {
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
                       <span className="badge badge-light">
-                        {totalTickers}
-                        <small> {totalTickers === 1 ? 'token' : 'tokens'}</small>
+                        <small>
+                          {totalTickers} {totalTickers === 1 ? 'token' : 'tokens'}
+                        </small>
                       </span>
                     </div>
                     <div className={style.selectWalletsItemDescr}>
@@ -222,7 +223,7 @@ const Menu = () => {
             </a>
           </div>
         )}
-        <div className="mb-3">
+        <div className={style.walletAssets}>
           {walletParams.accountId && (
             <AmountFormatterAda amount={walletAssetsSummary.value} availablePrivate />
           )}
@@ -255,22 +256,25 @@ const Menu = () => {
                   </span>
                 )}
               </div>
+              {sections.includes('rewards') && (
+                <div>
+                  RAY Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
+                  {walletStake.hasStakingKey && (
+                    <span>
+                      <AmountFormatterAsset
+                        amount="0"
+                        fingerprint="asset1ray"
+                        ticker="RAY"
+                        small
+                        inline
+                      />
+                    </span>
+                  )}
+                </div>
+              )}
               <div>
-                RAY Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
-                {walletStake.hasStakingKey && (
-                  <span>
-                    <AmountFormatterAsset
-                      amount="0"
-                      fingerprint="asset1ray"
-                      ticker="RAY"
-                      small
-                      inline
-                    />
-                  </span>
-                )}
-              </div>
-              <div>
-                Transactions: <strong>{walletTransactions.length}</strong>
+                Transactions:{' '}
+                <AmountFormatterAsset amount={walletTransactions.length} small inline />
               </div>
             </div>
           </div>

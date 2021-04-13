@@ -29,10 +29,10 @@
 
 .asset {
   &Ticker {
-    width: 160px;
+    width: 40%;
   }
   &Amount {
-    width: calc(100% - 328px);
+    width: calc(60% - 50px);
   }
   &Donate {
     width: 120px;
@@ -86,6 +86,15 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
+[data-vb-theme='dark'] {
+  .asset {
+    &To {
+      color: $white;
+    }
 
-// }
+    &Icon {
+      background: $dark-border;
+      border-color: $dark-border;
+    }
+  }
+}

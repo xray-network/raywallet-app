@@ -94,7 +94,7 @@ strong {
   h4,
   h5,
   h6 {
-    color: $dark-gray-1;
+    color: $white;
   }
 
   a {
@@ -107,6 +107,11 @@ strong {
   }
 
   ::placeholder {
+    color: $dark-gray-3;
+  }
+
+  .badge.badge-light {
+    background: $dark-gray-5;
     color: $dark-gray-3;
   }
 }

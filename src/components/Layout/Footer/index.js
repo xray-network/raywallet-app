@@ -4,7 +4,7 @@ import { version } from '../../../../package.json'
 
 const Footer = () => {
   return (
-    <div>
+    <div className={style.footer}>
       <div className={style.cardano}>
         <span>Powered with </span>
         <img src="/cardano.png" alt="" />

@@ -3,6 +3,7 @@
 .formatter {
   display: flex;
   align-items: center;
+  color: $black;
 
   &Inline {
     display: inline-block;
@@ -77,6 +78,19 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
+[data-vb-theme='dark'] {
+  .formatter {
+    color: $white;
+  }
 
-// }
+  .info {
+    &Item {
+      color: $white;
+    }
+  }
+
+  .ticker {
+    background: $dark-gray-4;
+    border-color: $dark-border;
+  }
+}

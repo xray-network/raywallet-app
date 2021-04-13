@@ -54,7 +54,7 @@ const WalletSend = () => {
           name="toAddress"
           rules={[{ required: true, message: 'Please enter address' }]}
         >
-          <Input size="large" placeholder="Address" allowClear />
+          <Input size="large" placeholder="Address" allowClear autoComplete="off" />
         </Form.Item>
         <Input.Group compact className={style.assetGroup}>
           <Form.Item
@@ -109,14 +109,14 @@ const WalletSend = () => {
               style={{ width: '100%' }}
             />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             className={style.assetDonate}
             label="Donate"
             name="donate"
             tooltip="This donation will be used for further RAY Network development. Not required."
           >
             <Input size="large" placeholder="0" autoComplete="off" style={{ width: '100%' }} />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label=" " className={style.assetRemove}>
             <Tooltip title="Remove Token from Tx">
               <Button size="large" disabled>

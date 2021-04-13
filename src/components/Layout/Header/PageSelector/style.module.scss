@@ -20,4 +20,9 @@
 }
 
 // dark theme
-// [data-theme='dark'] { }
+[data-vb-theme='dark'] {
+  .button {
+    background: $dark-gray-4;
+    border-color: $dark-border;
+  }
+}

@@ -268,6 +268,7 @@
 
   &__testnet {
     position: fixed;
+    z-index: 20000;
     top: rem(14);
     right: rem(20);
     background: $danger;
@@ -321,6 +322,92 @@
 
       div {
         @include transition-fast();
+      }
+    }
+  }
+}
+
+// dark theme
+[data-vb-theme='dark'] {
+  .ray {
+    &__wrapper {
+      background-color: $dark-gray-4;
+    }
+
+    &__line {
+      background: $dark-border;
+    }
+
+    &__item {
+      background-color: $dark-gray-4;
+      border-color: $dark-border;
+
+      &--current {
+        border-color: $primary;
+        box-shadow: 0 0 0 2px rgba(1, 122, 255, 0.2);
+      }
+
+      &--primary {
+        border-top: 4px solid $primary;
+      }
+
+      &--success {
+        border-top: 4px solid $success;
+      }
+
+      &--gray {
+        border-top: 4px solid $dark-border;
+      }
+
+      &--tinted {
+        background: $dark-border;
+      }
+
+      &--disabled {
+        background: $dark-border;
+      }
+    }
+
+    &__form {
+      &__label {
+        color: $white;
+      }
+    }
+
+    &__submenu {
+      &__item {
+        &--active {
+          color: $white !important;
+        }
+      }
+    }
+
+    &__heading {
+      color: $white;
+    }
+
+    &__count {
+      .ant-statistic-content {
+        color: $white;
+      }
+    }
+
+    &__empty {
+      color: $dark-gray-2;
+    }
+
+    &__tx {
+      border-color: $dark-border;
+    }
+
+    &__address {
+      color: $dark-gray-2;
+      &__path {
+        border-color: $dark-border;
+      }
+
+      &__qr {
+        border-color: $dark-border;
       }
     }
   }

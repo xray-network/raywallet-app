@@ -56,3 +56,85 @@
     border-radius: 5px !important;
   }
 }
+
+// dark theme
+[data-vb-theme='dark'] {
+  .ant-form {
+    color: $white !important;
+  }
+
+  .ant-form-item-label label {
+    color: $white !important;
+  }
+
+  .ant-btn[disabled],
+  .ant-input[disabled],
+  .ant-input-affix-wrapper-disabled {
+    color: $dark-gray-3 !important;
+    background: $dark-border !important;
+  }
+
+  .ant-btn[disabled] {
+    &:hover,
+    &:active,
+    &:focus {
+      background: $dark-border !important;
+    }
+  }
+
+  .ant-modal {
+    &-content {
+      background: $dark-gray-4 !important;
+    }
+
+    &-header {
+      border-color: $dark-border;
+    }
+
+    &-body {
+      color: $dark-gray-1 !important;
+    }
+
+    &-title {
+      color: $dark-gray-1 !important;
+    }
+  }
+
+  .ant-alert {
+    &-info {
+      background: rgba(#017aff, 0.05) !important;
+      border-color: rgba(#017aff, 0.3) !important;
+    }
+    &-success {
+      background: rgba($success, 0.05) !important;
+      border-color: rgba($success, 0.3) !important;
+    }
+    &-error {
+      background: rgba($danger, 0.05) !important;
+      border-color: rgba(rgba($danger, 0.05), 0.3) !important;
+    }
+    &-warning {
+      background: rgba($orange, 0.05) !important;
+      border-color: rgba(rgba($orange, 0.05), 0.3) !important;
+    }
+  }
+
+  .ant-select {
+    &-item-option-active:not(.ant-select-item-option-disabled),
+    &-item-option-selected:not(.ant-select-item-option-disabled) {
+      color: $white !important;
+      background: lighten($dark-gray-4, 6%) !important;
+    }
+  }
+
+  .ant-tabs {
+    &-tab {
+      background: transparent !important;
+      color: $white;
+
+      &-active {
+        color: $primary;
+      }
+    }
+  }
+}

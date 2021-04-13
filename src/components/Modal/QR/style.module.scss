@@ -32,6 +32,10 @@
 }
 
 // dark theme
-// [data-vb-theme='dark'] {
-
-// }
+[data-vb-theme='dark'] {
+  .logo {
+    &Name {
+      color: $white;
+    }
+  }
+}
