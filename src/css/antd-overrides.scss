@@ -61,7 +61,7 @@
 .ant-select-selector,
 .ant-input,
 .ant-input-affix-wrapper {
-  transition: border-color 0.1s ease-in-out !important;
+  transition: border-color 0.1s ease-in-out, color 0.1s ease-in-out !important;
 }
 
 // dark theme

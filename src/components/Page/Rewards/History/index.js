@@ -10,7 +10,7 @@ const RewardsHistory = () => {
   return (
     <div>
       <div className="ray__heading">Recently Rewards</div>
-      {!walletRayRewardsHistory.length && <Empty title="No transactions" />}
+      {!walletRayRewardsHistory.length && <Empty title="No history" />}
       {walletRayRewardsHistory.map((reward, index) => {
         return (
           <div key={index} className="ray__tx">

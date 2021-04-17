@@ -243,19 +243,21 @@ const Menu = () => {
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
-              <div>
-                Stake Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}
-                {walletStake.hasStakingKey && (
-                  <span>
-                    <AmountFormatterAda
-                      amount={walletStake.rewardsAmount}
-                      noDecimals
-                      small
-                      inline
-                    />
-                  </span>
-                )}
-              </div>
+              {sections.includes('stake') && (
+                <div>
+                  Stake Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}
+                  {walletStake.hasStakingKey && (
+                    <span>
+                      <AmountFormatterAda
+                        amount={walletStake.rewardsAmount}
+                        noDecimals
+                        small
+                        inline
+                      />
+                    </span>
+                  )}
+                </div>
+              )}
               {sections.includes('rewards') && (
                 <div>
                   RAY Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}

@@ -10,7 +10,7 @@ const StakeHistory = () => {
   return (
     <div>
       <div className="ray__heading">Recently Rewards</div>
-      {!walletStakeRewardsHistory.length && <Empty title="No transactions" />}
+      {!walletStakeRewardsHistory.length && <Empty title="No history" />}
       {walletStakeRewardsHistory.map((reward, index) => {
         return (
           <div key={index} className="ray__tx">

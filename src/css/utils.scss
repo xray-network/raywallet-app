@@ -347,7 +347,7 @@
 [data-vb-theme='dark'] {
   .ray {
     &__wrapper {
-      background-color: $dark-gray-5;
+      background-color: $dark-gray-4;
     }
 
     &__badge {
@@ -419,6 +419,7 @@
     }
 
     &__tx {
+      background: $dark-gray-4;
       border-color: $dark-border;
     }
 

@@ -27,9 +27,7 @@ export default () => {
             </Checkbox>
           </div>
           <div className="mb-1">
-            <Checkbox value="stake" disabled>
-              Stake
-            </Checkbox>
+            <Checkbox value="stake">Stake</Checkbox>
           </div>
           <div className="mb-1">
             <Checkbox value="rewards">Rewards</Checkbox>
