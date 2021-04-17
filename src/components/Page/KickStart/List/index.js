@@ -58,7 +58,7 @@ const KickStartList = () => {
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Tokens Total</div>
                   <div className="ray__form__amount">
-                    <span className="badge badge-light">10,000,000 RAY</span>
+                    <span className="ray__badge">10,000,000 RAY</span>
                   </div>
                 </div>
               </div>
@@ -66,14 +66,14 @@ const KickStartList = () => {
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Rate</div>
                   <div className="ray__form__amount">
-                    <span className="badge badge-light">1 ADA = 10 RAY</span>
+                    <span className="ray__badge">1 ADA = 10 RAY</span>
                   </div>
                 </div>
               </div>
               <div className="col-lg-4">
                 <div className="ray__form__item mb-3">
                   <div className="ray__form__label">Until</div>
-                  <span className="badge badge-light">tokens end</span>
+                  <span className="ray__badge">tokens end</span>
                 </div>
               </div>
             </div>

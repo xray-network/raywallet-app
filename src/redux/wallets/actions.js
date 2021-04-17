@@ -17,7 +17,6 @@ const actions = {
   IMPORT_WALLET: 'wallets/IMPORT_WALLET',
   GET_STAKE_STATE: 'wallets/GET_STAKE_STATE',
   GET_POOLS_INFO: 'wallets/GET_POOLS_INFO',
-  GET_STAKE_REWARDS_HISTORY: 'wallets/GET_STAKE_REWARDS_HISTORY',
 }
 
 export default actions

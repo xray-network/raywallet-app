@@ -84,7 +84,7 @@ strong {
 // dark theme
 [data-vb-theme='dark'] {
   body {
-    background: $dark-gray-5;
+    background: $dark-gray-4;
     color: $dark-gray-1;
   }
 
@@ -107,11 +107,6 @@ strong {
   }
 
   ::placeholder {
-    color: $dark-gray-3;
-  }
-
-  .badge.badge-light {
-    background: $dark-gray-5;
     color: $dark-gray-3;
   }
 }

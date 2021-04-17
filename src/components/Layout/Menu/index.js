@@ -141,7 +141,7 @@ const Menu = () => {
                     )}
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
-                      <span className="badge badge-light">
+                      <span className="ray__badge">
                         <small>
                           {totalTickers} {totalTickers === 1 ? 'token' : 'tokens'}
                         </small>
@@ -244,7 +244,7 @@ const Menu = () => {
           <div className="mb-5">
             <div className={style.walletInfo}>
               <div>
-                Stake Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
+                Stake Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}
                 {walletStake.hasStakingKey && (
                   <span>
                     <AmountFormatterAda
@@ -258,7 +258,7 @@ const Menu = () => {
               </div>
               {sections.includes('rewards') && (
                 <div>
-                  RAY Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
+                  RAY Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}
                   {walletStake.hasStakingKey && (
                     <span>
                       <AmountFormatterAsset
@@ -273,8 +273,10 @@ const Menu = () => {
                 </div>
               )}
               <div>
-                Transactions:{' '}
-                <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                Transactions: {!walletTransactions.length && <strong>0</strong>}
+                {!!walletTransactions.length && (
+                  <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                )}
               </div>
             </div>
           </div>

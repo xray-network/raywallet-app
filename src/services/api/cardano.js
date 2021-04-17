@@ -21,10 +21,7 @@ import { notification } from 'antd'
 const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
 
 const apiClient = axios.create({
-  baseURL:
-    CARDANO_NETWORK === 'mainnet'
-      ? 'https://graphql.rraayy.com'
-      : 'https://graphql-testnet.rraayy.com', // testnet
+  baseURL: CARDANO_NETWORK === 'mainnet' ? 'https://graphql.rraayy.com' : 'http://localhost:3100', // testnet
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
@@ -101,15 +98,14 @@ export async function GetAdressesUTXO(addresses) {
               quantity
               asset {
                 assetId
-                fingerprint
                 assetName
                 description
-                name
-                policyId
-                ticker
-                metadataHash
+                fingerprint
                 logo
+                name
+                ticker
                 url
+                policyId
               }
             }
           }
@@ -128,7 +124,43 @@ export async function GetAdressesUTXO(addresses) {
     .catch((err) => console.log(err))
 }
 
-export async function GetTransactions(addresses) {
+export async function GetTransactionsByInputs(addresses) {
+  return apiClient
+    .post('/', {
+      query: `
+        query getTxs($addresses: [String]) {
+          transactions(
+            limit: 100
+            order_by: { includedAt: desc }
+            offset: 0
+            where: {
+              inputs: {
+                address: {
+                  _in: $addresses
+                }
+              }
+            }
+          ) {
+            fee
+            hash
+            includedAt
+          }
+        }
+      `,
+      variables: {
+        addresses,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
+export async function GetTransactionsByOutputs(addresses) {
   return apiClient
     .post('/', {
       query: `
@@ -189,15 +221,14 @@ export async function GetTransactionsIO(hashes) {
                 quantity
                 asset {
                   assetId
-                  fingerprint
                   assetName
                   description
-                  name
-                  policyId
-                  ticker
-                  metadataHash
+                  fingerprint
                   logo
+                  name
+                  ticker
                   url
+                  policyId
                 }
               }
             }
@@ -208,15 +239,14 @@ export async function GetTransactionsIO(hashes) {
                 quantity
                 asset {
                   assetId
-                  fingerprint
                   assetName
                   description
-                  name
-                  policyId
-                  ticker
-                  metadataHash
+                  fingerprint
                   logo
+                  name
+                  ticker
                   url
+                  policyId
                 }
               }
             }
@@ -302,6 +332,39 @@ export async function GetStakeAddressInfo(address, epoch) {
     .catch((err) => console.log(err))
 }
 
+export async function GetStakeAddressDelegations(address) {
+  return apiClient
+    .post('/', {
+      query: `
+        query delegationsForAddress($address: StakeAddress) {
+          delegations(
+            limit: 1
+            where: { address: { _eq: $address } }
+            order_by: { transaction: { includedAt: desc } }
+          ) {
+            address
+            stakePool {
+              id
+            }
+            transaction {
+              includedAt
+            }
+          }
+        }
+      `,
+      variables: {
+        address,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
 export async function GetPoolsInfo(ids, epoch) {
   return apiClient
     .post('/', {
@@ -344,13 +407,27 @@ export async function GetRewardsForAddress(address) {
     .post('/', {
       query: `
         query rewardsForAddress($address: StakeAddress) {
-          rewards(limit: 10, where: { address: { _eq: $address } }) {
+          rewards(
+            limit: 100
+            order_by: { earnedIn: { number: desc } }
+            where: { address: { _eq: $address } }
+          ) {
             address
             amount
             earnedIn {
               number
-              startedAt
               lastBlockTime
+            }
+          }
+          withdrawals(
+            limit: 100
+            order_by: { transaction: { includedAt: desc } }
+            where: { address: { _eq: $address } }
+          ) {
+            address
+            amount
+            transaction {
+              includedAt
             }
           }
         }

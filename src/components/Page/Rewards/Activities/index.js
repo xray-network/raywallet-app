@@ -12,11 +12,11 @@ const RewardsActivities = () => {
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = parseInt(walletStake.activeStakeAmount / 1000000 / 20, 10)
+  const expectedPayout = parseInt(walletStake.activeStakeAmount / 1000000 / 50, 10)
 
   return (
     <div>
-      <div className="ray__heading">Live Activities</div>
+      <div className="ray__heading">Current Activities</div>
       <div
         className={`ray__item ${
           walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
@@ -40,6 +40,7 @@ const RewardsActivities = () => {
                       fingerprint="asset1ray"
                       ticker="RAY"
                       availablePrivate
+                      prefix="~"
                     />
                   )}
                 </div>
@@ -140,7 +141,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">20 ADA = 1 RAY</span>
+                <span className="ray__badge">50 ADA = 1 RAY</span>
               </div>
             </div>
           </div>
@@ -185,7 +186,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0 mb-lg-0">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">**,***,*** RAY</span>
+                <span className="ray__badge">**,***,*** RAY</span>
               </div>
             </div>
           </div>
@@ -244,7 +245,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0 mb-lg-0">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
-                <span className="badge badge-light">10 RAY</span>
+                <span className="ray__badge">10 RAY</span>
               </div>
             </div>
           </div>

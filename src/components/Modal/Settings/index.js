@@ -50,7 +50,6 @@ const SettingsModal = () => {
       title={
         <div>
           <div>Wallet Settings</div>
-          <small className="text-muted">{walletParams.accountId}</small>
         </div>
       }
       footer={null}
@@ -61,6 +60,20 @@ const SettingsModal = () => {
       <div className="ray__form__label">Wallet Name</div>
       <div className="mb-4">
         <Input value={walletParams.name} size="large" onChange={setWalletName} />
+      </div>
+      <div className="row">
+        <div className="col-lg-6">
+          <div className="ray__form__label">Wallet Account ID</div>
+          <div className="mb-4">
+            <Input value={walletParams.accountId} disabled size="large" />
+          </div>
+        </div>
+        <div className="col-lg-6">
+          <div className="ray__form__label">Wallet Stake Address</div>
+          <div className="mb-4">
+            <Input value={walletParams.rewardAddress} disabled size="large" />
+          </div>
+        </div>
       </div>
       <div className="ray__form__label">Danger Zone</div>
       <div className={style.danger}>

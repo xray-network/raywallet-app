@@ -6,6 +6,22 @@
     margin: 0 auto;
   }
 
+  &__badge {
+    font-size: rem(14);
+    text-transform: uppercase;
+    font-family: monospace;
+    background: $pastel-1;
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    line-height: 1;
+    vertical-align: baseline;
+    white-space: nowrap;
+    border-radius: 0.25rem;
+    color: $gray-6;
+    letter-spacing: 1px;
+    font-weight: 400;
+  }
+
   &__link {
     color: $primary;
     &:hover,
@@ -331,7 +347,13 @@
 [data-vb-theme='dark'] {
   .ray {
     &__wrapper {
-      background-color: $dark-gray-4;
+      background-color: $dark-gray-5;
+    }
+
+    &__badge {
+      background: transparent;
+      border: 1px solid $dark-border;
+      color: $dark-gray-1;
     }
 
     &__line {

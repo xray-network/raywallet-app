@@ -18,6 +18,10 @@ const pools =
           ticker: 'ANGEL',
           name: 'Testpool #2',
         },
+        pool1tzmx7k40sm8kheam3pr2d4yexrp3jmv8l50suj6crnvn6dc2429: {
+          ticker: 'WURST',
+          name: 'Testpool #3',
+        },
       }
 
 const initialState = {
@@ -40,11 +44,11 @@ const initialState = {
   walletAddresses: [],
   walletTransactions: [],
   walletStake: {
-    hasStakingKey: true,
+    hasStakingKey: false,
     rewardsAmount: 0,
-    activeStakeAmount: 1000000000,
-    currentPoolId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
-    activePoolId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
+    activeStakeAmount: 0,
+    currentPoolId: '',
+    activePoolId: '',
   },
   walletStakeRewardsHistory: [],
   walletRayRewardsHistory: [],

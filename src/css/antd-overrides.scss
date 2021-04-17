@@ -57,6 +57,13 @@
   }
 }
 
+.ant-btn,
+.ant-select-selector,
+.ant-input,
+.ant-input-affix-wrapper {
+  transition: border-color 0.1s ease-in-out !important;
+}
+
 // dark theme
 [data-vb-theme='dark'] {
   .ant-form {

@@ -469,9 +469,10 @@ export function* GET_UTXO_STATE() {
           assetsSummary.tokens[assetId] = {
             ...assetsSummary.tokens[assetId],
             ...asset,
+            ticker:
+              asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+            quantity: BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity),
           }
-          assetsSummary.tokens[assetId].quantity =
-            BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity)
         })
       }
     })
@@ -513,16 +514,16 @@ export function* GET_UTXO_STATE() {
     }
   }
   yield call(getAddressesWithShift, shiftIndex)
-
   const assetsSummary = getAssetsSummary(UTXOArray)
 
-  console.log('assetsSummary', assetsSummary)
-  console.log('UTXOArray', UTXOArray)
+  console.log(UTXOArray)
 
-  const {
-    data: { transactions },
-  } = yield call(Explorer.GetTransactions, adressesArray)
-
+  const rawTxInputs = yield call(Explorer.GetTransactionsByInputs, adressesArray)
+  const rawTxOutputs = yield call(Explorer.GetTransactionsByOutputs, adressesArray)
+  const transactions = [
+    ...(rawTxInputs.data?.transactions || []),
+    ...(rawTxOutputs.data?.transactions || []),
+  ]
   const transactionsHashes = transactions.map((tx) => tx.hash)
   const transactionsInputsOutputs = yield call(Explorer.GetTransactionsIO, transactionsHashes)
 
@@ -547,8 +548,10 @@ export function* GET_UTXO_STATE() {
           tokens[assetId] = {
             ...tokens[assetId],
             ...asset,
+            ticker:
+              asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+            quantity: BigInt(tokens[assetId].quantity) - BigInt(quantity),
           }
-          tokens[assetId].quantity = BigInt(tokens[assetId].quantity) - BigInt(quantity)
         })
       }
     })
@@ -566,8 +569,10 @@ export function* GET_UTXO_STATE() {
           tokens[assetId] = {
             ...tokens[assetId],
             ...asset,
+            ticker:
+              asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+            quantity: BigInt(tokens[assetId].quantity) + BigInt(quantity),
           }
-          tokens[assetId].quantity = BigInt(tokens[assetId].quantity) + BigInt(quantity)
         })
       }
     })
@@ -628,33 +633,57 @@ export function* GET_STAKE_STATE() {
   const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
 
   const rawStakeInfo = yield call(Explorer.GetStakeAddressInfo, rewardAddress, currentEpoch.number)
+  const rawDelegations = yield call(Explorer.GetStakeAddressDelegations, rewardAddress)
+  const rawWalletStakeRewards = yield call(Explorer.GetRewardsForAddress, rewardAddress)
 
-  console.log('epoch', currentEpoch.number)
-  console.log('rawStakeInfo', rawStakeInfo)
+  const stakeRegistrationBlock =
+    rawStakeInfo.data?.stakeRegistrations[0]?.transaction.block.number || 0
+  const stakeDeregistrationBlock =
+    rawStakeInfo.data?.stakeDeregistrations[0]?.transaction.block.number || 0
 
-  // const stakeRegistrationBlock =
-  //   rawStakeInfo.data?.stakeRegistrations[0]?.transaction.block.number || 0
-  // const stakeDeregistrationBlock =
-  //   rawStakeInfo.data?.stakeDeregistrations[0]?.transaction.block.number || 0
-  // const hasStakingKey = stakeRegistrationBlock > stakeDeregistrationBlock
-  // const stakeData = {
-  //   activeStakeAmount: hasStakingKey
-  //     ? BigInt(rawStakeInfo.data?.activeStake[0]?.amount) || BigInt(0)
-  //     : BigInt(0),
-  //   rewardsAmount: hasStakingKey
-  //     ? BigInt(rawStakeInfo.data?.activeStake[0]?.amount) - BigInt(walletAssetsSummary.value) || BigInt(0)
-  //     : BigInt(0),
-  //   stakePoolId: rawStakeInfo.data?.activeStake[0]?.stakePoolId || false,
-  //   hasStakingKey,
-  // }
+  const walletStakeRewards = rawWalletStakeRewards.data?.rewards || []
+  const walletStakeWithdrawals = rawWalletStakeRewards.data?.withdrawals || []
 
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'walletStake',
-  //     value: stakeData,
-  //   },
-  // })
+  const rewardsSum = walletStakeRewards.length
+    ? walletStakeRewards.reduce((total, item) => ({
+        amount: Number(total.amount) + Number(item.amount),
+      }))
+    : { amount: 0 }
+  const withdrawalsSum = walletStakeWithdrawals.length
+    ? walletStakeWithdrawals.reduce((total, item) => ({
+        amount: Number(total.amount) + Number(item.amount),
+      }))
+    : { amount: 0 }
+
+  const walletStake = {
+    hasStakingKey: stakeRegistrationBlock > stakeDeregistrationBlock,
+    rewardsAmount: rewardsSum.amount - withdrawalsSum.amount,
+    activeStakeAmount: rawStakeInfo.data?.activeStake[0]?.amount || 0,
+    currentPoolId: rawDelegations.data?.delegations[0]?.stakePool?.id,
+    activePoolId: rawStakeInfo.data?.activeStake[0]?.stakePoolId,
+  }
+
+  // console.log('rawStakeInfo', rawStakeInfo)
+  // console.log('rawDelegations', rawDelegations)
+  // console.log('walletStakeRewards', walletStakeRewards)
+  // console.log('walletStakeWithdrawals', walletStakeWithdrawals)
+  // console.log('walletStake', walletStake)
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStake',
+      value: walletStake,
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStakeRewardsHistory',
+      value: walletStakeRewards,
+    },
+  })
 }
 
 export function* GET_POOLS_INFO() {
@@ -678,41 +707,6 @@ export function* GET_POOLS_INFO() {
   })
 }
 
-export function* GET_STAKE_REWARDS_HISTORY() {
-  yield console.log('GET_STAKE_REWARDS_HISTORY')
-  // const { rewardAddress } = yield select((state) => state.wallets.walletParams)
-
-  // let walletStakeRewards = yield call(Explorer.GetRewardsForAddress, rewardAddress)
-  // walletStakeRewards = [
-  //   {
-  //     address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
-  //     amount: '8608',
-  //     earnedIn: {
-  //       number: 234,
-  //       startedAt: '2020-12-06T21:44:51Z',
-  //       lastBlockTime: '2020-12-11T21:44:50Z',
-  //     },
-  //   },
-  //   {
-  //     address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
-  //     amount: '2552755',
-  //     earnedIn: {
-  //       number: 235,
-  //       startedAt: '2020-12-11T21:45:01Z',
-  //       lastBlockTime: '2020-12-16T21:43:48Z',
-  //     },
-  //   },
-  // ]
-
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'walletStakeRewards',
-  //     value: walletStakeRewards,
-  //   },
-  // })
-}
-
 export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
   if (!publicKey) {
@@ -730,7 +724,6 @@ export function* FETCH_WALLET_DATA() {
   yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
   yield call(GET_STAKE_STATE)
-  yield call(GET_STAKE_REWARDS_HISTORY)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -786,7 +779,6 @@ export default function* rootSaga() {
     takeEvery(actions.IMPORT_WALLET, IMPORT_WALLET),
     takeEvery(actions.GET_STAKE_STATE, GET_STAKE_STATE),
     takeEvery(actions.GET_POOLS_INFO, GET_POOLS_INFO),
-    takeEvery(actions.GET_STAKE_REWARDS_HISTORY, GET_STAKE_REWARDS_HISTORY),
     SETUP(), // run once on app load to init listeners
   ])
 }
