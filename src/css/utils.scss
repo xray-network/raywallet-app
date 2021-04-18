@@ -81,6 +81,10 @@
     background: $border;
   }
 
+  &__color {
+    color: $black;
+  }
+
   &__address {
     font-family: monospace;
     word-break: break-all;
@@ -358,6 +362,10 @@
 
     &__line {
       background: $dark-border;
+    }
+
+    &__color {
+      color: $white;
     }
 
     &__item {

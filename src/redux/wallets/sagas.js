@@ -5,6 +5,7 @@ import { message } from 'antd'
 import * as CardanoUtils from 'utils/ray-cardano-utils'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
+import * as ExplorerHelper from 'services/api/cardano-helper'
 import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
 import actions from './actions'
@@ -42,9 +43,7 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
 
   const newWallet = {
     order: walletList.length,
-    accountId: CardanoUtils.bechAddressToHex(accountInfo.rewardAddressBech32)
-      .data.toString('hex')
-      .slice(2),
+    accountId: CardanoUtils.bechAddressToHex(accountInfo.rewardAddressBech32).data.toString('hex'),
     rewardAddress: accountInfo.rewardAddressBech32,
     publicKey: accountInfo.publicKeyBech32,
     privateKey: accountInfo.privateKeyBech32,
@@ -215,9 +214,8 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
         value: {
           hasStakingKey: false,
           rewardsAmount: 0,
-          activeStakeAmount: 0,
           currentPoolId: '',
-          activePoolId: '',
+          nextRewardsHistory: [],
         },
       },
     })
@@ -235,6 +233,7 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
         value: [],
       },
     })
+
     return
   }
 
@@ -516,8 +515,6 @@ export function* GET_UTXO_STATE() {
   yield call(getAddressesWithShift, shiftIndex)
   const assetsSummary = getAssetsSummary(UTXOArray)
 
-  console.log(UTXOArray)
-
   const rawTxInputs = yield call(Explorer.GetTransactionsByInputs, adressesArray)
   const rawTxOutputs = yield call(Explorer.GetTransactionsByOutputs, adressesArray)
   const transactions = [
@@ -629,45 +626,16 @@ export function* GET_UTXO_STATE() {
 }
 
 export function* GET_STAKE_STATE() {
-  const { rewardAddress } = yield select((state) => state.wallets.walletParams)
-  const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
+  const { accountId } = yield select((state) => state.wallets.walletParams)
+  const rawStakeInfo = yield call(ExplorerHelper.GetStakeInfo, accountId)
 
-  const rawStakeInfo = yield call(Explorer.GetStakeAddressInfo, rewardAddress, currentEpoch.number)
-  const rawDelegations = yield call(Explorer.GetStakeAddressDelegations, rewardAddress)
-  const rawWalletStakeRewards = yield call(Explorer.GetRewardsForAddress, rewardAddress)
-
-  const stakeRegistrationBlock =
-    rawStakeInfo.data?.stakeRegistrations[0]?.transaction.block.number || 0
-  const stakeDeregistrationBlock =
-    rawStakeInfo.data?.stakeDeregistrations[0]?.transaction.block.number || 0
-
-  const walletStakeRewards = rawWalletStakeRewards.data?.rewards || []
-  const walletStakeWithdrawals = rawWalletStakeRewards.data?.withdrawals || []
-
-  const rewardsSum = walletStakeRewards.length
-    ? walletStakeRewards.reduce((total, item) => ({
-        amount: Number(total.amount) + Number(item.amount),
-      }))
-    : { amount: 0 }
-  const withdrawalsSum = walletStakeWithdrawals.length
-    ? walletStakeWithdrawals.reduce((total, item) => ({
-        amount: Number(total.amount) + Number(item.amount),
-      }))
-    : { amount: 0 }
-
+  const walletStakeRewards = rawStakeInfo.rewardsHistory || []
   const walletStake = {
-    hasStakingKey: stakeRegistrationBlock > stakeDeregistrationBlock,
-    rewardsAmount: rewardsSum.amount - withdrawalsSum.amount,
-    activeStakeAmount: rawStakeInfo.data?.activeStake[0]?.amount || 0,
-    currentPoolId: rawDelegations.data?.delegations[0]?.stakePool?.id,
-    activePoolId: rawStakeInfo.data?.activeStake[0]?.stakePoolId,
+    hasStakingKey: rawStakeInfo.hasStakingKey || false,
+    rewardsAmount: rawStakeInfo.rewardsAmount || 0,
+    currentPoolId: rawStakeInfo.currentPool?.poolId || '',
+    nextRewardsHistory: rawStakeInfo.nextRewardsHistory || [],
   }
-
-  // console.log('rawStakeInfo', rawStakeInfo)
-  // console.log('rawDelegations', rawDelegations)
-  // console.log('walletStakeRewards', walletStakeRewards)
-  // console.log('walletStakeWithdrawals', walletStakeWithdrawals)
-  // console.log('walletStake', walletStake)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -723,7 +691,6 @@ export function* FETCH_WALLET_DATA() {
 
   yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
-  yield call(GET_STAKE_STATE)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -732,6 +699,8 @@ export function* FETCH_WALLET_DATA() {
       value: false,
     },
   })
+
+  yield call(GET_STAKE_STATE)
 }
 
 export function* FETCH_SIDE_DATA() {

@@ -30,7 +30,7 @@ const StakePools = () => {
             {pool.id === walletStake.currentPoolId && (
               <Tooltip title="Delegated to this pool" placement="left">
                 <div className="ray__item__check">
-                  <i className="fe fe-check-square" />
+                  <i className="fe fe-check" />
                 </div>
               </Tooltip>
             )}

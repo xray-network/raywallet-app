@@ -46,9 +46,8 @@ const initialState = {
   walletStake: {
     hasStakingKey: false,
     rewardsAmount: 0,
-    activeStakeAmount: 0,
     currentPoolId: '',
-    activePoolId: '',
+    nextRewardsHistory: [],
   },
   walletStakeRewardsHistory: [],
   walletRayRewardsHistory: [],

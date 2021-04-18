@@ -11,6 +11,7 @@ const Menu = () => {
   const dispatch = useDispatch()
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
+  const networkInfo = useSelector((state) => state.wallets.networkInfo)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
@@ -245,7 +246,7 @@ const Menu = () => {
             <div className={style.walletInfo}>
               {sections.includes('stake') && (
                 <div>
-                  Stake Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}
+                  Stake Rewards: {!walletStake.hasStakingKey && <strong>—</strong>}
                   {walletStake.hasStakingKey && (
                     <span>
                       <AmountFormatterAda
@@ -253,6 +254,7 @@ const Menu = () => {
                         noDecimals
                         small
                         inline
+                        availablePrivate
                       />
                     </span>
                   )}
@@ -260,7 +262,7 @@ const Menu = () => {
               )}
               {sections.includes('rewards') && (
                 <div>
-                  RAY Rewards: {!walletStake.hasStakingKey && <strong>No delegation</strong>}
+                  RAY Rewards: {!walletStake.hasStakingKey && <strong>—</strong>}
                   {walletStake.hasStakingKey && (
                     <span>
                       <AmountFormatterAsset
@@ -269,6 +271,7 @@ const Menu = () => {
                         ticker="RAY"
                         small
                         inline
+                        availablePrivate
                       />
                     </span>
                   )}
@@ -279,6 +282,9 @@ const Menu = () => {
                 {!!walletTransactions.length && (
                   <AmountFormatterAsset amount={walletTransactions.length} small inline />
                 )}
+              </div>
+              <div>
+                Current Epoch: <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
               </div>
             </div>
           </div>

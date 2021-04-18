@@ -9,12 +9,14 @@ import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 const StakeBalances = () => {
   const networkInfo = useSelector((state) => state.wallets.networkInfo)
   const walletStake = useSelector((state) => state.wallets.walletStake)
+  const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
   const startedAt = networkInfo.currentEpoch?.startedAt
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
+  const totalAmount = walletAssetsSummary.value + walletStake.rewardsAmount
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = (walletStake.activeStakeAmount * 0.057) / 73
+  const expectedPayout = (totalAmount * 0.057) / 73
 
   return (
     <div>
@@ -31,10 +33,10 @@ const StakeBalances = () => {
               {!!poolsInfo.length && (
                 <div className="ray__form__amount">
                   {!walletStake.hasStakingKey && (
-                    <strong className="font-size-24">Not delegated</strong>
+                    <strong className="ray__color font-size-24">Not delegated</strong>
                   )}
                   {walletStake.hasStakingKey && !inRayPools && (
-                    <strong className="font-size-24">Not in RAY pool</strong>
+                    <strong className="ray__color font-size-24">Not in RAY pool</strong>
                   )}
                   {walletStake.hasStakingKey && (
                     <AmountFormatterAda amount={expectedPayout} prefix="~" availablePrivate />
@@ -43,7 +45,7 @@ const StakeBalances = () => {
               )}
               {!poolsInfo.length && (
                 <div className="ray__form__amount">
-                  <strong className="font-size-24">Loading...</strong>
+                  <strong className="ray__color font-size-24">Loading...</strong>
                 </div>
               )}
             </div>
@@ -92,7 +94,7 @@ const StakeBalances = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Controlled total stake</div>
               <div className="ray__form__amount">
-                <AmountFormatterAda amount={walletStake.activeStakeAmount} availablePrivate />
+                <AmountFormatterAda amount={totalAmount} availablePrivate />
               </div>
             </div>
           </div>
@@ -119,7 +121,7 @@ const StakeBalances = () => {
               {pool.id === walletStake.currentPoolId && (
                 <Tooltip title="Delegated to this pool" placement="left">
                   <div className="ray__item__check">
-                    <i className="fe fe-check-square" />
+                    <i className="fe fe-check" />
                   </div>
                 </Tooltip>
               )}
