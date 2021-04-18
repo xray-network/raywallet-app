@@ -86,7 +86,7 @@ const Swap = () => {
                         <AssetImage fingerprint={item.fingerprint} />
                       </span>
                       <span className="mr-2">{item.ticker}</span>
-                      <span className="badge badge-light">
+                      <span className="ray__badge">
                         {item.fingerprint.slice(0, 9)}...{item.fingerprint.slice(-4)}
                       </span>
                     </div>

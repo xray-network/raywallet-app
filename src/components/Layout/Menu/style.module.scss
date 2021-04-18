@@ -17,7 +17,7 @@
     font-weight: normal;
     position: relative;
 
-    :global(.badge) {
+    :global(.ray__badge) {
       position: relative;
       top: -2px;
     }
@@ -96,6 +96,10 @@
 
   &Info {
     color: $gray-5;
+
+    strong {
+      color: $black;
+    }
   }
 }
 
@@ -212,12 +216,20 @@
 
     &Info {
       color: $dark-gray-2;
+
+      strong {
+        color: $white;
+      }
     }
   }
 
   .selectWallets {
     &Item {
       color: $white;
+
+      &Descr {
+        color: $dark-gray-1;
+      }
     }
   }
 }

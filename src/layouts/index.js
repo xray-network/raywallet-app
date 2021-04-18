@@ -40,7 +40,7 @@ const LayoutIndex = ({ children, title, location: { pathname } }) => {
       <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
         {process.env.REACT_APP_NETWORK !== 'mainnet' && <div className="ray__testnet">testnet</div>}
         <div className="ray__banner">
-          The RAY Wallet is scheduled for release on April 15, 2021. Stay tuned!
+          The RAY Wallet is scheduled for release on May 1, 2021. Stay tuned!
         </div>
         <Offline>
           <div className="ray__banner">

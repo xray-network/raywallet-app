@@ -52,9 +52,9 @@ const EncryptModal = () => {
       title={
         <div>
           <div>Wallet Encryption</div>
-          <div>
+          {/* <div>
             <small className="text-muted">{walletParams.accountId}</small>
-          </div>
+          </div> */}
         </div>
       }
       footer={null}

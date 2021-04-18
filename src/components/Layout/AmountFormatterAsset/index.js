@@ -38,8 +38,10 @@ const AmountFormatterAsset = ({
       {fingerprint && (
         <div className={style.infoItem}>
           <CopyToClipboard text={fingerprint} onCopy={onCopy}>
-            <span className="font-size-12 badge badge-light">
-              {fingerprint.slice(0, 9)}...{fingerprint.slice(-4)}
+            <span className="ray__badge">
+              <small>
+                {fingerprint.slice(0, 9)}...{fingerprint.slice(-4)}
+              </small>
             </span>
           </CopyToClipboard>
         </div>

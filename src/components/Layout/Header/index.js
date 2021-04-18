@@ -18,10 +18,12 @@ const Header = () => {
           <span>Wallet</span>
           <span>Wallet</span>
         </NavLink>
-        <NavLink activeClassName={style.active} to="/stake">
-          <span>Stake</span>
-          <span>Stake</span>
-        </NavLink>
+        {sections.includes('stake') && (
+          <NavLink activeClassName={style.active} to="/stake">
+            <span>Stake</span>
+            <span>Stake</span>
+          </NavLink>
+        )}
         {sections.includes('rewards') && (
           <NavLink activeClassName={style.active} to="/rewards">
             <span>Rewards</span>

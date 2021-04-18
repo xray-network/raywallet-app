@@ -5,6 +5,7 @@ import { message } from 'antd'
 import * as CardanoUtils from 'utils/ray-cardano-utils'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
+import * as ExplorerHelper from 'services/api/cardano-helper'
 import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
 import actions from './actions'
@@ -42,9 +43,7 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
 
   const newWallet = {
     order: walletList.length,
-    accountId: CardanoUtils.bechAddressToHex(accountInfo.rewardAddressBech32)
-      .data.toString('hex')
-      .slice(2),
+    accountId: CardanoUtils.bechAddressToHex(accountInfo.rewardAddressBech32).data.toString('hex'),
     rewardAddress: accountInfo.rewardAddressBech32,
     publicKey: accountInfo.publicKeyBech32,
     privateKey: accountInfo.privateKeyBech32,
@@ -215,9 +214,8 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
         value: {
           hasStakingKey: false,
           rewardsAmount: 0,
-          activeStakeAmount: 0,
           currentPoolId: '',
-          activePoolId: '',
+          nextRewardsHistory: [],
         },
       },
     })
@@ -235,6 +233,7 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
         value: [],
       },
     })
+
     return
   }
 
@@ -397,7 +396,7 @@ export function* GET_PUBLIC_ADRESSES() {
   }
 }
 
-export function* GET_NETWORK_STATE() {
+export function* FETCH_NETWORK_STATE() {
   const networkInfo = yield call(Explorer.GetNetworkInfo)
   if (networkInfo) {
     const { cardano } = networkInfo.data
@@ -469,9 +468,10 @@ export function* GET_UTXO_STATE() {
           assetsSummary.tokens[assetId] = {
             ...assetsSummary.tokens[assetId],
             ...asset,
+            ticker:
+              asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+            quantity: BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity),
           }
-          assetsSummary.tokens[assetId].quantity =
-            BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity)
         })
       }
     })
@@ -513,16 +513,14 @@ export function* GET_UTXO_STATE() {
     }
   }
   yield call(getAddressesWithShift, shiftIndex)
-
   const assetsSummary = getAssetsSummary(UTXOArray)
 
-  console.log('assetsSummary', assetsSummary)
-  console.log('UTXOArray', UTXOArray)
-
-  const {
-    data: { transactions },
-  } = yield call(Explorer.GetTransactions, adressesArray)
-
+  const rawTxInputs = yield call(Explorer.GetTransactionsByInputs, adressesArray)
+  const rawTxOutputs = yield call(Explorer.GetTransactionsByOutputs, adressesArray)
+  const transactions = [
+    ...(rawTxInputs.data?.transactions || []),
+    ...(rawTxOutputs.data?.transactions || []),
+  ]
   const transactionsHashes = transactions.map((tx) => tx.hash)
   const transactionsInputsOutputs = yield call(Explorer.GetTransactionsIO, transactionsHashes)
 
@@ -547,8 +545,10 @@ export function* GET_UTXO_STATE() {
           tokens[assetId] = {
             ...tokens[assetId],
             ...asset,
+            ticker:
+              asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+            quantity: BigInt(tokens[assetId].quantity) - BigInt(quantity),
           }
-          tokens[assetId].quantity = BigInt(tokens[assetId].quantity) - BigInt(quantity)
         })
       }
     })
@@ -566,8 +566,10 @@ export function* GET_UTXO_STATE() {
           tokens[assetId] = {
             ...tokens[assetId],
             ...asset,
+            ticker:
+              asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+            quantity: BigInt(tokens[assetId].quantity) + BigInt(quantity),
           }
-          tokens[assetId].quantity = BigInt(tokens[assetId].quantity) + BigInt(quantity)
         })
       }
     })
@@ -624,37 +626,32 @@ export function* GET_UTXO_STATE() {
 }
 
 export function* GET_STAKE_STATE() {
-  const { rewardAddress } = yield select((state) => state.wallets.walletParams)
-  const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
+  const { accountId } = yield select((state) => state.wallets.walletParams)
+  const rawStakeInfo = yield call(ExplorerHelper.GetStakeInfo, accountId)
 
-  const rawStakeInfo = yield call(Explorer.GetStakeAddressInfo, rewardAddress, currentEpoch.number)
+  const walletStakeRewards = rawStakeInfo.rewardsHistory || []
+  const walletStake = {
+    hasStakingKey: rawStakeInfo.hasStakingKey || false,
+    rewardsAmount: rawStakeInfo.rewardsAmount || 0,
+    currentPoolId: rawStakeInfo.currentPool?.poolId || '',
+    nextRewardsHistory: rawStakeInfo.nextRewardsHistory || [],
+  }
 
-  console.log('epoch', currentEpoch.number)
-  console.log('rawStakeInfo', rawStakeInfo)
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStake',
+      value: walletStake,
+    },
+  })
 
-  // const stakeRegistrationBlock =
-  //   rawStakeInfo.data?.stakeRegistrations[0]?.transaction.block.number || 0
-  // const stakeDeregistrationBlock =
-  //   rawStakeInfo.data?.stakeDeregistrations[0]?.transaction.block.number || 0
-  // const hasStakingKey = stakeRegistrationBlock > stakeDeregistrationBlock
-  // const stakeData = {
-  //   activeStakeAmount: hasStakingKey
-  //     ? BigInt(rawStakeInfo.data?.activeStake[0]?.amount) || BigInt(0)
-  //     : BigInt(0),
-  //   rewardsAmount: hasStakingKey
-  //     ? BigInt(rawStakeInfo.data?.activeStake[0]?.amount) - BigInt(walletAssetsSummary.value) || BigInt(0)
-  //     : BigInt(0),
-  //   stakePoolId: rawStakeInfo.data?.activeStake[0]?.stakePoolId || false,
-  //   hasStakingKey,
-  // }
-
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'walletStake',
-  //     value: stakeData,
-  //   },
-  // })
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStakeRewardsHistory',
+      value: walletStakeRewards,
+    },
+  })
 }
 
 export function* GET_POOLS_INFO() {
@@ -678,41 +675,6 @@ export function* GET_POOLS_INFO() {
   })
 }
 
-export function* GET_STAKE_REWARDS_HISTORY() {
-  yield console.log('GET_STAKE_REWARDS_HISTORY')
-  // const { rewardAddress } = yield select((state) => state.wallets.walletParams)
-
-  // let walletStakeRewards = yield call(Explorer.GetRewardsForAddress, rewardAddress)
-  // walletStakeRewards = [
-  //   {
-  //     address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
-  //     amount: '8608',
-  //     earnedIn: {
-  //       number: 234,
-  //       startedAt: '2020-12-06T21:44:51Z',
-  //       lastBlockTime: '2020-12-11T21:44:50Z',
-  //     },
-  //   },
-  //   {
-  //     address: 'stake1uypzwrjvckawg5ch59de4ph4petvz7pgpgu44zttkyfz8mqe8ejrz',
-  //     amount: '2552755',
-  //     earnedIn: {
-  //       number: 235,
-  //       startedAt: '2020-12-11T21:45:01Z',
-  //       lastBlockTime: '2020-12-16T21:43:48Z',
-  //     },
-  //   },
-  // ]
-
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'walletStakeRewards',
-  //     value: walletStakeRewards,
-  //   },
-  // })
-}
-
 export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
   if (!publicKey) {
@@ -729,8 +691,6 @@ export function* FETCH_WALLET_DATA() {
 
   yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
-  yield call(GET_STAKE_STATE)
-  yield call(GET_STAKE_REWARDS_HISTORY)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -739,6 +699,8 @@ export function* FETCH_WALLET_DATA() {
       value: false,
     },
   })
+
+  yield call(GET_STAKE_STATE)
 }
 
 export function* FETCH_SIDE_DATA() {
@@ -758,8 +720,8 @@ export function* SETUP() {
       },
     })
   }
-  yield call(GET_NETWORK_STATE)
-  yield take(GET_NETWORK_STATE)
+  yield call(FETCH_NETWORK_STATE)
+  yield take(FETCH_NETWORK_STATE)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
   if (networkInfo.tip) {
     yield call(FETCH_WALLET_DATA)
@@ -770,12 +732,12 @@ export function* SETUP() {
 export default function* rootSaga() {
   yield all([
     takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
+    takeEvery(actions.FETCH_NETWORK_STATE, FETCH_NETWORK_STATE),
     takeEvery(actions.FETCH_WALLET_DATA, FETCH_WALLET_DATA),
     takeEvery(actions.FETCH_SIDE_DATA, FETCH_SIDE_DATA),
     takeEvery(actions.CHANGE_WALLET, CHANGE_WALLET),
     takeEvery(actions.ADD_WALLET, ADD_WALLET),
     takeEvery(actions.GET_PUBLIC_ADRESSES, GET_PUBLIC_ADRESSES),
-    takeEvery(actions.GET_NETWORK_STATE, GET_NETWORK_STATE),
     takeEvery(actions.GET_VERIFIED_TOKENS_LIST, GET_VERIFIED_TOKENS_LIST),
     takeEvery(actions.GET_EXCHANGE_RATES, GET_EXCHANGE_RATES),
     takeEvery(actions.GET_UTXO_STATE, GET_UTXO_STATE),
@@ -786,7 +748,6 @@ export default function* rootSaga() {
     takeEvery(actions.IMPORT_WALLET, IMPORT_WALLET),
     takeEvery(actions.GET_STAKE_STATE, GET_STAKE_STATE),
     takeEvery(actions.GET_POOLS_INFO, GET_POOLS_INFO),
-    takeEvery(actions.GET_STAKE_REWARDS_HISTORY, GET_STAKE_REWARDS_HISTORY),
     SETUP(), // run once on app load to init listeners
   ])
 }

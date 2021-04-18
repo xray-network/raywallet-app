@@ -3,7 +3,8 @@
   "version": "0.1.0-beta",
   "private": true,
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "REACT_APP_NETWORK=testnet react-app-rewired start",
+    "start-mainnet": "REACT_APP_NETWORK=mainnet react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "lint-staged": "lint-staged",

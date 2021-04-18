@@ -11,6 +11,7 @@ const Menu = () => {
   const dispatch = useDispatch()
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
+  const networkInfo = useSelector((state) => state.wallets.networkInfo)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
@@ -52,6 +53,9 @@ const Menu = () => {
   }
 
   const refreshData = () => {
+    dispatch({
+      type: 'wallets/FETCH_NETWORK_STATE',
+    })
     dispatch({
       type: 'wallets/FETCH_WALLET_DATA',
     })
@@ -141,7 +145,7 @@ const Menu = () => {
                     )}
                     <div>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
-                      <span className="badge badge-light">
+                      <span className="ray__badge">
                         <small>
                           {totalTickers} {totalTickers === 1 ? 'token' : 'tokens'}
                         </small>
@@ -243,22 +247,25 @@ const Menu = () => {
         {walletParams.accountId && (
           <div className="mb-5">
             <div className={style.walletInfo}>
-              <div>
-                Stake Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
-                {walletStake.hasStakingKey && (
-                  <span>
-                    <AmountFormatterAda
-                      amount={walletStake.rewardsAmount}
-                      noDecimals
-                      small
-                      inline
-                    />
-                  </span>
-                )}
-              </div>
+              {sections.includes('stake') && (
+                <div>
+                  <small>Stake Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
+                  {walletStake.hasStakingKey && (
+                    <span>
+                      <AmountFormatterAda
+                        amount={walletStake.rewardsAmount}
+                        noDecimals
+                        small
+                        inline
+                        availablePrivate
+                      />
+                    </span>
+                  )}
+                </div>
+              )}
               {sections.includes('rewards') && (
                 <div>
-                  RAY Rewards: {!walletStake.hasStakingKey && <strong>Not delegated</strong>}
+                  <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
                   {walletStake.hasStakingKey && (
                     <span>
                       <AmountFormatterAsset
@@ -267,14 +274,27 @@ const Menu = () => {
                         ticker="RAY"
                         small
                         inline
+                        availablePrivate
                       />
                     </span>
                   )}
                 </div>
               )}
               <div>
-                Transactions:{' '}
-                <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
+                {!!walletTransactions.length && (
+                  <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                )}
+              </div>
+              <div>
+                <small>Network Block:</small>{' '}
+                <strong>
+                  {networkInfo.tip?.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
+                </strong>
+              </div>
+              <div>
+                <small>Current Epoch:</small>{' '}
+                <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
               </div>
             </div>
           </div>
