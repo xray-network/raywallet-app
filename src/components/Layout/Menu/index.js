@@ -254,7 +254,6 @@ const Menu = () => {
                     <span>
                       <AmountFormatterAda
                         amount={walletStake.rewardsAmount}
-                        noDecimals
                         small
                         inline
                         availablePrivate
