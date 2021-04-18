@@ -54,6 +54,9 @@ const Menu = () => {
 
   const refreshData = () => {
     dispatch({
+      type: 'wallets/FETCH_NETWORK_STATE',
+    })
+    dispatch({
       type: 'wallets/FETCH_WALLET_DATA',
     })
     dispatch({
@@ -246,7 +249,7 @@ const Menu = () => {
             <div className={style.walletInfo}>
               {sections.includes('stake') && (
                 <div>
-                  Stake Rewards: {!walletStake.hasStakingKey && <strong>—</strong>}
+                  <small>Stake Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
                   {walletStake.hasStakingKey && (
                     <span>
                       <AmountFormatterAda
@@ -262,7 +265,7 @@ const Menu = () => {
               )}
               {sections.includes('rewards') && (
                 <div>
-                  RAY Rewards: {!walletStake.hasStakingKey && <strong>—</strong>}
+                  <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
                   {walletStake.hasStakingKey && (
                     <span>
                       <AmountFormatterAsset
@@ -278,13 +281,20 @@ const Menu = () => {
                 </div>
               )}
               <div>
-                Transactions: {!walletTransactions.length && <strong>0</strong>}
+                <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
                 {!!walletTransactions.length && (
                   <AmountFormatterAsset amount={walletTransactions.length} small inline />
                 )}
               </div>
               <div>
-                Current Epoch: <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
+                <small>Network Block:</small>{' '}
+                <strong>
+                  {networkInfo.tip?.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
+                </strong>
+              </div>
+              <div>
+                <small>Current Epoch:</small>{' '}
+                <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
               </div>
             </div>
           </div>

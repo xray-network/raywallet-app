@@ -396,7 +396,7 @@ export function* GET_PUBLIC_ADRESSES() {
   }
 }
 
-export function* GET_NETWORK_STATE() {
+export function* FETCH_NETWORK_STATE() {
   const networkInfo = yield call(Explorer.GetNetworkInfo)
   if (networkInfo) {
     const { cardano } = networkInfo.data
@@ -720,8 +720,8 @@ export function* SETUP() {
       },
     })
   }
-  yield call(GET_NETWORK_STATE)
-  yield take(GET_NETWORK_STATE)
+  yield call(FETCH_NETWORK_STATE)
+  yield take(FETCH_NETWORK_STATE)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
   if (networkInfo.tip) {
     yield call(FETCH_WALLET_DATA)
@@ -732,12 +732,12 @@ export function* SETUP() {
 export default function* rootSaga() {
   yield all([
     takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
+    takeEvery(actions.FETCH_NETWORK_STATE, FETCH_NETWORK_STATE),
     takeEvery(actions.FETCH_WALLET_DATA, FETCH_WALLET_DATA),
     takeEvery(actions.FETCH_SIDE_DATA, FETCH_SIDE_DATA),
     takeEvery(actions.CHANGE_WALLET, CHANGE_WALLET),
     takeEvery(actions.ADD_WALLET, ADD_WALLET),
     takeEvery(actions.GET_PUBLIC_ADRESSES, GET_PUBLIC_ADRESSES),
-    takeEvery(actions.GET_NETWORK_STATE, GET_NETWORK_STATE),
     takeEvery(actions.GET_VERIFIED_TOKENS_LIST, GET_VERIFIED_TOKENS_LIST),
     takeEvery(actions.GET_EXCHANGE_RATES, GET_EXCHANGE_RATES),
     takeEvery(actions.GET_UTXO_STATE, GET_UTXO_STATE),
