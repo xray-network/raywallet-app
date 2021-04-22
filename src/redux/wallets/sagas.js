@@ -10,7 +10,7 @@ import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
 import actions from './actions'
 
-const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
+const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
 
 export function* CHANGE_SETTING({ payload: { setting, value } }) {
   yield put({

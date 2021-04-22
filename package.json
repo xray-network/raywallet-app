@@ -3,16 +3,17 @@
   "version": "0.1.0-beta",
   "private": true,
   "scripts": {
-    "start": "REACT_APP_NETWORK=testnet react-app-rewired start",
+    "start": "react-app-rewired start",
     "start-mainnet": "REACT_APP_NETWORK=mainnet react-app-rewired start",
     "build": "react-app-rewired build",
+    "build-mainnet": "REACT_APP_NETWORK=mainnet react-app-rewired build",
+    "deploy": "cd .cloudflare/ && wrangler publish",
+    "build-deploy": "yarn build-mainnet && yarn deploy",
     "test": "react-app-rewired test",
     "lint-staged": "lint-staged",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,scss,less}\"",
     "eslint": "eslint --ext .js,jsx src",
-    "stylelint": "stylelint \"src/**/*.{scss,less}\"",
-    "deploy": "cd .cloudflare/ && wrangler publish",
-    "build-deploy": "yarn build && yarn deploy"
+    "stylelint": "stylelint \"src/**/*.{scss,less}\""
   },
   "husky": {
     "hooks": {

@@ -2,14 +2,8 @@ import store from 'store'
 import actions from './actions'
 
 const pools =
-  process.env.REACT_APP_NETWORK === 'mainnet'
+  process.env.REACT_APP_NETWORK === 'testnet'
     ? {
-        pool1rjxdqghfjw5rv6lxg8qhedkechvfgnsqhl8rrzwck9g45n43yql: {
-          ticker: 'RAY',
-          name: 'RAY Network Pool #1',
-        },
-      }
-    : {
         pool15sfcpy4tps5073gmra0e6tm2dgtrn004yr437qmeh44sgjlg2ex: {
           ticker: 'JUNO',
           name: 'Testpool #1',
@@ -21,6 +15,12 @@ const pools =
         pool1tzmx7k40sm8kheam3pr2d4yexrp3jmv8l50suj6crnvn6dc2429: {
           ticker: 'WURST',
           name: 'Testpool #3',
+        },
+      }
+    : {
+        pool1rjxdqghfjw5rv6lxg8qhedkechvfgnsqhl8rrzwck9g45n43yql: {
+          ticker: 'RAY',
+          name: 'RAY Network Pool #1',
         },
       }
 
