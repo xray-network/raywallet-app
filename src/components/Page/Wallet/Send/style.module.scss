@@ -28,11 +28,34 @@
 }
 
 .asset {
+  &TickerAda {
+    width: 40%;
+
+    :global(.ant-select-selector) {
+      opacity: 1 !important;
+      cursor: default !important;
+    }
+
+    :global(.ant-select-arrow) {
+      display: none !important;
+    }
+  }
+  &AmountAda {
+    width: 60%;
+
+    :global(.ant-input-affix-wrapper) {
+      border-radius: 0 8px 8px 0 !important;
+    }
+  }
   &Ticker {
     width: 40%;
   }
   &Amount {
     width: calc(60% - 50px);
+
+    :global(.ant-input-affix-wrapper) {
+      border-radius: 0 8px 8px 0 !important;
+    }
   }
   &Donate {
     width: 120px;
@@ -59,6 +82,7 @@
     display: inline-block;
     height: 26px;
     width: 26px;
+    min-width: 26px;
     background: $pastel-1;
     border-radius: 20px;
     margin-right: rem(7);

@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.3.0",
-    "@emurgo/cardano-serialization-lib-browser": "^6.0.0",
+    "@emurgo/cardano-serialization-lib-browser": "^7.0.0",
     "@emurgo/cip14-js": "^2.0.0",
     "antd": "^4.14.0",
     "axios": "^0.21.1",

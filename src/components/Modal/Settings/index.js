@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Input, Button, Popconfirm, Tooltip } from 'antd'
+import { Modal, Input, Button, Tooltip } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { saveAs } from 'file-saver'
 import { kebabCase } from 'lodash'
@@ -61,18 +61,16 @@ const SettingsModal = () => {
       <div className="mb-4">
         <Input value={walletParams.name} size="large" onChange={setWalletName} />
       </div>
-      <div className="row">
-        <div className="col-lg-6">
-          <div className="ray__form__label">Wallet Account ID</div>
-          <div className="mb-4">
-            <Input value={walletParams.accountId} disabled size="large" />
-          </div>
+      <div>
+        <div className="ray__form__label">Wallet Account ID</div>
+        <div className="mb-4">
+          <Input value={walletParams.accountId} disabled size="large" />
         </div>
-        <div className="col-lg-6">
-          <div className="ray__form__label">Wallet Stake Address</div>
-          <div className="mb-4">
-            <Input value={walletParams.rewardAddress} disabled size="large" />
-          </div>
+      </div>
+      <div>
+        <div className="ray__form__label">Wallet Stake Address</div>
+        <div className="mb-4">
+          <Input value={walletParams.rewardAddress} disabled size="large" />
         </div>
       </div>
       <div className="ray__form__label">Danger Zone</div>
@@ -86,18 +84,10 @@ const SettingsModal = () => {
           </div>
           <div className="ml-auto pl-3">
             {walletParams.encrypted && (
-              <Popconfirm
-                placement="topRight"
-                title="Export the .key file of this wallet?"
-                onConfirm={getKeyFile}
-                okText="Export"
-                cancelText="Cancel"
-              >
-                <Button>
-                  <i className="fe fe-download mr-2" />
-                  Export .key
-                </Button>
-              </Popconfirm>
+              <Button onClick={getKeyFile}>
+                <i className="fe fe-download mr-2" />
+                Export .key
+              </Button>
             )}
             {!walletParams.encrypted && (
               <Tooltip title="Wallet must be encrypted">
@@ -112,23 +102,15 @@ const SettingsModal = () => {
         <div className={style.dangerItem}>
           <div>
             <div>
-              <strong>Delete wallet</strong>
+              <strong>Logout</strong>
             </div>
-            <div>Delete all wallet data from this device</div>
+            <div>Wipe all wallet data from this device</div>
           </div>
           <div className="ml-auto pl-3">
-            <Popconfirm
-              placement="topRight"
-              title="Delete this wallet from this device?"
-              onConfirm={deleteWallet}
-              okText="Delete"
-              cancelText="Cancel"
-            >
-              <Button>
-                <i className="fe fe-trash-2 mr-2" />
-                Delete
-              </Button>
-            </Popconfirm>
+            <Button onClick={deleteWallet}>
+              <i className="fe fe-log-out mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
       </div>

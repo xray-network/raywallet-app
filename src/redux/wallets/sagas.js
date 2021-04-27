@@ -10,7 +10,7 @@ import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
 import actions from './actions'
 
-const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
+const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
 
 export function* CHANGE_SETTING({ payload: { setting, value } }) {
   yield put({
@@ -155,7 +155,7 @@ export function* DELETE_WALLET() {
   store.set('RAY.walletList', encryptedWalletList)
 
   // success message
-  message.success('Wallet was deleted')
+  message.success('Wallet was removed from this device')
 }
 
 export function* CHANGE_WALLET({ payload: { accountId } }) {
@@ -384,16 +384,15 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
 
 export function* GET_PUBLIC_ADRESSES() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
-  const walletAddresses = yield call(Cardano.CardanoGetAccountAdresses, CARDANO_NETWORK, publicKey)
-  if (walletAddresses) {
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'walletAddresses',
-        value: walletAddresses,
-      },
-    })
-  }
+  const tmpWalletAddresses = yield call(Cardano.CardanoGetAccountAdresses, CARDANO_NETWORK, publicKey)
+  const walletAddresses = Object.keys(tmpWalletAddresses)
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletAddresses',
+      value: walletAddresses,
+    },
+  })
 }
 
 export function* FETCH_NETWORK_STATE() {
@@ -491,8 +490,16 @@ export function* GET_UTXO_STATE() {
       shift,
       pageSize,
     )
-    const tmpAddresssesUTXO = yield call(Explorer.GetAdressesUTXO, tmpAddresses)
-    return [tmpAddresssesUTXO, tmpAddresses]
+    const checkedAdresses = Object.keys(tmpAddresses)
+    const tmpAddresssesUTXO = yield call(Explorer.GetAdressesUTXO, checkedAdresses)
+    const adressesWithUTXOs = tmpAddresssesUTXO.data?.utxos.map(utxo => {
+      return {
+        ...utxo,
+        addressing: tmpAddresses[utxo.address],
+      }
+    }) || []
+
+    return [adressesWithUTXOs, checkedAdresses]
   }
 
   const UTXOArray = []
@@ -502,12 +509,12 @@ export function* GET_UTXO_STATE() {
   const maxShiftIndex = 10
   let shiftIndex = 0
   function* getAddressesWithShift(shift) {
-    const [adresssesWithUTXOs, checkedAdresses] = yield call(checkAddresses, type, shift, pageSize)
+    const [adressesWithUTXOs, checkedAdresses] = yield call(checkAddresses, type, shift, pageSize)
     adressesArray.push(...checkedAdresses)
-    if (adresssesWithUTXOs.data && shiftIndex < maxShiftIndex) {
-      if (adresssesWithUTXOs.data.utxos.length) {
+    if (shiftIndex < maxShiftIndex) {
+      if (adressesWithUTXOs.length) {
         shiftIndex += 1
-        UTXOArray.push(...adresssesWithUTXOs.data.utxos)
+        UTXOArray.push(...adressesWithUTXOs)
         yield call(getAddressesWithShift, shiftIndex)
       }
     }

@@ -61,6 +61,7 @@ export async function GetNetworkInfo() {
            cardano {
              tip {
                number
+               slotNo
              }
              currentEpoch {
                number
@@ -86,8 +87,12 @@ export async function GetAdressesUTXO(addresses) {
       query: `
          query utxoSetForAddress($addresses: [String]) {
            utxos(order_by: { value: desc }, where: { address: { _in: $addresses } }) {
+             transaction {
+               hash
+             }
              address
              value
+             index
              tokens {
                quantity
                asset {
@@ -286,6 +291,29 @@ export async function GetPoolsInfo(ids, epoch) {
       variables: {
         ids,
         epoch,
+      },
+    })
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
+export async function SendTransaction(transaction) {
+  return apiClient
+    .post('/', {
+      query: `
+        mutation submitTransaction($transaction: String!) {
+          submitTransaction(transaction: $transaction) {
+            hash
+          }
+        }
+       `,
+      variables: {
+        transaction,
       },
     })
     .then((response) => {
