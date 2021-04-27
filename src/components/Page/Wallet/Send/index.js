@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Input, Button, Select, Empty, Tooltip } from 'antd'
+import { CardanoValidateAddress } from 'utils/ray-cardano-crypto'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AssetImage from 'components/Layout/AssetImage'
 import style from './style.module.scss'
@@ -48,7 +49,18 @@ const WalletSend = () => {
         <Form.Item
           label="To Address"
           name="toAddress"
-          rules={[{ required: true, message: 'Please enter address' }]}
+          rules={[
+            { required: true, message: 'Please enter address' },
+            () => ({
+              async validator(_, value) {
+                if (!value || await CardanoValidateAddress(value)) {
+                  return Promise.resolve()
+                }
+                return Promise.reject(new Error('Address is wrong'))
+              },
+            })
+          ]}
+          hasFeedback
         >
           <Input size="large" placeholder="Address" allowClear autoComplete="off" />
         </Form.Item>

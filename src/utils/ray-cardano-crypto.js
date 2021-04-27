@@ -185,8 +185,14 @@ export const CardanoGetAccountAdresses = async (
 
 export const CardanoValidateAddress = async (address) => {
   await CardanoWasm.load()
-  const baseAddr = CardanoWasm.API.BaseAddress.from_address(address)
-  return baseAddr ? baseAddr.payment_cred().to_keyhash() : false
+
+  try {
+    const shelleyAddress = CardanoWasm.API.Address.from_bech32(address)
+    CardanoWasm.API.BaseAddress.from_address(shelleyAddress)
+    return true
+  } catch (e) {
+    return false
+  }
 }
 
 /**
@@ -255,7 +261,6 @@ export const CardanoBuildTx = async (
     )
   })
 
-
   // check if inputs values enough
   const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
   const output = targetOutput
@@ -278,7 +283,7 @@ export const CardanoBuildTx = async (
   const fee = txBuilder.get_fee_if_set().to_str()
 
   console.log('minFee', minFee)
-  console.log('minFee', fee)
+  console.log('fee', fee)
 
   return {
     txBody,
