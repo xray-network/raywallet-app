@@ -18,11 +18,11 @@
 import axios from 'axios'
 import { notification } from 'antd'
 
-const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
+const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
 
 const apiClient = axios.create({
   baseURL:
-    CARDANO_NETWORK === 'mainnet' ? 'https://graphql-helper.rraayy.com' : 'http://localhost:8080', // testnet
+    CARDANO_NETWORK === 'testnet' ? 'http://localhost:8080' : 'https://graphql-helper.rraayy.com', // testnet
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })

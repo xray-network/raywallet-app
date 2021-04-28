@@ -1214,10 +1214,10 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.0.tgz#c3c5ae543c897caa9c2a68630bed355be5f9990f"
   integrity sha512-JZButFdZ1+/xAfpguQHoabIXkcqRRKpMrWKBkpEZZyxfY9C1DpADFB8PEqGSTeFr135SaTRfKqGKx5xSCLI7ZQ==
 
-"@emurgo/cardano-serialization-lib-browser@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-browser/-/cardano-serialization-lib-browser-6.0.0.tgz#1d33e0aea4e20974aa4ac5cc7668422399ea73be"
-  integrity sha512-YlwDFsUxjF6kR8/oai7rDd2sOY8jnf7Dnrh89n2c3XEJ9MAkzx0zLfCw1VOBdNazKYI/t+Cz/b2ajTrVpYwPmA==
+"@emurgo/cardano-serialization-lib-browser@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-browser/-/cardano-serialization-lib-browser-7.0.0.tgz#d5f0f036b4a59f77a48f8bdeb45119755ce00476"
+  integrity sha512-4/xgSE7u4BKdBsDOk54zMuTJl3IAHTldCkSiZvS/s6XSxNcoVnPKs0wfZb/swwSqyNKukTodz8GE1K7JhuVW9Q==
 
 "@emurgo/cip14-js@^2.0.0":
   version "2.0.0"

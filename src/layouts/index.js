@@ -9,6 +9,7 @@ import QRModal from 'components/Modal/QR'
 import SettingsModal from 'components/Modal/Settings'
 import EncryptModal from 'components/Modal/Encrypt'
 import TermsModal from 'components/Modal/Terms'
+import TransactionModal from 'components/Modal/Transaction'
 import LayoutMain from './Main'
 import LayoutNFT from './NFT'
 
@@ -37,6 +38,7 @@ const LayoutIndex = ({ children, title, location: { pathname } }) => {
       <SettingsModal />
       <EncryptModal />
       <TermsModal />
+      <TransactionModal />
       <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
         {process.env.REACT_APP_NETWORK !== 'mainnet' && <div className="ray__testnet">testnet</div>}
         <div className="ray__banner">

@@ -84,6 +84,12 @@ const Menu = () => {
     })
   }
 
+  const deleteWallet = () => {
+    dispatch({
+      type: 'wallets/DELETE_WALLET',
+    })
+  }
+
   return (
     <div>
       <div className={style.negativeSpace}>
@@ -135,7 +141,7 @@ const Menu = () => {
             {walletList.map((item) => {
               const totalTickers = walletStore[item.accountId]
                 ? Number(!!walletStore[item.accountId].tokens) +
-                  Number(!!walletStore[item.accountId].value)
+                Number(!!walletStore[item.accountId].value)
                 : '?'
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
@@ -225,6 +231,18 @@ const Menu = () => {
                 </span>
               )}
             </a>
+            <a
+              href="#"
+              className={`${style.btnRefresh} mr-3`}
+              onClick={(e) => {
+                e.preventDefault()
+                deleteWallet()
+              }}
+            >
+              <Tooltip title={<div>Logout</div>}>
+                <i className="fe fe-log-out" />
+              </Tooltip>
+            </a>
           </div>
         )}
         <div className={style.walletAssets}>
@@ -254,7 +272,6 @@ const Menu = () => {
                     <span>
                       <AmountFormatterAda
                         amount={walletStake.rewardsAmount}
-                        noDecimals
                         small
                         inline
                         availablePrivate
@@ -286,10 +303,16 @@ const Menu = () => {
                   <AmountFormatterAsset amount={walletTransactions.length} small inline />
                 )}
               </div>
-              <div>
+              <div className="mt-2">
                 <small>Network Block:</small>{' '}
                 <strong>
                   {networkInfo.tip?.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
+                </strong>
+              </div>
+              <div>
+                <small>Network Slot:</small>{' '}
+                <strong>
+                  {networkInfo.tip?.slotNo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
                 </strong>
               </div>
               <div>

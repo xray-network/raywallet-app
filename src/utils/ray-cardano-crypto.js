@@ -18,6 +18,20 @@
 import { generateMnemonic, validateMnemonic, mnemonicToEntropy } from 'bip39-light'
 
 /**
+ *  Protocol Params
+ */
+
+const protocolParams = {
+  linearFeeCoefficient: '44',
+  linearFeeConstant: '155381',
+  minimumUtxoVal: '1000000',
+  poolDeposit: '500000000',
+  keyDeposit: '2000000',
+  ttlOffset: 7200,
+}
+
+
+/**
  *  WASM lib loader
  */
 
@@ -74,7 +88,6 @@ export const CardanoGetAccountInfo = async (network, mnemonic) => {
   )
 
   const privateKey = rootKey.derive(harden(1852)).derive(harden(1815)).derive(harden(0))
-
   const stakeKey = privateKey.derive(2).derive(0).to_public()
 
   const currentNetwork =
@@ -112,7 +125,7 @@ export const CardanoGetAccountAdresses = async (
   await CardanoWasm.load()
 
   const publicKey = CardanoWasm.API.Bip32PublicKey.from_bech32(publicKeyBech32)
-  const accountAdresses = []
+  let accountAdresses = {}
 
   const currentNetwork =
     network === 'testnet'
@@ -120,7 +133,7 @@ export const CardanoGetAccountAdresses = async (
       : CardanoWasm.API.NetworkInfo.mainnet().network_id()
 
   const generateAddresses = (addressType) => {
-    const tmpAddresses = []
+    const tmpAddresses = {}
     for (let i = 0 + page * shift; i < page + page * shift; i += 1) {
       const utxoPubKey = publicKey
         .derive(addressType) // 0 external / 1 internal
@@ -134,25 +147,178 @@ export const CardanoGetAccountAdresses = async (
         CardanoWasm.API.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
       )
       const baseAddrBech32 = baseAddr.to_address().to_bech32()
-      tmpAddresses.push(baseAddrBech32)
+      tmpAddresses[baseAddrBech32] = {
+        type: addressType,
+        path: i,
+      }
     }
     return tmpAddresses
   }
 
   switch (type) {
     case 'external':
-      accountAdresses.push(...generateAddresses(0))
+      accountAdresses = {
+        ...generateAddresses(0),
+      }
       break
     case 'internal':
-      accountAdresses.push(...generateAddresses(1))
+      accountAdresses = {
+        ...generateAddresses(1),
+      }
       break
     case 'all':
-      accountAdresses.push(...generateAddresses(0))
-      accountAdresses.push(...generateAddresses(1))
+      accountAdresses = {
+        ...generateAddresses(0),
+        ...generateAddresses(1),
+      }
       break
     default:
       break
   }
 
   return accountAdresses
+}
+
+/**
+ * Validate Shelley Address 
+ */
+
+export const CardanoValidateAddress = async (address) => {
+  await CardanoWasm.load()
+
+  try {
+    const shelleyAddress = CardanoWasm.API.Address.from_bech32(address)
+    CardanoWasm.API.BaseAddress.from_address(shelleyAddress)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+/**
+ * Get transaction fee
+ */
+
+export const CardanoBuildTx = async (
+  value,
+  toAddress,
+  changeAddress,
+  currentSlot,
+  utxos,
+  metadata,
+) => {
+  await CardanoWasm.load()
+
+  // create transaction
+  const txBuilder = CardanoWasm.API.TransactionBuilder.new(
+    CardanoWasm.API.LinearFee.new(
+      CardanoWasm.API.BigNum.from_str(protocolParams.linearFeeCoefficient),
+      CardanoWasm.API.BigNum.from_str(protocolParams.linearFeeConstant),
+    ),
+    CardanoWasm.API.BigNum.from_str(protocolParams.minimumUtxoVal),
+    CardanoWasm.API.BigNum.from_str(protocolParams.poolDeposit),
+    CardanoWasm.API.BigNum.from_str(protocolParams.keyDeposit),
+  )
+
+  // set ttl
+  txBuilder.set_ttl(currentSlot + protocolParams.ttlOffset)
+
+  // add outputs
+  txBuilder.add_output(
+    CardanoWasm.API.TransactionOutput.new(
+      CardanoWasm.API.Address.from_bech32(toAddress),
+      CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(value.toString()))
+    ),
+  )
+
+  // add inputs
+  const usedUtxos = []
+  const targetOutput = txBuilder
+    .get_explicit_output()
+    .checked_add(CardanoWasm.API.Value.new(txBuilder.get_deposit()))
+  const implicitSum = txBuilder.get_implicit_input();
+
+  utxos.forEach((tx) => {
+    const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
+    const output = targetOutput
+      .checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
+    const remainingNeeded = output.clamped_sub(currentInputValue)
+
+    if (remainingNeeded.coin().compare(CardanoWasm.API.BigNum.from_str('0')) === 0) {
+      return
+    }
+
+    usedUtxos.push(tx)
+    txBuilder.add_input(
+      CardanoWasm.API.Address.from_bech32(tx.address),
+      CardanoWasm.API.TransactionInput.new(
+        CardanoWasm.API.TransactionHash.from_bytes(
+          Buffer.from(tx.transaction.hash, 'hex'),
+        ),
+        tx.index,
+      ),
+      CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(tx.value.toString()))
+    )
+  })
+
+  // check if inputs values enough
+  const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
+  const output = targetOutput
+    .checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
+  const compare = currentInputValue.compare(output)
+  const isEnough = compare != null && compare >= 0
+
+  if (!isEnough) {
+    console.log('not enough')
+    return {}
+  }
+
+  // change address
+  txBuilder.add_change_if_needed(CardanoWasm.API.Address.from_bech32(changeAddress))
+
+  // tx build
+  const txBody = txBuilder.build()
+  const txHash = CardanoWasm.API.hash_transaction(txBody)
+  const minFee = txBuilder.min_fee().to_str()
+  const fee = txBuilder.get_fee_if_set().to_str()
+
+  console.log('minFee', minFee)
+  console.log('fee', fee)
+
+  return {
+    txBody,
+    txHash,
+    minFee,
+    fee,
+    toAddress,
+    value,
+    metadata,
+    usedUtxos,
+  }
+}
+
+export const CardanoSignTx = async (
+  transaction,
+  privateKey,
+) => {
+  await CardanoWasm.load()
+
+  const { txHash, txBody, metadata, usedUtxos } = transaction
+  const vkeyWitnesses = CardanoWasm.API.Vkeywitnesses.new()
+  usedUtxos.forEach(utxo => {
+    const prvKey = CardanoWasm.API.Bip32PrivateKey.from_bech32(privateKey).derive(utxo.addressing.type).derive(utxo.addressing.path).to_raw_key()
+    const vkeyWitness = CardanoWasm.API.make_vkey_witness(txHash, prvKey)
+    vkeyWitnesses.add(vkeyWitness)
+  })
+  const witnesses = CardanoWasm.API.TransactionWitnessSet.new()
+  witnesses.set_vkeys(vkeyWitnesses)
+  const signedTxRaw = CardanoWasm.API.Transaction.new(
+    txBody,
+    witnesses,
+    metadata,
+  )
+
+  const signedTx = Buffer.from(signedTxRaw.to_bytes()).toString('hex')
+
+  return signedTx
 }
