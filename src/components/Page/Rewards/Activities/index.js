@@ -82,7 +82,7 @@ const RewardsActivities = () => {
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
-              <Tooltip title="Soon">
+              <Tooltip placement="right" title="Soon">
                 <Button type="primary" disabled>
                   <i className="fe fe-arrow-down-circle mr-1" />
                   <strong>Withdraw Rewards</strong>

@@ -62,14 +62,6 @@ const StakeBalances = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-12 pt-2">
-            <small>
-              <p className="mb-0">
-                The expected payout may be inaccurate and depends on the performance of the pools in
-                each individual Epoch (such as pool active stake amount or pool saturation)
-              </p>
-            </small>
-          </div>
         </div>
         <div className="ray__line" />
         <div className="row">
@@ -81,13 +73,16 @@ const StakeBalances = () => {
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
-              <Button
-                type="primary"
-                disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
-              >
-                <i className="fe fe-arrow-down-circle mr-1" />
-                <strong>Withdraw Rewards</strong>
-              </Button>
+              <Tooltip placement="right" title="Soon">
+                <Button
+                  type="primary"
+                  // disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
+                  disabled
+                >
+                  <i className="fe fe-arrow-down-circle mr-1" />
+                  <strong>Withdraw Rewards</strong>
+                </Button>
+              </Tooltip>
             </div>
           </div>
           <div className="col-lg-6">

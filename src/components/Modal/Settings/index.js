@@ -68,7 +68,7 @@ const SettingsModal = () => {
         </div>
       </div>
       <div>
-        <div className="ray__form__label">Wallet Stake Address</div>
+        <div className="ray__form__label">Wallet Stake Key</div>
         <div className="mb-4">
           <Input value={walletParams.rewardAddress} disabled size="large" />
         </div>

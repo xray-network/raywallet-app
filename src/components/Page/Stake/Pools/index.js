@@ -1,12 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Form, Input, Spin, Tooltip } from 'antd'
+import { Button, Spin, Tooltip } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const StakePools = () => {
-  const walletParams = useSelector((state) => state.wallets.walletParams)
+  // const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
 
@@ -76,27 +76,16 @@ const StakePools = () => {
               </Button>
             )}
             {pool.id !== walletStake.currentPoolId && (
-              <Button type="primary" disabled={!walletParams.accountId}>
-                <i className="fe fe-arrow-up-circle mr-1" />
-                <strong>Delegate</strong>
-              </Button>
+              <Tooltip placement="right" title="Soon">
+                <Button type="primary" disabled>
+                  <i className="fe fe-arrow-up-circle mr-1" />
+                  <strong>Delegate</strong>
+                </Button>
+              </Tooltip>
             )}
           </div>
         )
       })}
-      <div className="ray__item">
-        <Form layout="vertical" requiredMark={false}>
-          <Form.Item name="toAddress" rules={[{ required: true, message: 'Please enter pool id' }]}>
-            <Input size="large" placeholder="Delegate by Pool ID" allowClear autoComplete="off" />
-          </Form.Item>
-          <Form.Item className="mb-0">
-            <Button htmlType="submit">
-              <i className="fe fe-arrow-up-circle mr-1" />
-              <strong>Delegate</strong>
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
     </div>
   )
 }

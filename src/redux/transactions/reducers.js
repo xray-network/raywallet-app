@@ -1,9 +1,11 @@
 import actions from './actions'
 
 const initialState = {
-  type: '',
-  transaction: '',
   transactionLoading: false,
+  transactionType: '',
+  transaction: {},
+  transactionWaitingHash: '',
+  transactionSuccess: false,
 }
 
 export default function settingsReducer(state = initialState, action) {

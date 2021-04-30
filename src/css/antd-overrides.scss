@@ -81,6 +81,12 @@
     background: $dark-border !important;
   }
 
+  .ant-input-suffix {
+    svg {
+      fill: $dark-gray-1 !important;
+    }
+  }
+
   .ant-btn[disabled] {
     &:hover,
     &:active,

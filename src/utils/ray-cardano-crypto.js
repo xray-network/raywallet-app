@@ -30,7 +30,6 @@ const protocolParams = {
   ttlOffset: 7200,
 }
 
-
 /**
  *  WASM lib loader
  */
@@ -46,6 +45,24 @@ class CardanoWasmModule {
 }
 
 export const CardanoWasm = new CardanoWasmModule()
+
+/**
+ * Errors
+ */
+
+export const CardanoError = (type) => {
+  const messages = {
+    ada_not_enough: 'Not enough ADA',
+    ada_less_than_min: 'Minimum 1 ADA',
+    ada_not_number: 'Wrong ADA value',
+    address_wrong: 'Wrong address',
+  }
+  const error = new Error(messages[type] || 'An unspecified error has occurred')
+  error.type = type || 'default'
+  console.error(error)
+
+  return error
+}
 
 /**
  * Mnemonic generation
@@ -180,7 +197,7 @@ export const CardanoGetAccountAdresses = async (
 }
 
 /**
- * Validate Shelley Address 
+ * Validate Shelley Address
  */
 
 export const CardanoValidateAddress = async (address) => {
@@ -209,114 +226,122 @@ export const CardanoBuildTx = async (
 ) => {
   await CardanoWasm.load()
 
-  // create transaction
-  const txBuilder = CardanoWasm.API.TransactionBuilder.new(
-    CardanoWasm.API.LinearFee.new(
-      CardanoWasm.API.BigNum.from_str(protocolParams.linearFeeCoefficient),
-      CardanoWasm.API.BigNum.from_str(protocolParams.linearFeeConstant),
-    ),
-    CardanoWasm.API.BigNum.from_str(protocolParams.minimumUtxoVal),
-    CardanoWasm.API.BigNum.from_str(protocolParams.poolDeposit),
-    CardanoWasm.API.BigNum.from_str(protocolParams.keyDeposit),
-  )
-
-  // set ttl
-  txBuilder.set_ttl(currentSlot + protocolParams.ttlOffset)
-
-  // add outputs
-  txBuilder.add_output(
-    CardanoWasm.API.TransactionOutput.new(
-      CardanoWasm.API.Address.from_bech32(toAddress),
-      CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(value.toString()))
-    ),
-  )
-
-  // add inputs
-  const usedUtxos = []
-  const targetOutput = txBuilder
-    .get_explicit_output()
-    .checked_add(CardanoWasm.API.Value.new(txBuilder.get_deposit()))
-  const implicitSum = txBuilder.get_implicit_input();
-
-  utxos.forEach((tx) => {
-    const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
-    const output = targetOutput
-      .checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
-    const remainingNeeded = output.clamped_sub(currentInputValue)
-
-    if (remainingNeeded.coin().compare(CardanoWasm.API.BigNum.from_str('0')) === 0) {
-      return
+  try {
+    // initial checks
+    if (!(await CardanoValidateAddress(toAddress))) {
+      throw CardanoError('address_wrong')
+    }
+    if (typeof value !== 'number' || Number.isNaN(value)) {
+      throw CardanoError('ada_not_number')
+    }
+    if (value < protocolParams.minimumUtxoVal) {
+      throw CardanoError('ada_less_than_min')
     }
 
-    usedUtxos.push(tx)
-    txBuilder.add_input(
-      CardanoWasm.API.Address.from_bech32(tx.address),
-      CardanoWasm.API.TransactionInput.new(
-        CardanoWasm.API.TransactionHash.from_bytes(
-          Buffer.from(tx.transaction.hash, 'hex'),
-        ),
-        tx.index,
+    // create transaction
+    const txBuilder = CardanoWasm.API.TransactionBuilder.new(
+      CardanoWasm.API.LinearFee.new(
+        CardanoWasm.API.BigNum.from_str(protocolParams.linearFeeCoefficient),
+        CardanoWasm.API.BigNum.from_str(protocolParams.linearFeeConstant),
       ),
-      CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(tx.value.toString()))
+      CardanoWasm.API.BigNum.from_str(protocolParams.minimumUtxoVal),
+      CardanoWasm.API.BigNum.from_str(protocolParams.poolDeposit),
+      CardanoWasm.API.BigNum.from_str(protocolParams.keyDeposit),
     )
-  })
 
-  // check if inputs values enough
-  const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
-  const output = targetOutput
-    .checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
-  const compare = currentInputValue.compare(output)
-  const isEnough = compare != null && compare >= 0
+    // set ttl
+    txBuilder.set_ttl(currentSlot + protocolParams.ttlOffset)
 
-  if (!isEnough) {
-    console.log('not enough')
-    return {}
-  }
+    // add outputs
+    txBuilder.add_output(
+      CardanoWasm.API.TransactionOutput.new(
+        CardanoWasm.API.Address.from_bech32(toAddress),
+        CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(value.toString())),
+      ),
+    )
 
-  // change address
-  txBuilder.add_change_if_needed(CardanoWasm.API.Address.from_bech32(changeAddress))
+    // add inputs
+    const usedUtxos = []
+    const targetOutput = txBuilder
+      .get_explicit_output()
+      .checked_add(CardanoWasm.API.Value.new(txBuilder.get_deposit()))
+    const implicitSum = txBuilder.get_implicit_input()
+    let stopItarate = false
 
-  // tx build
-  const txBody = txBuilder.build()
-  const txHash = CardanoWasm.API.hash_transaction(txBody)
-  const minFee = txBuilder.min_fee().to_str()
-  const fee = txBuilder.get_fee_if_set().to_str()
+    utxos.forEach((tx) => {
+      if (stopItarate) {
+        return
+      }
+      const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
+      const output = targetOutput.checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
+      const remainingNeeded = output.clamped_sub(currentInputValue)
 
-  console.log('minFee', minFee)
-  console.log('fee', fee)
+      if (remainingNeeded.coin().compare(CardanoWasm.API.BigNum.from_str('0')) === 0) {
+        stopItarate = true
+        return
+      }
 
-  return {
-    txBody,
-    txHash,
-    minFee,
-    fee,
-    toAddress,
-    value,
-    metadata,
-    usedUtxos,
+      usedUtxos.push(tx)
+      txBuilder.add_input(
+        CardanoWasm.API.Address.from_bech32(tx.address),
+        CardanoWasm.API.TransactionInput.new(
+          CardanoWasm.API.TransactionHash.from_bytes(Buffer.from(tx.transaction.hash, 'hex')),
+          tx.index,
+        ),
+        CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(tx.value.toString())),
+      )
+    })
+
+    // check if inputs values enough
+    const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
+    const output = targetOutput.checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
+    const compare = currentInputValue.compare(output)
+    const isEnough = compare != null && compare >= 0
+
+    if (!isEnough) {
+      throw CardanoError('ada_not_enough')
+    }
+
+    // change address
+    txBuilder.add_change_if_needed(CardanoWasm.API.Address.from_bech32(changeAddress))
+
+    // tx build
+    const txBody = txBuilder.build()
+    const txHash = CardanoWasm.API.hash_transaction(txBody)
+    const minFee = txBuilder.min_fee().to_str()
+    const fee = txBuilder.get_fee_if_set().to_str()
+
+    return {
+      txBody,
+      txHash,
+      minFee,
+      fee,
+      toAddress,
+      value,
+      metadata,
+      usedUtxos,
+    }
+  } catch (e) {
+    return e
   }
 }
 
-export const CardanoSignTx = async (
-  transaction,
-  privateKey,
-) => {
+export const CardanoSignTx = async (transaction, privateKey) => {
   await CardanoWasm.load()
 
   const { txHash, txBody, metadata, usedUtxos } = transaction
   const vkeyWitnesses = CardanoWasm.API.Vkeywitnesses.new()
-  usedUtxos.forEach(utxo => {
-    const prvKey = CardanoWasm.API.Bip32PrivateKey.from_bech32(privateKey).derive(utxo.addressing.type).derive(utxo.addressing.path).to_raw_key()
+  usedUtxos.forEach((utxo) => {
+    const prvKey = CardanoWasm.API.Bip32PrivateKey.from_bech32(privateKey)
+      .derive(utxo.addressing.type)
+      .derive(utxo.addressing.path)
+      .to_raw_key()
     const vkeyWitness = CardanoWasm.API.make_vkey_witness(txHash, prvKey)
     vkeyWitnesses.add(vkeyWitness)
   })
   const witnesses = CardanoWasm.API.TransactionWitnessSet.new()
   witnesses.set_vkeys(vkeyWitnesses)
-  const signedTxRaw = CardanoWasm.API.Transaction.new(
-    txBody,
-    witnesses,
-    metadata,
-  )
+  const signedTxRaw = CardanoWasm.API.Transaction.new(txBody, witnesses, metadata)
 
   const signedTx = Buffer.from(signedTxRaw.to_bytes()).toString('hex')
 

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, Alert } from 'antd'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 // import style from './style.module.scss'
 
 const WalleMint = () => {
   const walletParams = useSelector((state) => state.wallets.walletParams)
+  const walletAddresses = useSelector((state) => state.wallets.walletAddresses)
   const [form] = Form.useForm()
   const [formValues, setFormValues] = useState(form.getFieldsValue())
 
   const initialValues = {
-    fromAddress: walletParams.accountId,
+    accountId: walletParams.accountId,
+    toAddress: walletAddresses[0] || '',
   }
 
   const onFinish = (values) => {
@@ -34,6 +36,14 @@ const WalleMint = () => {
 
   return (
     <div>
+      <div className="mb-4">
+        <Alert
+          message="Minting is not available yet"
+          description="This feature will be available in the near future."
+          type="warning"
+          showIcon
+        />
+      </div>
       <Form
         form={form}
         layout="vertical"
@@ -50,7 +60,7 @@ const WalleMint = () => {
               name="ticker"
               rules={[{ required: true, message: 'Please enter ticker' }]}
             >
-              <Input size="large" placeholder="Ticker" />
+              <Input size="large" placeholder="Ticker" disabled />
             </Form.Item>
           </div>
           <div className="col-lg-6">
@@ -64,23 +74,22 @@ const WalleMint = () => {
                 placeholder="Enter Mint Amount"
                 autoComplete="off"
                 style={{ width: '100%' }}
+                disabled
               />
             </Form.Item>
           </div>
         </div>
         <Form.Item
           label="Wallet ID"
-          name="wallet"
+          name="accountId"
           hidden
-          initialValue={walletParams.accountId}
           rules={[{ required: true, message: 'Please enter wallet id' }]}
         >
           <Input size="large" placeholder="Address" disabled />
         </Form.Item>
         <Form.Item
           label="Mint Address"
-          name="address"
-          initialValue={`addr1${walletParams.accountId}`}
+          name="toAddress"
           rules={[{ required: true, message: 'Please enter address' }]}
         >
           <Input size="large" placeholder="Address" disabled />
@@ -99,7 +108,7 @@ const WalleMint = () => {
               <div className="ray__form__item mb-3">
                 <div className="ray__form__label">Service Fee</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={0} small />
+                  <AmountFormatterAda amount={10000000} small />
                 </div>
               </div>
               <div className="ray__form__item">
