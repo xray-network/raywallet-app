@@ -44,6 +44,8 @@ export function* BUILD_TX({ payload }) {
     metadata,
   )
 
+  console.log(response)
+
   yield put({
     type: 'transactions/SET_STATE',
     payload: {

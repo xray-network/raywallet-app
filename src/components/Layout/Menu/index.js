@@ -141,7 +141,7 @@ const Menu = () => {
             {walletList.map((item) => {
               const totalTickers = walletStore[item.accountId]
                 ? Number(!!walletStore[item.accountId].tokens) +
-                Number(!!walletStore[item.accountId].value)
+                  Number(!!walletStore[item.accountId].value)
                 : '?'
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
@@ -153,7 +153,7 @@ const Menu = () => {
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
                       <span className="ray__badge">
                         <small>
-                          {totalTickers} {totalTickers === 1 ? 'token' : 'tokens'}
+                          {totalTickers} {totalTickers === 1 ? 'asset' : 'assets'}
                         </small>
                       </span>
                     </div>

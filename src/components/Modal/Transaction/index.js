@@ -37,7 +37,7 @@ const TransactionModal = () => {
       closable={!(transactionWaitingHash && !transactionSuccess)}
       maskClosable={!(transactionWaitingHash && !transactionSuccess)}
     >
-      {transactionWaitingHash && <WaitingForm />}
+      {transactionWaitingHash && <WaitingForm handleCancel={handleCancel} />}
       {!transactionWaitingHash && (
         <div>
           <SendForm />

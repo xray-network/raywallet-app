@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { Button, Result } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
+import { LoadingOutlined } from '@ant-design/icons'
+import Address from 'components/Layout/Address'
 
-const WaitingForm = () => {
+const WaitingForm = ({ handleCancel }) => {
   const dispatch = useDispatch()
   const transactionWaitingHash = useSelector((state) => state.transactions.transactionWaitingHash)
   const transactionSuccess = useSelector((state) => state.transactions.transactionSuccess)
@@ -20,7 +23,6 @@ const WaitingForm = () => {
   }
 
   const checkTransaction = (hash) => {
-    console.log('check_tx_hash', hash)
     dispatch({
       type: 'transactions/CHECK_TX',
       payload: {
@@ -41,7 +43,6 @@ const WaitingForm = () => {
 
   useEffect(() => {
     if (transactionSuccess) {
-      console.log('tx_acccepted')
       clearInterval(runner)
       refreshData()
     }
@@ -50,8 +51,30 @@ const WaitingForm = () => {
 
   return (
     <div className="text-center">
-      {!transactionSuccess && 'waiting'}
-      {transactionSuccess && 'success'}
+      {!transactionSuccess && (
+        <Result
+          icon={<LoadingOutlined style={{ fontSize: 72 }} spin />}
+          title="Sending..."
+          subTitle={
+            <div>
+              <div className="mb-3">It may take a few minutes, please wait.</div>
+              <Address prefix="Tx:" address={transactionWaitingHash} cut />
+            </div>
+          }
+        />
+      )}
+      {transactionSuccess && (
+        <Result
+          status="success"
+          title="Successfully Sent"
+          subTitle={<Address prefix="Tx:" address={transactionWaitingHash} cut />}
+          extra={[
+            <Button onClick={handleCancel} size="large" key="close">
+              Close
+            </Button>,
+          ]}
+        />
+      )}
     </div>
   )
 }

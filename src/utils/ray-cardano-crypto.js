@@ -226,6 +226,8 @@ export const CardanoBuildTx = async (
 ) => {
   await CardanoWasm.load()
 
+  console.log('value', value)
+
   try {
     // initial checks
     if (!(await CardanoValidateAddress(toAddress))) {
@@ -322,6 +324,7 @@ export const CardanoBuildTx = async (
       usedUtxos,
     }
   } catch (e) {
+    console.log('ERR')
     return e
   }
 }

@@ -18,6 +18,9 @@ const WalletSend = () => {
   const onFinish = () => {
     const touched = form.isFieldsTouched()
     if (hasErrors || !touched) {
+      if (!touched) {
+        form.validateFields()
+      }
       return
     }
     const values = form.getFieldsValue()
@@ -47,7 +50,6 @@ const WalletSend = () => {
   useEffect(() => {
     const values = form.getFieldsValue()
     const isError = transaction instanceof Error
-    console.log('YAY')
     if (isError) {
       setHasErrors(true)
       const getErrorString = (key) => {
@@ -75,7 +77,6 @@ const WalletSend = () => {
       setHasErrors(false)
       const valueKeys = Object.keys(values)
       if (!Object.keys(transaction).length) {
-        console.log('reset')
         form.resetFields()
         return
       }
@@ -125,7 +126,7 @@ const WalletSend = () => {
         <Input.Group compact className={style.assetGroup}>
           <Form.Item
             className={style.assetTickerAda}
-            label="Token"
+            label="Asset"
             // rules={[{ required: true, message: 'Required' }]}
           >
             <Select
@@ -135,7 +136,7 @@ const WalletSend = () => {
               value="ada"
               notFoundContent={
                 <Empty
-                  description="No Tokens"
+                  description="No Asset"
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
                   className="mt-3 mb-2"
                 />
@@ -220,7 +221,7 @@ const WalletSend = () => {
             />
           </Form.Item>
           <Form.Item label=" " className={style.assetRemove}>
-            <Tooltip title="Remove Token from Tx">
+            <Tooltip title="Remove Asset from Tx">
               <Button size="large" disabled>
                 <i className="fe fe-trash-2" />
               </Button>
@@ -231,7 +232,7 @@ const WalletSend = () => {
           <Tooltip placement="right" title="Soon">
             <Button>
               <i className="fe fe-plus-circle mr-1" />
-              Add Token to Tx
+              Add Asset to Tx
             </Button>
           </Tooltip>
         </div>

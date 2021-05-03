@@ -17,6 +17,10 @@ const SendForm = () => {
   }, [transactionType])
 
   const sendTx = () => {
+    if (password === '') {
+      message.error('Enter your wallet password')
+      return
+    }
     if (walletParams.encrypted) {
       try {
         const pass = AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8)
@@ -60,12 +64,20 @@ const SendForm = () => {
           <Address address={transaction.toAddress} />
         </div>
       </div>
+      <div className="ray__form__item">
+        <div className="ray__form__label">Sending</div>
+        <div className="ray__item ray__item--tinted text-center mb-4">
+          <div className="ray__form__amount d-inline-block ml-auto mr-auto">
+            <AmountFormatterAda amount={amount} />
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-6">
           <div className="ray__form__item">
-            <div className="ray__form__label">Amount</div>
+            <div className="ray__form__label">Total</div>
             <div className="ray__form__amount">
-              <AmountFormatterAda amount={amount} small />
+              <AmountFormatterAda amount={total} small />
             </div>
           </div>
         </div>
@@ -79,14 +91,6 @@ const SendForm = () => {
         </div>
       </div>
       <div className="ray__line" />
-      <div className="ray__form__item">
-        <div className="ray__form__label">Total</div>
-        <div className="ray__item ray__item--tinted text-center mb-4">
-          <div className="ray__form__amount d-inline-block ml-auto mr-auto">
-            <AmountFormatterAda amount={total} />
-          </div>
-        </div>
-      </div>
       {walletParams.encrypted && (
         <div className="ray__form__item mb-4">
           <div className="ray__form__label">Wallet Password</div>
