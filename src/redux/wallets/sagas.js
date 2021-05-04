@@ -67,6 +67,8 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
       accountId: newWallet.accountId,
     },
   })
+
+  store.set('RAY.walletLast', newWallet.accountId)
 }
 
 export function* IMPORT_WALLET({ payload: { data } }) {
@@ -248,6 +250,8 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
       value: selectedWallet,
     },
   })
+
+  store.set('RAY.walletLast', selectedWallet.accountId)
 
   yield put({
     type: 'wallets/FETCH_WALLET_DATA',
@@ -690,7 +694,8 @@ export function* GET_POOLS_INFO() {
 
 export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
-  if (!publicKey) {
+  const networkInfo = yield select((state) => state.wallets.networkInfo)
+  if (!publicKey || !networkInfo.tip) {
     return
   }
 
@@ -725,21 +730,23 @@ export function* FETCH_SIDE_DATA() {
 export function* SETUP() {
   const { walletList } = yield select((state) => state.wallets)
   if (walletList.length) {
+    const lastWallet = store.get('RAY.walletLast')
+    const selectedWallet = lastWallet
+      ? walletList.filter((item) => item.accountId === lastWallet)[0]
+      : walletList[0]
+
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
         setting: 'walletParams',
-        value: walletList[0],
+        value: selectedWallet,
       },
     })
   }
   yield call(FETCH_NETWORK_STATE)
   yield take(FETCH_NETWORK_STATE)
   yield call(FETCH_SIDE_DATA)
-  const networkInfo = yield select((state) => state.wallets.networkInfo)
-  if (networkInfo.tip) {
-    yield call(FETCH_WALLET_DATA)
-  }
+  yield call(FETCH_WALLET_DATA)
 }
 
 export default function* rootSaga() {
