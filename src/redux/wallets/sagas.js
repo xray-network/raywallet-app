@@ -163,6 +163,8 @@ export function* DELETE_WALLET() {
 
 export function* CHANGE_WALLET({ payload: { accountId } }) {
   if (accountId === 'empty') {
+    store.remove('RAY.walletLast')
+
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
