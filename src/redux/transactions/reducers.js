@@ -5,6 +5,7 @@ const initialState = {
   transactionType: '',
   transaction: {},
   transactionWaitingHash: '',
+  transactionWaiting: false,
   transactionSuccess: false,
 }
 

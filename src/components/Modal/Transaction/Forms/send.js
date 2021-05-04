@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, Input, message } from 'antd'
 import { AES, enc as EncodeTo } from 'crypto-js'
 import { useSelector, useDispatch } from 'react-redux'
+import BigNumber from 'bignumber.js'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const SendForm = () => {
   const dispatch = useDispatch()
-  const transactionType = useSelector((state) => state.transactions.transactionType)
   const transaction = useSelector((state) => state.transactions.transaction)
+  const transactionWaiting = useSelector((state) => state.transactions.transactionWaiting)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const [password, setPassword] = useState()
-
-  useEffect(() => {
-    setPassword('123123123')
-  }, [transactionType])
 
   const sendTx = () => {
     if (password === '') {
@@ -52,9 +49,9 @@ const SendForm = () => {
     }
   }
 
-  const amount = parseInt(transaction.value, 10) || 0
-  const fee = parseInt(transaction.fee, 10) || 0
-  const total = parseInt(transaction.value, 10) + parseInt(transaction.fee, 10) || 0
+  const amount = new BigNumber(transaction.value)
+  const fee = new BigNumber(transaction.fee)
+  const total = amount.plus(fee)
 
   return (
     <div>
@@ -107,7 +104,13 @@ const SendForm = () => {
         </div>
       )}
       <div className="text-center">
-        <Button onClick={sendTx} size="large" type="primary" className="ray__btn__send w-100">
+        <Button
+          onClick={sendTx}
+          size="large"
+          type="primary"
+          className="ray__btn__send w-100"
+          disabled={transactionWaiting}
+        >
           <i className="fe fe-send" />
           <strong>Send</strong>
         </Button>

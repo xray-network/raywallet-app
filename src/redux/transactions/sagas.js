@@ -70,6 +70,13 @@ export function* BUILD_TX({ payload }) {
 }
 
 export function* SEND_TX({ payload }) {
+  yield put({
+    type: 'transactions/SET_STATE',
+    payload: {
+      transactionWaiting: true,
+    },
+  })
+
   const { transaction, privateKey } = payload
   const signedTx = yield call(Cardano.CardanoSignTx, transaction, privateKey)
   const sendTx = yield call(Explorer.SendTransaction, signedTx)
@@ -82,6 +89,13 @@ export function* SEND_TX({ payload }) {
       },
     })
   }
+
+  yield put({
+    type: 'transactions/SET_STATE',
+    payload: {
+      transactionWaiting: false,
+    },
+  })
 }
 
 export function* CHECK_TX({ payload }) {
