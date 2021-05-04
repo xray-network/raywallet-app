@@ -15,7 +15,7 @@ const RewardsActivities = () => {
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount).dividedBy(1000000).dividedBy(50).integerValue()
-  const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
+  const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
 
   return (
     <div>
