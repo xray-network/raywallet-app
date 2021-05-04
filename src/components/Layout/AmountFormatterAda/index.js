@@ -2,6 +2,7 @@ import React from 'react'
 import { Popover } from 'antd'
 import { useSelector } from 'react-redux'
 import { CheckCircleFilled } from '@ant-design/icons'
+import BigNumber from 'bignumber.js'
 import style from './style.module.scss'
 
 const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availablePrivate }) => {
@@ -9,11 +10,11 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && !!availablePrivate
   const privateSymbols = '••••••'
 
-  const computedAmount = amount / 1000000
-  const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  const integer = (x) => numberWithCommas(parseInt(x, 10))
-  const decimal = (x) => x.toFixed(6).toString().split('.')[1] || '000000'
-  const price = (x) => numberWithCommas(x.toFixed(2))
+  const computedAmount = new BigNumber(amount).dividedBy(1000000)
+  const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const integer = (x) => numberWithCommas(new BigNumber(x).integerValue())
+  const decimal = (x) => new BigNumber(x).toFixed(6).split('.')[1] || '000000'
+  const price = (x) => numberWithCommas(new BigNumber(x).toFixed(2))
 
   const content = (
     <div className={style.info}>
@@ -29,15 +30,15 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
             $
             {isPrivateMode
               ? privateSymbols
-              : price(computedAmount * exchangeRates.cardano?.usd || 0)}
+              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd) || '0.00')}
           </strong>
         </div>
       </div>
       <div className={style.infoItem}>
         <div>
           <strong>
-            ${price(1 * exchangeRates.cardano?.usd || 0)} / €
-            {price(1 * exchangeRates.cardano?.eur || 0)}
+            ${price(1 * exchangeRates.cardano?.usd || '0.00')} / €
+            {price(1 * exchangeRates.cardano?.eur || '0.00')}
           </strong>
         </div>
       </div>

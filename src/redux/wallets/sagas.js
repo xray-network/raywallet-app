@@ -384,7 +384,11 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
 
 export function* GET_PUBLIC_ADRESSES() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
-  const tmpWalletAddresses = yield call(Cardano.CardanoGetAccountAdresses, CARDANO_NETWORK, publicKey)
+  const tmpWalletAddresses = yield call(
+    Cardano.CardanoGetAccountAdresses,
+    CARDANO_NETWORK,
+    publicKey,
+  )
   const walletAddresses = Object.keys(tmpWalletAddresses)
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -492,12 +496,13 @@ export function* GET_UTXO_STATE() {
     )
     const checkedAdresses = Object.keys(tmpAddresses)
     const tmpAddresssesUTXO = yield call(Explorer.GetAdressesUTXO, checkedAdresses)
-    const adressesWithUTXOs = tmpAddresssesUTXO.data?.utxos.map(utxo => {
-      return {
-        ...utxo,
-        addressing: tmpAddresses[utxo.address],
-      }
-    }) || []
+    const adressesWithUTXOs =
+      tmpAddresssesUTXO.data?.utxos.map((utxo) => {
+        return {
+          ...utxo,
+          addressing: tmpAddresses[utxo.address],
+        }
+      }) || []
 
     return [adressesWithUTXOs, checkedAdresses]
   }
@@ -729,10 +734,10 @@ export function* SETUP() {
   }
   yield call(FETCH_NETWORK_STATE)
   yield take(FETCH_NETWORK_STATE)
+  yield call(FETCH_SIDE_DATA)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
   if (networkInfo.tip) {
     yield call(FETCH_WALLET_DATA)
-    yield call(FETCH_SIDE_DATA)
   }
 }
 

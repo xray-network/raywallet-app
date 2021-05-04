@@ -16,6 +16,7 @@
  */
 
 import { generateMnemonic, validateMnemonic, mnemonicToEntropy } from 'bip39-light'
+import BigNumber from 'bignumber.js'
 
 /**
  *  Protocol Params
@@ -55,6 +56,7 @@ export const CardanoError = (type) => {
     ada_not_enough: 'Not enough ADA',
     ada_less_than_min: 'Minimum 1 ADA',
     ada_not_number: 'Wrong ADA value',
+    ada_wrong_value: 'Wrong ADA value',
     address_wrong: 'Wrong address',
   }
   const error = new Error(messages[type] || 'An unspecified error has occurred')
@@ -226,18 +228,19 @@ export const CardanoBuildTx = async (
 ) => {
   await CardanoWasm.load()
 
-  console.log('value', value)
-
   try {
     // initial checks
     if (!(await CardanoValidateAddress(toAddress))) {
       throw CardanoError('address_wrong')
     }
-    if (typeof value !== 'number' || Number.isNaN(value)) {
+    if (new BigNumber(value).isNaN()) {
       throw CardanoError('ada_not_number')
     }
-    if (value < protocolParams.minimumUtxoVal) {
+    if (new BigNumber(value).lt(new BigNumber(protocolParams.minimumUtxoVal))) {
       throw CardanoError('ada_less_than_min')
+    }
+    if (new BigNumber(value).decimalPlaces() > 6) {
+      throw CardanoError('ada_wrong_value')
     }
 
     // create transaction
@@ -258,7 +261,7 @@ export const CardanoBuildTx = async (
     txBuilder.add_output(
       CardanoWasm.API.TransactionOutput.new(
         CardanoWasm.API.Address.from_bech32(toAddress),
-        CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(value.toString())),
+        CardanoWasm.API.Value.new(CardanoWasm.API.BigNum.from_str(new BigNumber(value).toFixed())),
       ),
     )
 
@@ -310,21 +313,19 @@ export const CardanoBuildTx = async (
     // tx build
     const txBody = txBuilder.build()
     const txHash = CardanoWasm.API.hash_transaction(txBody)
-    const minFee = txBuilder.min_fee().to_str()
-    const fee = txBuilder.get_fee_if_set().to_str()
 
     return {
       txBody,
       txHash,
-      minFee,
-      fee,
+      minFee: new BigNumber(txBuilder.min_fee().to_str()),
+      fee: new BigNumber(txBuilder.get_fee_if_set().to_str()),
       toAddress,
-      value,
+      value: new BigNumber(value).toFixed(),
       metadata,
       usedUtxos,
     }
   } catch (e) {
-    console.log('ERR')
+    console.log('ERROR', e.kind)
     return e
   }
 }

@@ -1,6 +1,7 @@
 import { all, takeEvery, put, select, call, take } from 'redux-saga/effects'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
+import BigNumber from 'bignumber.js'
 import actions from './actions'
 import { FETCH_NETWORK_STATE } from '../wallets/sagas'
 
@@ -23,28 +24,26 @@ export function* BUILD_TX({ payload }) {
         transactionLoading: true,
       },
     })
+    yield call(FETCH_NETWORK_STATE)
+    yield take(FETCH_NETWORK_STATE)
   }
-
-  yield call(FETCH_NETWORK_STATE)
-  yield take(FETCH_NETWORK_STATE)
 
   const [changeAddress] = yield select((state) => state.wallets.walletAddresses)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
   const walletUTXOs = yield select((state) => state.wallets.walletUTXOs)
   const currentSlot = networkInfo.tip?.slotNo
   const metadata = undefined
+  const computedValue = new BigNumber(value).multipliedBy(1000000).toFixed()
 
   const response = yield call(
     Cardano.CardanoBuildTx,
-    value * 1000000,
+    computedValue,
     toAddress,
     changeAddress,
     currentSlot,
     walletUTXOs,
     metadata,
   )
-
-  console.log(response)
 
   yield put({
     type: 'transactions/SET_STATE',

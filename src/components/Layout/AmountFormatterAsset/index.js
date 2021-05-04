@@ -2,6 +2,7 @@ import React from 'react'
 import { Popover, message } from 'antd'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useSelector } from 'react-redux'
+import BigNumber from 'bignumber.js'
 import { CheckCircleFilled } from '@ant-design/icons'
 import style from './style.module.scss'
 
@@ -19,7 +20,7 @@ const AmountFormatterAsset = ({
   const isVerified = verifiedTokensList.some((item) => item.fingerprint === fingerprint)
   const privateSymbols = '••••••'
 
-  const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
   const onCopy = () => {
     message.success('Copied to clipboard')
@@ -55,7 +56,9 @@ const AmountFormatterAsset = ({
         {prefix && <span className={style.prefix}>{prefix}</span>}
         <span>
           <span>
-            <strong>{isPrivateMode ? privateSymbols : numberWithCommas(amount)}</strong>
+            <strong>
+              {isPrivateMode ? privateSymbols : numberWithCommas(new BigNumber(amount))}
+            </strong>
           </span>
         </span>
       </div>

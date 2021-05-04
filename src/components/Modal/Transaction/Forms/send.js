@@ -65,7 +65,7 @@ const SendForm = () => {
         </div>
       </div>
       <div className="ray__form__item">
-        <div className="ray__form__label">Sending</div>
+        <div className="ray__form__label">Send Amount</div>
         <div className="ray__item ray__item--tinted text-center mb-4">
           <div className="ray__form__amount d-inline-block ml-auto mr-auto">
             <AmountFormatterAda amount={amount} />

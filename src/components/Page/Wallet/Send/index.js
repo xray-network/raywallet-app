@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Input, Button, Select, Empty, Tooltip } from 'antd'
 import { debounce } from 'lodash'
+import BigNumber from 'bignumber.js'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AssetImage from 'components/Layout/AssetImage'
 import style from './style.module.scss'
@@ -57,6 +58,7 @@ const WalletSend = () => {
           ada_not_enough: 'value',
           ada_less_than_min: 'value',
           ada_not_number: 'value',
+          ada_wrong_value: 'value',
           address_wrong: 'toAddress',
         }
         if (mapKeys[transaction.type] === key) {
@@ -100,8 +102,11 @@ const WalletSend = () => {
   }, [dispatch])
 
   const isError = transaction instanceof Error
-  const total = isError ? 0 : parseInt(transaction.value, 10) + parseInt(transaction.fee, 10) || 0
-  const fee = isError ? 0 : parseInt(transaction.fee, 10) || 0
+  const totalIsNan = new BigNumber(transaction.value).plus(transaction.fee).isNaN()
+  const feeIsNan = new BigNumber(transaction.fee).isNaN()
+  const total =
+    isError || totalIsNan ? '0' : new BigNumber(transaction.value).plus(transaction.fee).toFixed()
+  const fee = isError || feeIsNan ? '0' : new BigNumber(transaction.fee).toFixed()
 
   return (
     <div>
