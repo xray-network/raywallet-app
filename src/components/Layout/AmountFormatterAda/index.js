@@ -11,9 +11,9 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
   const privateSymbols = '••••••'
 
   const computedAmount = new BigNumber(amount).dividedBy(1000000)
-  const numberWithCommas = (x, y = 0) =>
-    new BigNumber(x).toFixed(y).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  const integer = (x) => numberWithCommas(new BigNumber(x).integerValue())
+
+  const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const integer = (x) => numberWithCommas(new BigNumber(x).toFixed().split('.')[0])
   const decimal = (x) => new BigNumber(x).toFixed(6).split('.')[1] || '000000'
   const price = (x) => numberWithCommas(new BigNumber(x).toFixed(2), 2)
 

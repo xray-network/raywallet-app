@@ -16,7 +16,13 @@ const StakeBalances = () => {
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
-  const expectedPayout = new BigNumber(totalAmount).multipliedBy(0.057).dividedBy(73)
+  const expectedPayout = new BigNumber(totalAmount)
+    .multipliedBy(0.057)
+    .integerValue()
+    .dividedBy(73)
+    .integerValue()
+    .toFixed()
+
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
 
   return (
