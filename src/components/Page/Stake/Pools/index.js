@@ -19,15 +19,16 @@ const StakePools = () => {
         </div>
       )}
       {poolsInfo.map((pool, index) => {
-        const amount = pool.activeStake_aggregate?.aggregate?.sum?.amount || '?'
         return (
           <div
             className={`ray__item position ${
-              pool.id === walletStake.currentPoolId ? 'ray__item--success' : 'ray__item--gray'
+              pool.delegateId === walletStake.currentPoolId
+                ? 'ray__item--success'
+                : 'ray__item--gray'
             }`}
             key={index}
           >
-            {pool.id === walletStake.currentPoolId && (
+            {pool.delegateId === walletStake.currentPoolId && (
               <Tooltip title="Delegated to this pool" placement="left">
                 <div className="ray__item__check">
                   <i className="fe fe-check" />
@@ -43,46 +44,63 @@ const StakePools = () => {
               </div>
             </div>
             <div className="mb-3">
-              <Address address={pool.id} cut prefix="Pool ID:" />
+              <Address address={pool.delegateId} cut prefix="Pool ID:" />
             </div>
             <div className="row">
-              <div className="col-lg-6">
-                <div className="ray__form__item mb-3">
+              <div className="col-6">
+                <div className="ray__form__item">
+                  <div className="ray__form__label">Live Stake</div>
+                  <div className="ray__form__amount">
+                    <AmountFormatterAda amount={pool.total_stake} />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="ray__form__item">
                   <div className="ray__form__label">Active Stake</div>
                   <div className="ray__form__amount">
-                    <AmountFormatterAda amount={amount} />
+                    <AmountFormatterAda amount={pool.active_stake} small />
                   </div>
-                </div>
-              </div>
-              <div className="col-lg-3">
-                <div className="ray__form__item mb-3">
-                  <div className="ray__form__label">Saturation</div>
-                  <div className="ray__form__amount">
-                    {((amount / 64000000 / 1000000) * 100).toFixed(2)}%
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-3">
-                <div className="ray__form__item mb-3">
-                  <div className="ray__form__label">Fee Margin</div>
-                  <div className="ray__form__amount">{(pool.margin * 100).toFixed(2)}%</div>
                 </div>
               </div>
             </div>
-            {pool.id === walletStake.currentPoolId && (
-              <Button type="primary" disabled>
-                <i className="fe fe-arrow-up-circle mr-1" />
-                <strong>Delagated</strong>
-              </Button>
-            )}
-            {pool.id !== walletStake.currentPoolId && (
-              <Tooltip placement="right" title="Soon">
+            <div className="ray__line" />
+            <div className="row">
+              <div className="col-4">
+                <div className="ray__form__item">
+                  <div className="ray__form__label">Saturation</div>
+                  <div className="ray__form__amount">{(pool.saturated * 100).toFixed(3)}%</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="ray__form__item">
+                  <div className="ray__form__label">Fee Margin</div>
+                  <div className="ray__form__amount">{(pool.tax_ratio * 100).toFixed(2)}%</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="ray__form__item">
+                  <div className="ray__form__label">Blocks Lifetime</div>
+                  <div className="ray__form__amount">{pool.blocks_lifetime}</div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3">
+              {pool.delegateId === walletStake.currentPoolId && (
                 <Button type="primary" disabled>
                   <i className="fe fe-arrow-up-circle mr-1" />
-                  <strong>Delegate</strong>
+                  <strong>Delagated</strong>
                 </Button>
-              </Tooltip>
-            )}
+              )}
+              {pool.delegateId !== walletStake.currentPoolId && (
+                <Tooltip placement="right" title="Soon">
+                  <Button type="primary" disabled>
+                    <i className="fe fe-arrow-up-circle mr-1" />
+                    <strong>Delegate</strong>
+                  </Button>
+                </Tooltip>
+              )}
+            </div>
           </div>
         )
       })}

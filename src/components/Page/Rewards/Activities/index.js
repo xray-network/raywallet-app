@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Input, Form, Tooltip, Statistic } from 'antd'
+import { Button, Form, Tooltip, Statistic } from 'antd'
 import BigNumber from 'bignumber.js'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
@@ -19,7 +19,7 @@ const RewardsActivities = () => {
 
   return (
     <div>
-      <div className="ray__heading">Current Activities</div>
+      <div className="ray__heading">Delegation to RAY pools</div>
       <div
         className={`ray__item ${
           walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
@@ -43,7 +43,6 @@ const RewardsActivities = () => {
                       fingerprint="asset1ray"
                       ticker="RAY"
                       availablePrivate
-                      prefix="~"
                     />
                   )}
                 </div>
@@ -104,7 +103,7 @@ const RewardsActivities = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
-              <div className="ray__form__label text-danger">Launching Information</div>
+              <div className="ray__form__label text-danger">Launch Information</div>
               <small>
                 <p className="mb-0">
                   All rewards from November 1, 2020 will be recalculated and added to your account
@@ -135,7 +134,7 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Conditions</div>
               <div className="ray__form__amount">
                 <small>
-                  <p>You should delegate at least 100 ADA to any RAY pool</p>
+                  <p>You should delegate at least 50 ADA to any RAY pool</p>
                 </small>
               </div>
             </div>
@@ -164,7 +163,7 @@ const RewardsActivities = () => {
           </div>
         </div>
       </div>
-      <div className="ray__heading">Upcoming Activities</div>
+      <div className="ray__heading">Airdrop for Early Users</div>
       <div className="ray__item ray__item--gray">
         <div className="row">
           <div className="col-lg-12">
@@ -199,77 +198,7 @@ const RewardsActivities = () => {
           <div className="col-lg-12">
             <Form>
               <Form.Item className="mb-0">
-                <Tooltip title="Soon">
-                  <Button type="primary" disabled>
-                    <i className="fe fe-arrow-down-circle mr-1" />
-                    <strong>Redeem Reward</strong>
-                  </Button>
-                </Tooltip>
-              </Form.Item>
-            </Form>
-          </div>
-        </div>
-      </div>
-      <div className="ray__item ray__item--gray">
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="ray__form__item mb-3">
-              <div className="ray__form__label">Description</div>
-              <div className="ray__form__amount">
-                <small>
-                  <div>
-                    Tweet about your experience with the RAY Network or any positive feedback with
-                    the hashtags below
-                    <div className="pt-2">
-                      <code>
-                        #giveaway #crypto #coinbase #binance $ray $btc $eth $ada $dot $usdt $xrp
-                        $link $eos $ltc $sushi $uni
-                      </code>
-                    </div>
-                  </div>
-                </small>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
-              <div className="ray__form__label">Сonditions</div>
-              <div className="ray__form__amount">
-                <small>
-                  <ol className="pl-4 mb-0">
-                    <li>You should delegate at least 1000 ADA to any RAY pool</li>
-                    <li>One tweet per day / account</li>
-                  </ol>
-                </small>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-0 mb-lg-0">
-              <div className="ray__form__label">Reward</div>
-              <div className="ray__form__amount">
-                <span className="ray__badge">10 RAY</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="ray__line" />
-        <div className="row">
-          <div className="col-lg-12">
-            <Form>
-              <Form.Item>
-                <Input
-                  disabled
-                  placeholder="Tweet url"
-                  allowClear
-                  rules={[
-                    { required: true, message: 'Please enter url' },
-                    { required: true, type: 'url', message: 'This field must be a valid url' },
-                  ]}
-                />
-              </Form.Item>
-              <Form.Item className="mb-0">
-                <Tooltip title="Soon">
+                <Tooltip title="Soon" placement="right">
                   <Button type="primary" disabled>
                     <i className="fe fe-arrow-down-circle mr-1" />
                     <strong>Redeem Reward</strong>

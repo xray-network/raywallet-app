@@ -266,42 +266,42 @@ export async function GetTransactionsIO(hashes) {
     .catch((err) => console.log(err))
 }
 
-export async function GetPoolsInfo(ids, epoch) {
-  return apiClient
-    .post('/', {
-      query: `
-         query allStakePoolFields($ids: [StakePoolID], $epoch: Int) {
-           stakePools(where: { id: { _in: $ids } }) {
-             activeStake_aggregate(where: { epoch: { number: { _eq: $epoch } } }) {
-               aggregate {
-                 count
-                 sum {
-                   amount
-                 }
-               }
-             }
-             fixedCost
-             hash
-             id
-             margin
-             pledge
-             url
-           }
-         }
-       `,
-      variables: {
-        ids,
-        epoch,
-      },
-    })
-    .then((response) => {
-      if (response) {
-        return response.data
-      }
-      return false
-    })
-    .catch((err) => console.log(err))
-}
+// export async function GetPoolsInfo(ids, epoch) {
+//   return apiClient
+//     .post('/', {
+//       query: `
+//          query allStakePoolFields($ids: [StakePoolID], $epoch: Int) {
+//            stakePools(where: { id: { _in: $ids } }) {
+//              activeStake_aggregate(where: { epoch: { number: { _eq: $epoch } } }) {
+//                aggregate {
+//                  count
+//                  sum {
+//                    amount
+//                  }
+//                }
+//              }
+//              fixedCost
+//              hash
+//              id
+//              margin
+//              pledge
+//              url
+//            }
+//          }
+//        `,
+//       variables: {
+//         ids,
+//         epoch,
+//       },
+//     })
+//     .then((response) => {
+//       if (response) {
+//         return response.data
+//       }
+//       return false
+//     })
+//     .catch((err) => console.log(err))
+// }
 
 export async function SendTransaction(transaction) {
   return apiClient

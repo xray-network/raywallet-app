@@ -18,12 +18,9 @@
 import axios from 'axios'
 import { notification } from 'antd'
 
-const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
-
 const apiClient = axios.create({
-  baseURL:
-    CARDANO_NETWORK === 'testnet' ? 'http://localhost:8080' : 'https://graphql-helper.rraayy.com', // testnet
-  // timeout: 100,
+  baseURL: 'https://js.adapools.org/',
+  // timeout: 1000,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
 
@@ -31,32 +28,20 @@ const apiClient = axios.create({
 //   return request
 // })
 
-apiClient.interceptors.response.use(
-  (response) => {
-    const { data } = response
-    if (data.errors) {
-      data.errors.forEach((item) => {
-        notification.warning({
-          message: 'Something went wrong :(',
-          description: item.message,
-        })
-      })
-      return false
-    }
-    return response
-  },
-  (error) => {
-    // Errors handling
-    console.log(error)
+apiClient.interceptors.response.use(undefined, (error) => {
+  // Errors handling
+  const { response } = error
+  const { data } = response
+  if (data) {
     notification.warning({
-      message: 'Something went wrong :(',
+      message: data,
     })
-  },
-)
+  }
+})
 
-export async function GetStakeInfo(account) {
+export async function GetRawUrl(url) {
   return apiClient
-    .get(`/account/stake/${account}`)
+    .get(url)
     .then((response) => {
       if (response) {
         return response.data
@@ -66,18 +51,17 @@ export async function GetStakeInfo(account) {
     .catch((err) => console.log(err))
 }
 
-export async function GetPoolsInfo(poolsIds, currentEpoch) {
-  return apiClient
-    .post('/pools/info/', {
-      poolsIds,
-      currentEpoch,
-    })
-    .then((response) => {
-      if (response) {
-        return response.data
-      }
-      return false
-    })
+export async function GetRawUrlBulk(urls) {
+  return axios
+    .all(urls.map((url) => apiClient.get(url)))
+    .then(
+      axios.spread((...responses) => {
+        if (responses && responses.length) {
+          return responses.map((response) => response.data)
+        }
+        return false
+      }),
+    )
     .catch((err) => console.log(err))
 }
 

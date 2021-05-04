@@ -19,6 +19,8 @@ const Menu = () => {
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
   const sections = useSelector((state) => state.settings.sections)
+  const isWalletInfo = useSelector((state) => state.settings.isWalletInfo)
+  const isNetworkInfo = useSelector((state) => state.settings.isNetworkInfo)
 
   const selectRef = useRef()
 
@@ -87,6 +89,26 @@ const Menu = () => {
   const deleteWallet = () => {
     dispatch({
       type: 'wallets/DELETE_WALLET',
+    })
+  }
+
+  const toggleWalletInfo = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'isWalletInfo',
+        value: !isWalletInfo,
+      },
+    })
+  }
+
+  const toggleNetworkInfo = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'isNetworkInfo',
+        value: !isNetworkInfo,
+      },
     })
   }
 
@@ -264,61 +286,94 @@ const Menu = () => {
         </div>
         {walletParams.accountId && (
           <div className="mb-5">
-            <div className={style.walletInfo}>
-              {sections.includes('stake') && (
-                <div>
-                  <small>Stake Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
-                  {walletStake.hasStakingKey && (
-                    <span>
-                      <AmountFormatterAda
-                        amount={walletStake.rewardsAmount}
-                        small
-                        inline
-                        availablePrivate
-                      />
-                    </span>
+            <div>
+              <span
+                className={style.walletToggle}
+                onClick={toggleWalletInfo}
+                onKeyPress={toggleWalletInfo}
+                role="button"
+                tabIndex="0"
+              >
+                Wallet Info
+                <i className={style.walletToggleArrow} />
+              </span>
+              {isWalletInfo && (
+                <div className={style.walletInfo}>
+                  {sections.includes('stake') && (
+                    <div>
+                      <small>Stake Rewards:</small>{' '}
+                      {!walletStake.hasStakingKey && <strong>—</strong>}
+                      {walletStake.hasStakingKey && (
+                        <span>
+                          <AmountFormatterAda
+                            amount={walletStake.rewardsAmount}
+                            small
+                            inline
+                            availablePrivate
+                          />
+                        </span>
+                      )}
+                    </div>
                   )}
+                  {sections.includes('rewards') && (
+                    <div>
+                      <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
+                      {walletStake.hasStakingKey && (
+                        <span>
+                          <AmountFormatterAsset
+                            amount="0"
+                            fingerprint="asset1ray"
+                            ticker="RAY"
+                            small
+                            inline
+                            availablePrivate
+                          />
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <div className="mb-2">
+                    <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
+                    {!!walletTransactions.length && (
+                      <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                    )}
+                  </div>
                 </div>
               )}
-              {sections.includes('rewards') && (
-                <div>
-                  <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
-                  {walletStake.hasStakingKey && (
-                    <span>
-                      <AmountFormatterAsset
-                        amount="0"
-                        fingerprint="asset1ray"
-                        ticker="RAY"
-                        small
-                        inline
-                        availablePrivate
-                      />
-                    </span>
-                  )}
+            </div>
+            <div>
+              <span
+                className={style.walletToggle}
+                onClick={toggleNetworkInfo}
+                onKeyPress={toggleNetworkInfo}
+                role="button"
+                tabIndex="0"
+              >
+                Network Info
+                <i className={style.walletToggleArrow} />
+              </span>
+              {isNetworkInfo && (
+                <div className={style.walletInfo}>
+                  <div>
+                    <small>Network Block:</small>{' '}
+                    <strong>
+                      {networkInfo.tip?.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') ||
+                        '—'}
+                    </strong>
+                  </div>
+                  <div>
+                    <small>Network Slot:</small>{' '}
+                    <strong>
+                      {networkInfo.tip?.slotNo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') ||
+                        '—'}
+                    </strong>
+                  </div>
+                  <div>
+                    <small>Current Epoch:</small>{' '}
+                    <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
+                  </div>
                 </div>
               )}
-              <div>
-                <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
-                {!!walletTransactions.length && (
-                  <AmountFormatterAsset amount={walletTransactions.length} small inline />
-                )}
-              </div>
-              <div className="mt-2">
-                <small>Network Block:</small>{' '}
-                <strong>
-                  {networkInfo.tip?.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
-                </strong>
-              </div>
-              <div>
-                <small>Network Slot:</small>{' '}
-                <strong>
-                  {networkInfo.tip?.slotNo.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
-                </strong>
-              </div>
-              <div>
-                <small>Current Epoch:</small>{' '}
-                <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
-              </div>
             </div>
           </div>
         )}

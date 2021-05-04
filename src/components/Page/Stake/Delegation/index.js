@@ -23,7 +23,7 @@ const StakeBalances = () => {
     .integerValue()
     .toFixed()
 
-  const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
+  const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
 
   return (
     <div>
@@ -34,8 +34,8 @@ const StakeBalances = () => {
         }`}
       >
         <div className="row">
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
+          <div className="col-6">
+            <div className="ray__form__item">
               <div className="ray__form__label">Expected Payout</div>
               {!!poolsInfo.length && (
                 <div className="ray__form__amount">
@@ -57,8 +57,8 @@ const StakeBalances = () => {
               )}
             </div>
           </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
+          <div className="col-6">
+            <div className="ray__form__item">
               <div className="ray__form__label">Next payout</div>
               <div className="ray__form__amount">
                 <Statistic.Countdown
@@ -72,34 +72,34 @@ const StakeBalances = () => {
         </div>
         <div className="ray__line" />
         <div className="row">
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3">
+          <div className="col-6">
+            <div className="ray__form__item">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
                 <AmountFormatterAda amount={walletStake.rewardsAmount} availablePrivate />
               </div>
             </div>
-            <div className="mb-3 mb-lg-2">
-              <Tooltip placement="right" title="Soon">
-                <Button
-                  type="primary"
-                  // disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
-                  disabled
-                >
-                  <i className="fe fe-arrow-down-circle mr-1" />
-                  <strong>Withdraw Rewards</strong>
-                </Button>
-              </Tooltip>
-            </div>
           </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-3">
+          <div className="col-6">
+            <div className="ray__form__item">
               <div className="ray__form__label">Controlled total stake</div>
               <div className="ray__form__amount">
                 <AmountFormatterAda amount={totalAmount} availablePrivate />
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-3">
+          <Tooltip placement="right" title="Soon">
+            <Button
+              type="primary"
+              // disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
+              disabled
+            >
+              <i className="fe fe-arrow-down-circle mr-1" />
+              <strong>Withdraw Rewards</strong>
+            </Button>
+          </Tooltip>
         </div>
       </div>
       <div className="ray__heading">Current Delegation</div>
@@ -117,10 +117,9 @@ const StakeBalances = () => {
       {inRayPools &&
         walletStake.currentPoolId &&
         poolsInfo.map((pool, index) => {
-          const amount = pool.activeStake_aggregate?.aggregate?.sum?.amount || '?'
           const el = (
             <div className="ray__item position ray__item--success" key={index}>
-              {pool.id === walletStake.currentPoolId && (
+              {pool.delegateId === walletStake.currentPoolId && (
                 <Tooltip title="Delegated to this pool" placement="left">
                   <div className="ray__item__check">
                     <i className="fe fe-check" />
@@ -136,35 +135,50 @@ const StakeBalances = () => {
                 </div>
               </div>
               <div className="mb-3">
-                <Address address={pool.id} cut prefix="Pool ID:" />
+                <Address address={pool.delegateId} cut prefix="Pool ID:" />
               </div>
               <div className="row">
-                <div className="col-lg-6">
-                  <div className="ray__form__item mb-3 mb-lg-0">
+                <div className="col-6">
+                  <div className="ray__form__item">
+                    <div className="ray__form__label">Live Stake</div>
+                    <div className="ray__form__amount">
+                      <AmountFormatterAda amount={pool.total_stake} />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  <div className="ray__form__item">
                     <div className="ray__form__label">Active Stake</div>
                     <div className="ray__form__amount">
-                      <AmountFormatterAda amount={amount} />
+                      <AmountFormatterAda amount={pool.active_stake} small />
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-3">
-                  <div className="ray__form__item mb-3 mb-lg-0">
+              </div>
+              <div className="ray__line" />
+              <div className="row">
+                <div className="col-4">
+                  <div className="ray__form__item">
                     <div className="ray__form__label">Saturation</div>
-                    <div className="ray__form__amount">
-                      {((amount / 64000000 / 1000000) * 100).toFixed(2)}%
-                    </div>
+                    <div className="ray__form__amount">{(pool.saturated * 100).toFixed(2)}%</div>
                   </div>
                 </div>
-                <div className="col-lg-3">
-                  <div className="ray__form__item mb-3 mb-lg-0">
+                <div className="col-4">
+                  <div className="ray__form__item">
                     <div className="ray__form__label">Fee Margin</div>
-                    <div className="ray__form__amount">{(pool.margin * 100).toFixed(2)}%</div>
+                    <div className="ray__form__amount">{(pool.tax_ratio * 100).toFixed(2)}%</div>
+                  </div>
+                </div>
+                <div className="col-4">
+                  <div className="ray__form__item">
+                    <div className="ray__form__label">Blocks Lifetime</div>
+                    <div className="ray__form__amount">{pool.blocks_lifetime}</div>
                   </div>
                 </div>
               </div>
             </div>
           )
-          return pool.id === walletStake.currentPoolId ? el : null
+          return pool.delegateId === walletStake.currentPoolId ? el : null
         })}
     </div>
   )

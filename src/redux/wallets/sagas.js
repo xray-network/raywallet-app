@@ -9,6 +9,7 @@ import * as Explorer from 'services/api/cardano'
 import * as ExplorerHelper from 'services/api/cardano-helper'
 import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
+import * as Adapools from 'services/api/adapools'
 import actions from './actions'
 
 const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
@@ -674,24 +675,54 @@ export function* GET_STAKE_STATE() {
 }
 
 export function* GET_POOLS_INFO() {
-  const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
   const pools = yield select((state) => state.wallets.pools)
+  const urls = Object.keys(pools).map((id) => `/pools/${id}/summary.json`)
 
-  const fetchPools = yield call(Explorer.GetPoolsInfo, Object.keys(pools), currentEpoch.number)
-  const poolsInfo = fetchPools.data.stakePools
+  const poolsInfo = yield call(Adapools.GetRawUrlBulk, urls)
 
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'poolsInfo',
-      value: poolsInfo.map((item) => {
-        return {
-          ...item,
-          ...pools[item.id],
-        }
-      }),
-    },
-  })
+  console.log(
+    poolsInfo.map((item) => {
+      return {
+        ...item.data,
+        ...pools[item.data.pool_id],
+      }
+    }),
+  )
+
+  if (poolsInfo) {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'poolsInfo',
+        value: poolsInfo.map((item) => {
+          return {
+            ...item.data,
+            ...pools[item.data.pool_id],
+          }
+        }),
+      },
+    })
+  }
+
+  // TODO: wait live stake on cardano-graphql
+  // const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
+  // const pools = yield select((state) => state.wallets.pools)
+
+  // const fetchPools = yield call(Explorer.GetPoolsInfo, Object.keys(pools), currentEpoch.number)
+  // const poolsInfo = fetchPools.data.stakePools
+
+  // yield put({
+  //   type: 'wallets/CHANGE_SETTING',
+  //   payload: {
+  //     setting: 'poolsInfo',
+  //     value: poolsInfo.map((item) => {
+  //       return {
+  //         ...item,
+  //         ...pools[item.id],
+  //       }
+  //     }),
+  //   },
+  // })
 }
 
 export function* FETCH_WALLET_DATA() {
@@ -747,8 +778,8 @@ export function* SETUP() {
   }
   yield call(FETCH_NETWORK_STATE)
   yield take(FETCH_NETWORK_STATE)
-  yield call(FETCH_SIDE_DATA)
   yield call(FETCH_WALLET_DATA)
+  yield call(FETCH_SIDE_DATA)
 }
 
 export default function* rootSaga() {
