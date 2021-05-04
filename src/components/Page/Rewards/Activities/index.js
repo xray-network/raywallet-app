@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Input, Form, Tooltip, Statistic } from 'antd'
+import BigNumber from 'bignumber.js'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 
@@ -12,9 +13,9 @@ const RewardsActivities = () => {
   const startedAt = networkInfo.currentEpoch?.startedAt
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
-  const totalAmount = walletAssetsSummary.value + walletStake.rewardsAmount
+  const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
+  const expectedPayout = new BigNumber(totalAmount).dividedBy(1000000).dividedBy(50).integerValue()
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = parseInt(totalAmount / 1000000 / 50, 10)
 
   return (
     <div>

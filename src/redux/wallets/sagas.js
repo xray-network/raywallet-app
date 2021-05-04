@@ -2,6 +2,7 @@ import { all, takeEvery, put, take, call, select } from 'redux-saga/effects'
 import store from 'store'
 import { AES, enc as EncodeTo } from 'crypto-js'
 import { message } from 'antd'
+import BigNumber from 'bignumber.js'
 import * as CardanoUtils from 'utils/ray-cardano-utils'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
@@ -452,12 +453,12 @@ export function* GET_UTXO_STATE() {
 
   const getAssetsSummary = (processAddresses) => {
     const assetsSummary = {
-      value: 0,
+      value: new BigNumber(0),
       tokens: {},
     }
 
     processAddresses.forEach((addr) => {
-      assetsSummary.value += parseInt(addr.value, 10)
+      assetsSummary.value = assetsSummary.value.plus(addr.value)
       const { tokens } = addr
       if (tokens.length) {
         tokens.forEach((token) => {
@@ -465,7 +466,7 @@ export function* GET_UTXO_STATE() {
           const { assetId } = asset
           if (!assetsSummary.tokens[assetId]) {
             assetsSummary.tokens[assetId] = {
-              quantity: BigInt(0),
+              quantity: new BigNumber(0),
             }
           }
           assetsSummary.tokens[assetId] = {
@@ -473,14 +474,14 @@ export function* GET_UTXO_STATE() {
             ...asset,
             ticker:
               asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-            quantity: BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity),
+            quantity: new BigNumber(assetsSummary.tokens[assetId].quantity).plus(quantity),
           }
         })
       }
     })
 
     return {
-      value: assetsSummary.value,
+      value: new BigNumber(assetsSummary.value).toFixed(),
       tokens: Object.keys(assetsSummary.tokens).map((key) => assetsSummary.tokens[key]),
     }
   }
@@ -539,19 +540,19 @@ export function* GET_UTXO_STATE() {
   const rawTransactions = transactionsInputsOutputs.data.transactions
 
   const transformedTransactions = rawTransactions.map((tx) => {
-    let inputAmount = 0
-    let outputAmount = 0
+    let inputAmount = new BigNumber(0)
+    let outputAmount = new BigNumber(0)
     const tokens = {}
 
     tx.inputs.forEach((input) => {
       if (adressesArray.includes(input.address)) {
-        inputAmount += parseInt(input.value, 10)
+        inputAmount = inputAmount.plus(input.value)
         input.tokens.forEach((token) => {
           const { asset, quantity } = token
           const { assetId } = asset
           if (!tokens[assetId]) {
             tokens[assetId] = {
-              quantity: BigInt(0),
+              quantity: new BigNumber(0),
             }
           }
           tokens[assetId] = {
@@ -559,14 +560,14 @@ export function* GET_UTXO_STATE() {
             ...asset,
             ticker:
               asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-            quantity: BigInt(tokens[assetId].quantity) - BigInt(quantity),
+            quantity: new BigNumber(tokens[assetId].quantity).minus(quantity),
           }
         })
       }
     })
     tx.outputs.forEach((output) => {
       if (adressesArray.includes(output.address)) {
-        outputAmount += parseInt(output.value, 10)
+        outputAmount = outputAmount.plus(output.value)
         output.tokens.forEach((token) => {
           const { asset, quantity } = token
           const { assetId } = asset
@@ -580,7 +581,7 @@ export function* GET_UTXO_STATE() {
             ...asset,
             ticker:
               asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-            quantity: BigInt(tokens[assetId].quantity) + BigInt(quantity),
+            quantity: new BigNumber(tokens[assetId].quantity).plus(quantity),
           }
         })
       }

@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Statistic, Spin, Tooltip } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
+import BigNumber from 'bignumber.js'
 import Address from 'components/Layout/Address'
 import Empty from 'components/Layout/Empty'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
@@ -14,9 +15,9 @@ const StakeBalances = () => {
   const startedAt = networkInfo.currentEpoch?.startedAt
   const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
-  const totalAmount = walletAssetsSummary.value + walletStake.rewardsAmount
+  const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
+  const expectedPayout = new BigNumber(totalAmount).multipliedBy(0.057).dividedBy(73)
   const inRayPools = poolsInfo.some((item) => item.id === walletStake.currentPoolId)
-  const expectedPayout = (totalAmount * 0.057) / 73
 
   return (
     <div>

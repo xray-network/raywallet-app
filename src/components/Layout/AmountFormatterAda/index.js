@@ -11,10 +11,11 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
   const privateSymbols = '••••••'
 
   const computedAmount = new BigNumber(amount).dividedBy(1000000)
-  const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const numberWithCommas = (x, y = 0) =>
+    new BigNumber(x).toFixed(y).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   const integer = (x) => numberWithCommas(new BigNumber(x).integerValue())
   const decimal = (x) => new BigNumber(x).toFixed(6).split('.')[1] || '000000'
-  const price = (x) => numberWithCommas(new BigNumber(x).toFixed(2))
+  const price = (x) => numberWithCommas(new BigNumber(x).toFixed(2), 2)
 
   const content = (
     <div className={style.info}>
@@ -27,18 +28,19 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
       <div className={style.infoItem}>
         <div>
           <strong>
-            $
-            {isPrivateMode
-              ? privateSymbols
-              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd) || '0.00')}
+            <span className={style.infoLabel}>Price:</span> $
+            {price(1 * exchangeRates.cardano?.usd || '0.00')} / €
+            {price(1 * exchangeRates.cardano?.eur || '0.00')}
           </strong>
         </div>
       </div>
       <div className={style.infoItem}>
         <div>
           <strong>
-            ${price(1 * exchangeRates.cardano?.usd || '0.00')} / €
-            {price(1 * exchangeRates.cardano?.eur || '0.00')}
+            <span className={style.infoLabel}>Total:</span> $
+            {isPrivateMode
+              ? privateSymbols
+              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd))}
           </strong>
         </div>
       </div>

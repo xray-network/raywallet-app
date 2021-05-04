@@ -229,6 +229,8 @@ export const CardanoBuildTx = async (
   await CardanoWasm.load()
 
   try {
+    console.log(new BigNumber(value).toFixed())
+
     // initial checks
     if (!(await CardanoValidateAddress(toAddress))) {
       throw CardanoError('address_wrong')
@@ -239,7 +241,7 @@ export const CardanoBuildTx = async (
     if (new BigNumber(value).lt(new BigNumber(protocolParams.minimumUtxoVal))) {
       throw CardanoError('ada_less_than_min')
     }
-    if (new BigNumber(value).decimalPlaces() > 6) {
+    if (new BigNumber(value).decimalPlaces() > 0) {
       throw CardanoError('ada_wrong_value')
     }
 
