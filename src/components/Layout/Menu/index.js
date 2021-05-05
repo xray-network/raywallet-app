@@ -371,7 +371,7 @@ const Menu = () => {
                 <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
               </div>
               <div>
-                <small>Epoch Ends In:</small>{' '}
+                <small>Ends In:</small>{' '}
                 <strong>
                   <Statistic.Countdown
                     className="ray__count__inline"
