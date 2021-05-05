@@ -411,11 +411,19 @@ export function* FETCH_NETWORK_STATE() {
   const networkInfo = yield call(Explorer.GetNetworkInfo)
   if (networkInfo) {
     const { cardano } = networkInfo.data
+    const { startedAt } = cardano.currentEpoch
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
         setting: 'networkInfo',
         value: cardano,
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'epochEndIns',
+        value: new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000,
       },
     })
   }
@@ -596,8 +604,8 @@ export function* GET_UTXO_STATE() {
 
     return {
       ...tx,
-      type: inputAmount ? 'send' : 'receive',
-      value: outputAmount - inputAmount,
+      type: new BigNumber(inputAmount).isZero() ? 'receive' : 'send',
+      value: new BigNumber(outputAmount).minus(inputAmount),
       tokens: Object.keys(tokens).map((key) => tokens[key]),
     }
   })
@@ -679,15 +687,6 @@ export function* GET_POOLS_INFO() {
   const urls = Object.keys(pools).map((id) => `/pools/${id}/summary.json`)
 
   const poolsInfo = yield call(Adapools.GetRawUrlBulk, urls)
-
-  console.log(
-    poolsInfo.map((item) => {
-      return {
-        ...item.data,
-        ...pools[item.data.pool_id],
-      }
-    }),
-  )
 
   if (poolsInfo) {
     yield put({

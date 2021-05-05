@@ -6,14 +6,13 @@ import BigNumber from 'bignumber.js'
 import Address from 'components/Layout/Address'
 import Empty from 'components/Layout/Empty'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import style from './style.module.scss'
 
 const StakeBalances = () => {
-  const networkInfo = useSelector((state) => state.wallets.networkInfo)
+  const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
-  const startedAt = networkInfo.currentEpoch?.startedAt
-  const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount)
@@ -24,6 +23,15 @@ const StakeBalances = () => {
     .toFixed()
 
   const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
+  const checkInRayPools = (delegateId) => poolsInfo.some((item) => item.delegateId === delegateId)
+
+  const nextRewards = walletStake.nextRewardsHistory.length
+    ? walletStake.nextRewardsHistory
+    : [1, 2, 3, 4].map(() => {
+        return { empty: true }
+      })
+
+  console.log(nextRewards)
 
   return (
     <div>
@@ -63,12 +71,29 @@ const StakeBalances = () => {
               <div className="ray__form__amount">
                 <Statistic.Countdown
                   className="ray__count"
-                  value={date}
+                  value={epochEndIns}
                   format="D[d] HH[h] mm[m] ss[s]"
                 />
               </div>
             </div>
           </div>
+        </div>
+        <div className="row">
+          {nextRewards.map((item) => {
+            return (
+              <div className="col-3">
+                {item.empty ? (
+                  <div className={style.rewardsEmpty} />
+                ) : (
+                  <div className={style.rewardsDefault}>
+                    <div>{item.forEpoch}</div>
+                    <div>{item.rewardDate || '—'}</div>
+                    {checkInRayPools(item.poolId) && <div>IN RAY</div>}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
         <div className="ray__line" />
         <div className="row">
@@ -157,22 +182,28 @@ const StakeBalances = () => {
               </div>
               <div className="ray__line" />
               <div className="row">
-                <div className="col-4">
+                <div className="col-3">
                   <div className="ray__form__item">
                     <div className="ray__form__label">Saturation</div>
                     <div className="ray__form__amount">{(pool.saturated * 100).toFixed(2)}%</div>
                   </div>
                 </div>
-                <div className="col-4">
+                <div className="col-3">
                   <div className="ray__form__item">
                     <div className="ray__form__label">Fee Margin</div>
                     <div className="ray__form__amount">{(pool.tax_ratio * 100).toFixed(2)}%</div>
                   </div>
                 </div>
-                <div className="col-4">
+                <div className="col-3">
                   <div className="ray__form__item">
                     <div className="ray__form__label">Blocks Lifetime</div>
                     <div className="ray__form__amount">{pool.blocks_lifetime}</div>
+                  </div>
+                </div>
+                <div className="col-3">
+                  <div className="ray__form__item">
+                    <div className="ray__form__label">Blocks In Epoch</div>
+                    <div className="ray__form__amount">{pool.blocks_epoch}</div>
                   </div>
                 </div>
               </div>

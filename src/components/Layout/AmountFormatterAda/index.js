@@ -8,7 +8,7 @@ import style from './style.module.scss'
 const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availablePrivate }) => {
   const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && !!availablePrivate
-  const privateSymbols = '••••••'
+  const privateSymbols = '******'
 
   const computedAmount = new BigNumber(amount).dividedBy(1000000)
 

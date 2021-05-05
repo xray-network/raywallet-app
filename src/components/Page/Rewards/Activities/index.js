@@ -6,12 +6,10 @@ import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 
 const RewardsActivities = () => {
-  const networkInfo = useSelector((state) => state.wallets.networkInfo)
+  const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
-  const startedAt = networkInfo.currentEpoch?.startedAt
-  const date = startedAt ? new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000 : 0
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount).dividedBy(1000000).dividedBy(50).integerValue()
@@ -60,7 +58,7 @@ const RewardsActivities = () => {
               <div className="ray__form__amount">
                 <Statistic.Countdown
                   className="ray__count"
-                  value={date}
+                  value={epochEndIns}
                   format="D[d] HH[h] mm[m] ss[s]"
                 />
               </div>

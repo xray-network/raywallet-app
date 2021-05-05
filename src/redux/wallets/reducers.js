@@ -58,6 +58,7 @@ const initialState = {
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
   networkInfo: {},
+  epochEndIns: 0,
   verifiedTokensList: [],
   exchangeRates: {},
   pools,

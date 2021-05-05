@@ -18,7 +18,7 @@ const AmountFormatterAsset = ({
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && availablePrivate
   const verifiedTokensList = useSelector((state) => state.wallets.verifiedTokensList)
   const isVerified = verifiedTokensList.some((item) => item.fingerprint === fingerprint)
-  const privateSymbols = '••••••'
+  const privateSymbols = '******'
 
   const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
@@ -39,7 +39,7 @@ const AmountFormatterAsset = ({
       {fingerprint && (
         <div className={style.infoItem}>
           <CopyToClipboard text={fingerprint} onCopy={onCopy}>
-            <span className="ray__badge">
+            <span className="ray__badge ray__pointer">
               <small>
                 {fingerprint.slice(0, 9)}...{fingerprint.slice(-4)}
               </small>

@@ -66,22 +66,28 @@ const StakePools = () => {
             </div>
             <div className="ray__line" />
             <div className="row">
-              <div className="col-4">
+              <div className="col-3">
                 <div className="ray__form__item">
                   <div className="ray__form__label">Saturation</div>
                   <div className="ray__form__amount">{(pool.saturated * 100).toFixed(3)}%</div>
                 </div>
               </div>
-              <div className="col-4">
+              <div className="col-3">
                 <div className="ray__form__item">
                   <div className="ray__form__label">Fee Margin</div>
                   <div className="ray__form__amount">{(pool.tax_ratio * 100).toFixed(2)}%</div>
                 </div>
               </div>
-              <div className="col-4">
+              <div className="col-3">
                 <div className="ray__form__item">
                   <div className="ray__form__label">Blocks Lifetime</div>
                   <div className="ray__form__amount">{pool.blocks_lifetime}</div>
+                </div>
+              </div>
+              <div className="col-3">
+                <div className="ray__form__item">
+                  <div className="ray__form__label">Blocks In Epoch</div>
+                  <div className="ray__form__amount">{pool.blocks_epoch}</div>
                 </div>
               </div>
             </div>
