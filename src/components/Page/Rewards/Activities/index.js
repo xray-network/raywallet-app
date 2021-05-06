@@ -15,7 +15,11 @@ const RewardsActivities = () => {
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
-  const expectedPayout = new BigNumber(totalAmount).dividedBy(1000000).dividedBy(50).integerValue()
+  const expectedPayout = new BigNumber(totalAmount)
+    .dividedBy(1000000)
+    .dividedBy(50)
+    .integerValue(BigNumber.ROUND_DOWN)
+    .toFixed()
   const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
   const checkInRayPools = (delegateId) => poolsInfo.some((item) => item.delegateId === delegateId)
   const nextRewards = walletStake.nextRewardsHistory
