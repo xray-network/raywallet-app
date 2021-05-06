@@ -103,16 +103,16 @@ const StakeBalances = () => {
                         {current && 'Current'}
                         {!current && 'Payout Date'}
                       </div>
+                      <div className={style.rewardsDate}>
+                        {correctDate && date}
+                        {!correctDate && '—'}
+                      </div>
                       <div className={style.rewardsEpoch}>
                         <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
                         <div className={style.rewardsEpochInfo}>
                           <div>for</div>
                           <div>epoch</div>
                         </div>
-                      </div>
-                      <div className={style.rewardsDate}>
-                        {correctDate && date}
-                        {!correctDate && '—'}
                       </div>
                       {/* {checkInRayPools(item.poolId) && <div>IN RAY</div>} */}
                     </div>

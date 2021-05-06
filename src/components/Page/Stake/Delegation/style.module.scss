@@ -22,7 +22,6 @@
     font-size: rem(21);
     font-weight: 700;
     display: flex;
-    margin: rem(10) 0;
 
     &Count {
       margin-right: rem(5);
@@ -40,6 +39,7 @@
 
   &Date {
     font-size: rem(12);
+    margin: rem(10) 0 rem(5);
   }
 }
 
