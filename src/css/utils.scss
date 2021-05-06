@@ -167,12 +167,12 @@
     background: $white;
     position: relative;
 
-    &__check {
+    &__icon {
+      color: $gray-3;
+      font-size: rem(21);
       position: absolute;
-      top: rem(15);
+      top: rem(17);
       right: rem(25);
-      color: $success;
-      font-size: rem(27);
     }
 
     &--current {
@@ -400,6 +400,10 @@
 
       &--disabled {
         background: $dark-border;
+      }
+
+      &__icon {
+        color: $dark-gray-3;
       }
     }
 

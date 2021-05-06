@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Spin, Tooltip } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, CheckCircleFilled } from '@ant-design/icons'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
@@ -29,9 +29,9 @@ const StakePools = () => {
             key={index}
           >
             {pool.delegateId === walletStake.currentPoolId && (
-              <Tooltip title="Delegated to this pool" placement="left">
-                <div className="ray__item__check">
-                  <i className="fe fe-check" />
+              <Tooltip title="Current delegation" placement="left">
+                <div className="ray__item__icon text-success">
+                  <CheckCircleFilled />
                 </div>
               </Tooltip>
             )}

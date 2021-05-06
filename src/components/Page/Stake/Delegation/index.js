@@ -1,8 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Statistic, Spin, Tooltip } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import BigNumber from 'bignumber.js'
+import { format } from 'date-fns'
 import Address from 'components/Layout/Address'
 import Empty from 'components/Layout/Empty'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
@@ -24,14 +25,7 @@ const StakeBalances = () => {
 
   const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
   const checkInRayPools = (delegateId) => poolsInfo.some((item) => item.delegateId === delegateId)
-
-  const nextRewards = walletStake.nextRewardsHistory.length
-    ? walletStake.nextRewardsHistory
-    : [1, 2, 3, 4].map(() => {
-        return { empty: true }
-      })
-
-  console.log(nextRewards)
+  const nextRewards = walletStake.nextRewardsHistory
 
   return (
     <div>
@@ -50,9 +44,9 @@ const StakeBalances = () => {
                   {!walletStake.hasStakingKey && (
                     <strong className="ray__color font-size-24">Not delegated</strong>
                   )}
-                  {walletStake.hasStakingKey && !inRayPools && (
+                  {/* {walletStake.hasStakingKey && !inRayPools && (
                     <strong className="ray__color font-size-24">Not in RAY pool</strong>
-                  )}
+                  )} */}
                   {walletStake.hasStakingKey && (
                     <AmountFormatterAda amount={expectedPayout} prefix="~" availablePrivate />
                   )}
@@ -67,7 +61,7 @@ const StakeBalances = () => {
           </div>
           <div className="col-6">
             <div className="ray__form__item">
-              <div className="ray__form__label">Next payout</div>
+              <div className="ray__form__label">Next payout date</div>
               <div className="ray__form__amount">
                 <Statistic.Countdown
                   className="ray__count"
@@ -78,23 +72,56 @@ const StakeBalances = () => {
             </div>
           </div>
         </div>
-        <div className="row">
-          {nextRewards.map((item) => {
-            return (
-              <div className="col-3">
-                {item.empty ? (
-                  <div className={style.rewardsEmpty} />
-                ) : (
-                  <div className={style.rewardsDefault}>
-                    <div>{item.forEpoch}</div>
-                    <div>{item.rewardDate || '—'}</div>
-                    {checkInRayPools(item.poolId) && <div>IN RAY</div>}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+        {walletStake.hasStakingKey && (
+          <div className="row pt-3">
+            {nextRewards.map((item, index) => {
+              const correctDate = item.rewardDate || false
+              const date = format(new Date(correctDate), 'dd/MM/Y HH:mm')
+              const current = nextRewards.length === index + 2
+              const inRay = checkInRayPools(item.poolId)
+              return (
+                <div className="col-3" key={index}>
+                  {item.empty ? (
+                    <div className={style.rewardsEmpty} />
+                  ) : (
+                    <div className={style.rewardsItem}>
+                      {inRay && (
+                        <Tooltip title="RAY pool" placement="left">
+                          <div className={`${style.rewardsIcon} ${style.rewardsIconSuccess}`}>
+                            <CheckCircleFilled />
+                          </div>
+                        </Tooltip>
+                      )}
+                      {!inRay && (
+                        <Tooltip title="Not a RAY pool" placement="left">
+                          <div className={`${style.rewardsIcon}`}>
+                            <CloseCircleFilled />
+                          </div>
+                        </Tooltip>
+                      )}
+                      <div className="ray__form__label mb-0">
+                        {current && 'Current'}
+                        {!current && 'Payout Date'}
+                      </div>
+                      <div className={style.rewardsEpoch}>
+                        <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
+                        <div className={style.rewardsEpochInfo}>
+                          <div>for</div>
+                          <div>epoch</div>
+                        </div>
+                      </div>
+                      <div className={style.rewardsDate}>
+                        {correctDate && date}
+                        {!correctDate && '—'}
+                      </div>
+                      {/* {checkInRayPools(item.poolId) && <div>IN RAY</div>} */}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
         <div className="ray__line" />
         <div className="row">
           <div className="col-6">
@@ -135,7 +162,12 @@ const StakeBalances = () => {
       )}
       {!walletStake.currentPoolId && !!poolsInfo.length && <Empty title="No delegation" />}
       {!inRayPools && walletStake.currentPoolId && (
-        <div className="ray__item">
+        <div className="ray__item position-relative">
+          <Tooltip title="Not a RAY pool" placement="left">
+            <div className="ray__item__icon">
+              <CloseCircleFilled />
+            </div>
+          </Tooltip>
           <Address address={walletStake.currentPoolId || ''} cut prefix="Pool ID: " />
         </div>
       )}
@@ -143,11 +175,11 @@ const StakeBalances = () => {
         walletStake.currentPoolId &&
         poolsInfo.map((pool, index) => {
           const el = (
-            <div className="ray__item position ray__item--success" key={index}>
+            <div className="ray__item position-relative ray__item--success" key={index}>
               {pool.delegateId === walletStake.currentPoolId && (
-                <Tooltip title="Delegated to this pool" placement="left">
-                  <div className="ray__item__check">
-                    <i className="fe fe-check" />
+                <Tooltip title="Current delegation" placement="left">
+                  <div className="ray__item__icon text-success">
+                    <CheckCircleFilled />
                   </div>
                 </Tooltip>
               )}

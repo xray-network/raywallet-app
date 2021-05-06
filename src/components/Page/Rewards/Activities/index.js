@@ -17,7 +17,7 @@ const RewardsActivities = () => {
 
   return (
     <div>
-      <div className="ray__heading">Delegation to RAY pools</div>
+      <div className="ray__heading">RAY Pools Delegators Distribution</div>
       <div
         className={`ray__item ${
           walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
@@ -54,7 +54,7 @@ const RewardsActivities = () => {
           </div>
           <div className="col-lg-6">
             <div className="ray__form__item mb-0 mb-lg-0">
-              <div className="ray__form__label">Next payout</div>
+              <div className="ray__form__label">Next payout date</div>
               <div className="ray__form__amount">
                 <Statistic.Countdown
                   className="ray__count"
@@ -161,7 +161,7 @@ const RewardsActivities = () => {
           </div>
         </div>
       </div>
-      <div className="ray__heading">Airdrop for Early Users</div>
+      <div className="ray__heading">Early Users Distribution</div>
       <div className="ray__item ray__item--gray">
         <div className="row">
           <div className="col-lg-12">
