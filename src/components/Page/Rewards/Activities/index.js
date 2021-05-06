@@ -1,9 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Form, Tooltip, Statistic } from 'antd'
+import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import BigNumber from 'bignumber.js'
+import { format } from 'date-fns'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
+import style from './style.module.scss'
 
 const RewardsActivities = () => {
   const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
@@ -14,6 +17,8 @@ const RewardsActivities = () => {
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount).dividedBy(1000000).dividedBy(50).integerValue()
   const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
+  const checkInRayPools = (delegateId) => poolsInfo.some((item) => item.delegateId === delegateId)
+  const nextRewards = walletStake.nextRewardsHistory
 
   return (
     <div>
@@ -65,6 +70,56 @@ const RewardsActivities = () => {
             </div>
           </div>
         </div>
+        {walletStake.hasStakingKey && (
+          <div className="row pt-3">
+            {nextRewards.map((item, index) => {
+              const correctDate = item.rewardDate || false
+              const date = format(new Date(correctDate), 'dd/MM/Y HH:mm')
+              const current = nextRewards.length === index + 2
+              const inRay = checkInRayPools(item.poolId)
+              return (
+                <div className="col-3" key={index}>
+                  {item.empty ? (
+                    <div className={style.rewardsEmpty} />
+                  ) : (
+                    <div className={style.rewardsItem}>
+                      {inRay && (
+                        <Tooltip title="RAY pool" placement="left">
+                          <div className={`${style.rewardsIcon} ${style.rewardsIconSuccess}`}>
+                            <CheckCircleFilled />
+                          </div>
+                        </Tooltip>
+                      )}
+                      {!inRay && (
+                        <Tooltip title="Not a RAY pool" placement="left">
+                          <div className={`${style.rewardsIcon}`}>
+                            <CloseCircleFilled />
+                          </div>
+                        </Tooltip>
+                      )}
+                      <div className="ray__form__label mb-0">
+                        {current && 'Current'}
+                        {!current && 'Payout Date'}
+                      </div>
+                      <div className={style.rewardsEpoch}>
+                        <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
+                        <div className={style.rewardsEpochInfo}>
+                          <div>for</div>
+                          <div>epoch</div>
+                        </div>
+                      </div>
+                      <div className={style.rewardsDate}>
+                        {correctDate && date}
+                        {!correctDate && '—'}
+                      </div>
+                      {/* {checkInRayPools(item.poolId) && <div>IN RAY</div>} */}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
         <div className="ray__line" />
         <div className="row">
           <div className="col-lg-6">
