@@ -11,25 +11,23 @@
   }
 
   &Item {
-    padding: rem(3) rem(8) rem(7);
+    padding: rem(2) rem(8) rem(7);
     line-height: 1.2;
     font-size: rem(18);
     color: $dark;
     font-weight: normal;
     position: relative;
 
-    :global(.ray__badge) {
-      position: relative;
-      top: -2px;
+    &Line {
+      display: flex;
+      height: rem(23);
     }
 
     &Name {
       white-space: nowrap;
       display: block;
-      float: left;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: calc(100% - 90px);
       margin-right: rem(10);
     }
 
@@ -93,6 +91,13 @@
   &Assets {
     color: $black;
     margin-bottom: rem(20);
+  }
+
+  &Scroll {
+    max-height: rem(300);
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: rem(8);
   }
 
   &Info {

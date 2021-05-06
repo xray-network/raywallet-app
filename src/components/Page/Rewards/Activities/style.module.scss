@@ -10,8 +10,8 @@
   &Icon {
     color: $gray-3;
     position: absolute;
-    top: rem(14);
-    right: rem(0);
+    top: rem(45);
+    left: 0;
 
     &Success {
       color: $success !important;
@@ -22,7 +22,7 @@
     font-size: rem(21);
     font-weight: 700;
     display: flex;
-    margin: rem(10) 0;
+    margin: rem(5) 0 rem(5) rem(25);
 
     &Count {
       margin-right: rem(5);

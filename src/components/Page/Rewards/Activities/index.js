@@ -35,14 +35,14 @@ const RewardsActivities = () => {
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3 mb-lg-0">
-              <div className="ray__form__label">Expected Payout</div>
+              <div className="ray__form__label">Next Expected Payout</div>
               {!!poolsInfo.length && (
                 <div className="ray__form__amount">
                   {!walletStake.hasStakingKey && (
                     <strong className="ray__color font-size-24">Not delegated</strong>
                   )}
                   {walletStake.hasStakingKey && !inRayPools && (
-                    <strong className="ray__color font-size-24">Not in RAY pool</strong>
+                    <strong className="ray__color font-size-24">Not in RAY Pool</strong>
                   )}
                   {walletStake.hasStakingKey && inRayPools && (
                     <AmountFormatterAsset
@@ -88,14 +88,14 @@ const RewardsActivities = () => {
                   ) : (
                     <div className={style.rewardsItem}>
                       {inRay && (
-                        <Tooltip title="RAY pool" placement="left">
+                        <Tooltip title="RAY pool" placement="top">
                           <div className={`${style.rewardsIcon} ${style.rewardsIconSuccess}`}>
                             <CheckCircleFilled />
                           </div>
                         </Tooltip>
                       )}
                       {!inRay && (
-                        <Tooltip title="Not a RAY pool" placement="left">
+                        <Tooltip title="Not a RAY pool" placement="top">
                           <div className={`${style.rewardsIcon}`}>
                             <CloseCircleFilled />
                           </div>

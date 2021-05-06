@@ -38,14 +38,14 @@ const StakeBalances = () => {
         <div className="row">
           <div className="col-6">
             <div className="ray__form__item">
-              <div className="ray__form__label">Expected Payout</div>
+              <div className="ray__form__label">Next Expected Payout</div>
               {!!poolsInfo.length && (
                 <div className="ray__form__amount">
                   {!walletStake.hasStakingKey && (
                     <strong className="ray__color font-size-24">Not delegated</strong>
                   )}
                   {/* {walletStake.hasStakingKey && !inRayPools && (
-                    <strong className="ray__color font-size-24">Not in RAY pool</strong>
+                    <strong className="ray__color font-size-24">Not in RAY Pool</strong>
                   )} */}
                   {walletStake.hasStakingKey && (
                     <AmountFormatterAda amount={expectedPayout} prefix="~" availablePrivate />
@@ -86,14 +86,14 @@ const StakeBalances = () => {
                   ) : (
                     <div className={style.rewardsItem}>
                       {inRay && (
-                        <Tooltip title="RAY pool" placement="left">
+                        <Tooltip title="RAY pool" placement="top">
                           <div className={`${style.rewardsIcon} ${style.rewardsIconSuccess}`}>
                             <CheckCircleFilled />
                           </div>
                         </Tooltip>
                       )}
                       {!inRay && (
-                        <Tooltip title="Not a RAY pool" placement="left">
+                        <Tooltip title="Not a RAY pool" placement="top">
                           <div className={`${style.rewardsIcon}`}>
                             <CloseCircleFilled />
                           </div>

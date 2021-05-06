@@ -450,7 +450,7 @@ export function* GET_VERIFIED_TOKENS_LIST() {
 export function* GET_EXCHANGE_RATES() {
   const exchangeRates = yield call(
     Coingecko.GetRawUrl,
-    '/simple/price?ids=bitcoin,cardano&vs_currencies=USD,EUR',
+    '/simple/price?ids=bitcoin,cardano&vs_currencies=USD,EUR,JPY',
   )
   if (exchangeRates) {
     yield put({

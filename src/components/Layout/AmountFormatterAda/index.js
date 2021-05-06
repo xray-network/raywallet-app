@@ -16,7 +16,7 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
     new BigNumber(x).toFixed(y).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   const integer = (x) => numberWithCommas(new BigNumber(x).toFixed().split('.')[0])
   const decimal = (x) => new BigNumber(x).toFixed(6).split('.')[1] || '000000'
-  const price = (x) => numberWithCommas(new BigNumber(x).toFixed(2), 2)
+  const price = (x) => numberWithCommas(new BigNumber(x), 2)
 
   const content = (
     <div className={style.info}>
@@ -30,8 +30,9 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
         <div>
           <strong>
             <span className={style.infoLabel}>Price:</span> $
-            {price(1 * exchangeRates.cardano?.usd || '0.00')} / €
-            {price(1 * exchangeRates.cardano?.eur || '0.00')}
+            {price(exchangeRates.cardano?.usd || '0.00')} | €
+            {price(exchangeRates.cardano?.eur || '0.00')} | ¥
+            {price(exchangeRates.cardano?.jpy || '0.00')}
           </strong>
         </div>
       </div>
@@ -41,7 +42,7 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
             <span className={style.infoLabel}>Total:</span> $
             {isPrivateMode
               ? privateSymbols
-              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd))}
+              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd || '0.00'))}
           </strong>
         </div>
       </div>
