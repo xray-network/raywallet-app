@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Form, Tooltip, Statistic } from 'antd'
+import { Button, Tooltip, Statistic } from 'antd'
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import BigNumber from 'bignumber.js'
 import { format } from 'date-fns'
@@ -126,12 +126,15 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <AmountFormatterAsset
+                <div className="font-size-24 font-weight-700">
+                  <strong>Coming Soon</strong>
+                </div>
+                {/* <AmountFormatterAsset
                   amount={0}
                   fingerprint="asset1ray"
                   ticker="RAY"
                   availablePrivate
-                />
+                /> */}
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -184,7 +187,7 @@ const RewardsActivities = () => {
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3">
-              <div className="ray__form__label">Conditions</div>
+              <div className="ray__form__label">Condition</div>
               <div className="ray__form__amount">
                 <small>
                   <p>You should delegate at least 50 ADA to any RAY pool</p>
@@ -207,7 +210,7 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Processing Fees</div>
               <small>
                 <p className="mb-0">
-                  To receive withdrawal bonuses, you must send 2 ADA to cover txs commissions. These
+                  To receive your rewards, you must send 2 ADA to cover txs commissions. These
                   funds, excluding Cardano txs commissions (~0.4 ADA), will be returned to you along
                   with RAY tokens
                 </p>
@@ -219,29 +222,35 @@ const RewardsActivities = () => {
       <div className="ray__heading">Early Users Distribution</div>
       <div className="ray__item ray__item--gray">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-6">
             <div className="ray__form__item mb-3">
-              <div className="ray__form__label">Description</div>
+              <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <small>
-                  <div>Airdrop to early RAY token users</div>
-                </small>
+                <div className="font-size-24 font-weight-700">
+                  <strong>Coming Soon</strong>
+                </div>
+                {/* <AmountFormatterAsset
+                  amount={0}
+                  fingerprint="asset1ray"
+                  ticker="RAY"
+                  availablePrivate
+                /> */}
               </div>
+            </div>
+            <div className="mb-3 mb-lg-2">
+              <Tooltip placement="right" title="Soon">
+                <Button type="primary" disabled>
+                  <i className="fe fe-arrow-down-circle mr-1" />
+                  <strong>Withdraw Rewards</strong>
+                </Button>
+              </Tooltip>
             </div>
           </div>
           <div className="col-lg-6">
-            <div className="ray__form__item mb-3 mb-lg-0">
-              <div className="ray__form__label">Conditions</div>
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Provided Liquidity in ADA</div>
               <div className="ray__form__amount">
-                <small>To be announced soon</small>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <div className="ray__form__item mb-0 mb-lg-0">
-              <div className="ray__form__label">Reward</div>
-              <div className="ray__form__amount">
-                <span className="ray__badge">**,***,*** RAY</span>
+                <AmountFormatterAda amount={0} availablePrivate />
               </div>
             </div>
           </div>
@@ -249,16 +258,42 @@ const RewardsActivities = () => {
         <div className="ray__line" />
         <div className="row">
           <div className="col-lg-12">
-            <Form>
-              <Form.Item className="mb-0">
-                <Tooltip title="Soon" placement="right">
-                  <Button type="primary" disabled>
-                    <i className="fe fe-arrow-down-circle mr-1" />
-                    <strong>Redeem Reward</strong>
-                  </Button>
-                </Tooltip>
-              </Form.Item>
-            </Form>
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Description</div>
+              <div className="ray__form__amount">
+                <small>
+                  <div>Airdrop to early RAY Swap liquidity providers</div>
+                </small>
+              </div>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Condition</div>
+              <div className="ray__form__amount">
+                <small>Provide (create pool or add funds) liquidity to swap pools</small>
+              </div>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="ray__form__item mb-3">
+              <div className="ray__form__label">Reward</div>
+              <div className="ray__form__amount">
+                <span className="ray__badge">**,***,*** RAY</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-12">
+            <div className="ray__form__item">
+              <div className="ray__form__label">Processing Fees</div>
+              <small>
+                <p className="mb-0">
+                  To receive your rewards, you must send 2 ADA to cover txs commissions. These
+                  funds, excluding Cardano txs commissions (~0.4 ADA), will be returned to you along
+                  with RAY tokens
+                </p>
+              </small>
+            </div>
           </div>
         </div>
       </div>
