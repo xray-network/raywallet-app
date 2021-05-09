@@ -57,7 +57,7 @@ const WaitingForm = ({ handleCancel }) => {
           title="Sending..."
           subTitle={
             <div>
-              <div className="mb-3">It may take a few minutes, please wait.</div>
+              <div className="mb-3">This may take a while, please wait.</div>
               <Address prefix="Tx:" address={transactionWaitingHash} cut />
             </div>
           }

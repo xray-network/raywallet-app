@@ -9,7 +9,6 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
   const exchangeRates = useSelector((state) => state.wallets.exchangeRates)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode) && !!availablePrivate
   const privateSymbols = '******'
-
   const computedAmount = new BigNumber(amount).dividedBy(1000000)
 
   const numberWithCommas = (x, y = undefined) =>

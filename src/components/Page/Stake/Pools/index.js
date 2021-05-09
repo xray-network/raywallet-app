@@ -1,14 +1,26 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button, Spin, Tooltip } from 'antd'
 import { LoadingOutlined, CheckCircleFilled } from '@ant-design/icons'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const StakePools = () => {
+  const dispatch = useDispatch()
   // const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
+
+  const delegate = (id) => {
+    dispatch({
+      type: 'transactions/BUILD_TX',
+      payload: {
+        hasStakingKey: walletStake.hasStakingKey,
+        poolId: id,
+        type: 'delegate',
+      },
+    })
+  }
 
   return (
     <div>
@@ -19,16 +31,16 @@ const StakePools = () => {
         </div>
       )}
       {poolsInfo.map((pool, index) => {
+        const inRayPools =
+          pool.delegateId === walletStake.currentPoolId && walletStake.hasStakingKey
         return (
           <div
             className={`ray__item position ${
-              pool.delegateId === walletStake.currentPoolId
-                ? 'ray__item--success'
-                : 'ray__item--gray'
+              inRayPools ? 'ray__item--success' : 'ray__item--gray'
             }`}
             key={index}
           >
-            {pool.delegateId === walletStake.currentPoolId && (
+            {inRayPools && (
               <Tooltip title="Current delegation" placement="left">
                 <div className="ray__item__icon text-success">
                   <CheckCircleFilled />
@@ -92,19 +104,17 @@ const StakePools = () => {
               </div>
             </div>
             <div className="mt-3">
-              {pool.delegateId === walletStake.currentPoolId && (
+              {inRayPools && (
                 <Button type="primary" disabled>
                   <i className="fe fe-arrow-up-circle mr-1" />
                   <strong>Delagated</strong>
                 </Button>
               )}
-              {pool.delegateId !== walletStake.currentPoolId && (
-                <Tooltip placement="right" title="Soon">
-                  <Button type="primary" disabled>
-                    <i className="fe fe-arrow-up-circle mr-1" />
-                    <strong>Delegate</strong>
-                  </Button>
-                </Tooltip>
+              {(pool.delegateId !== walletStake.currentPoolId || !walletStake.hasStakingKey) && (
+                <Button type="primary" onClick={() => delegate(pool.delegateId)}>
+                  <i className="fe fe-arrow-up-circle mr-1" />
+                  <strong>Delegate</strong>
+                </Button>
               )}
             </div>
           </div>

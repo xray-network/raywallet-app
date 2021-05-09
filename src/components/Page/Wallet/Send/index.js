@@ -25,6 +25,7 @@ const WalletSend = () => {
       return
     }
     const values = form.getFieldsValue()
+    console.log(values)
     dispatch({
       type: 'transactions/BUILD_TX',
       payload: {

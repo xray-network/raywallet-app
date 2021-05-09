@@ -15,7 +15,7 @@ const RewardsHistory = () => {
         return (
           <div key={index} className="ray__tx">
             <div className="font-size-36 mr-3">
-              <i className="fe fe-arrow-down-circle text-success" />
+              <i className="fe fe-plus-circle text-success" />
             </div>
             <div>
               <AmountFormatterAda amount={reward.amount} small />

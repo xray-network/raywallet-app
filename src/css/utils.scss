@@ -157,6 +157,13 @@
     color: $white;
     padding: rem(10) rem(20);
     text-align: center;
+    border-bottom: 1px solid $primary;
+
+    &--clean {
+      background: transparent;
+      color: inherit;
+      border-bottom-color: $border;
+    }
   }
 
   &__item {
@@ -448,6 +455,12 @@
 
       &__qr {
         border-color: $dark-border;
+      }
+    }
+
+    &__banner {
+      &--clean {
+        border-bottom-color: $dark-border;
       }
     }
   }

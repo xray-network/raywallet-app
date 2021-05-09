@@ -2,7 +2,9 @@ import React from 'react'
 import { Modal } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import SendForm from './Forms/send'
+import DelegateForm from './Forms/delegate'
 import WaitingForm from './Forms/waiting'
+import WithdrawForm from './Forms/withdraw'
 // import style from './style.module.scss'
 
 const TransactionModal = () => {
@@ -27,9 +29,18 @@ const TransactionModal = () => {
     })
   }
 
+  const getFormName = (type) => {
+    const names = {
+      send: 'Send Assets',
+      delegate: 'Pool Delegation',
+    }
+
+    return names[type]
+  }
+
   return (
     <Modal
-      title="Send Assets"
+      title={getFormName(transactionType)}
       footer={null}
       visible={transactionType}
       onCancel={handleCancel}
@@ -39,11 +50,9 @@ const TransactionModal = () => {
       keyboard={!(transactionWaitingHash && !transactionSuccess)}
     >
       {transactionWaitingHash && <WaitingForm handleCancel={handleCancel} />}
-      {!transactionWaitingHash && (
-        <div>
-          <SendForm />
-        </div>
-      )}
+      {!transactionWaitingHash && transactionType === 'send' && <SendForm />}
+      {!transactionWaitingHash && transactionType === 'delegate' && <DelegateForm />}
+      {!transactionWaitingHash && transactionType === 'withdraw' && <WithdrawForm />}
     </Modal>
   )
 }

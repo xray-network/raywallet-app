@@ -365,7 +365,10 @@ const Menu = () => {
                   <div className="mb-2">
                     <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
                     {!!walletTransactions.length && (
-                      <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                      <span>
+                        <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                        <strong>{walletTransactions.length > 99 ? '+' : ''}</strong>
+                      </span>
                     )}
                   </div>
                 </div>

@@ -14,8 +14,14 @@ const RewardsSubmenu = () => {
           <span>Activities</span>
         </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/history`}>
-          <span>Rewards History ({walletRayRewardsHistory.length})</span>
-          <span>Rewards History ({walletRayRewardsHistory.length})</span>
+          <span>
+            Rewards History ({walletRayRewardsHistory.length}
+            {walletRayRewardsHistory.length > 99 ? '+' : ''})
+          </span>
+          <span>
+            Rewards History ({walletRayRewardsHistory.length}
+            {walletRayRewardsHistory.length > 99 ? '+' : ''})
+          </span>
         </NavLink>
       </div>
     </div>

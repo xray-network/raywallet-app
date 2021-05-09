@@ -223,7 +223,7 @@ const RewardsActivities = () => {
           </div>
         </div>
       </div>
-      <div className="ray__heading">Early Users Distribution</div>
+      <div className="ray__heading">Early Liquidity Providers Distribution</div>
       <div className="ray__item ray__item--gray">
         <div className="row">
           <div className="col-lg-6">
@@ -275,7 +275,9 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Condition</div>
               <div className="ray__form__amount">
-                <small>Provide (create pool or add funds) liquidity to swap pools</small>
+                <small>
+                  Providing (creating a pool or adding funds) the liquidity of swap pools
+                </small>
               </div>
             </div>
           </div>

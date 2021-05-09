@@ -15,7 +15,7 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
 }
 
 export function* BUILD_TX({ payload }) {
-  const { value, toAddress, type } = payload
+  const { value, toAddress, type, poolId } = payload
 
   if (type) {
     yield put({
@@ -30,19 +30,49 @@ export function* BUILD_TX({ payload }) {
 
   const [changeAddress] = yield select((state) => state.wallets.walletAddresses)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
+  const hasStakingKey = yield select((state) => state.wallets.walletStake.hasStakingKey)
+  const rewardsAmount = yield select((state) => state.wallets.walletStake.rewardsAmount)
+  const rewardAddress = yield select((state) => state.wallets.walletParams.rewardAddress)
   const walletUTXOs = yield select((state) => state.wallets.walletUTXOs)
+  const publicKey = yield select((state) => state.wallets.walletParams.publicKey)
   const currentSlot = networkInfo.tip?.slotNo
-  const metadata = undefined
-  const computedValue = new BigNumber(value).multipliedBy(1000000).toFixed()
+
+  const computedValue = value ? new BigNumber(value).multipliedBy(1000000).toFixed() : undefined
+  let metadata
+  const certificates = []
+  const withdrawals = []
+  let isSend = true
+
+  if (type === 'delegate') {
+    isSend = false
+    const certs = yield call(
+      Cardano.CardanoGenerateDelegationCertificates,
+      publicKey,
+      hasStakingKey,
+      poolId,
+    )
+    certificates.push(...certs)
+  }
+
+  if (type === 'withdraw') {
+    isSend = false
+    withdrawals.push({
+      address: rewardAddress,
+      amount: rewardsAmount,
+    })
+  }
 
   const response = yield call(
     Cardano.CardanoBuildTx,
+    isSend,
     computedValue,
     toAddress,
     changeAddress,
     currentSlot,
     walletUTXOs,
     metadata,
+    certificates,
+    withdrawals,
   )
 
   yield put({

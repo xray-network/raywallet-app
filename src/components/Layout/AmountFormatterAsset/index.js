@@ -19,6 +19,7 @@ const AmountFormatterAsset = ({
   const verifiedTokensList = useSelector((state) => state.wallets.verifiedTokensList)
   const isVerified = verifiedTokensList.some((item) => item.fingerprint === fingerprint)
   const privateSymbols = '******'
+  const computedAmount = new BigNumber(amount)
 
   const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
@@ -57,7 +58,7 @@ const AmountFormatterAsset = ({
         <span>
           <span>
             <strong>
-              {isPrivateMode ? privateSymbols : numberWithCommas(new BigNumber(amount))}
+              {isPrivateMode ? privateSymbols : numberWithCommas(new BigNumber(computedAmount))}
             </strong>
           </span>
         </span>

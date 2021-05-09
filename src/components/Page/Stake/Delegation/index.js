@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button, Statistic, Spin, Tooltip } from 'antd'
 import { LoadingOutlined, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import BigNumber from 'bignumber.js'
@@ -10,6 +10,7 @@ import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import style from './style.module.scss'
 
 const StakeBalances = () => {
+  const dispatch = useDispatch()
   const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
@@ -23,9 +24,20 @@ const StakeBalances = () => {
     .integerValue(BigNumber.ROUND_DOWN)
     .toFixed()
 
-  const inRayPools = poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId)
+  const inRayPools =
+    poolsInfo.some((item) => item.delegateId === walletStake.currentPoolId) &&
+    walletStake.hasStakingKey
   const checkInRayPools = (delegateId) => poolsInfo.some((item) => item.delegateId === delegateId)
   const nextRewards = walletStake.nextRewardsHistory
+
+  const withdraw = () => {
+    dispatch({
+      type: 'transactions/BUILD_TX',
+      payload: {
+        type: 'withdraw',
+      },
+    })
+  }
 
   return (
     <div>
@@ -142,16 +154,16 @@ const StakeBalances = () => {
           </div>
         </div>
         <div className="mt-3">
-          <Tooltip placement="right" title="Soon">
-            <Button
-              type="primary"
-              // disabled={!walletStake.hasStakingKey || !walletStake.rewardsAmount}
-              disabled
-            >
-              <i className="fe fe-arrow-down-circle mr-1" />
-              <strong>Withdraw Rewards</strong>
-            </Button>
-          </Tooltip>
+          <Button
+            type="primary"
+            disabled={
+              !walletStake.hasStakingKey || new BigNumber(walletStake.rewardsAmount).isZero()
+            }
+            onClick={withdraw}
+          >
+            <i className="fe fe-arrow-down-circle mr-1" />
+            <strong>Withdraw Rewards</strong>
+          </Button>
         </div>
       </div>
       <div className="ray__heading">Current Delegation</div>
@@ -160,8 +172,8 @@ const StakeBalances = () => {
           <Spin indicator={<LoadingOutlined style={{ fontSize: 32 }} spin />} />
         </div>
       )}
-      {!walletStake.currentPoolId && !!poolsInfo.length && <Empty title="No delegation" />}
-      {!inRayPools && walletStake.currentPoolId && (
+      {!walletStake.hasStakingKey && !!poolsInfo.length && <Empty title="No delegation" />}
+      {!inRayPools && walletStake.currentPoolId && walletStake.hasStakingKey && (
         <div className="ray__item position-relative">
           <Tooltip title="Not a RAY pool" placement="left">
             <div className="ray__item__icon">

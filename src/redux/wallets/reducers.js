@@ -1,4 +1,5 @@
 import store from 'store'
+import BigNumber from 'bignumber.js'
 import actions from './actions'
 
 const pools =
@@ -42,14 +43,14 @@ const initialState = {
   },
   walletUTXOs: [],
   walletAssetsSummary: {
-    value: 0,
+    value: new BigNumber(0),
     tokens: [],
   },
   walletAddresses: [],
   walletTransactions: [],
   walletStake: {
     hasStakingKey: false,
-    rewardsAmount: 0,
+    rewardsAmount: new BigNumber(0),
     currentPoolId: '',
     nextRewardsHistory: [],
   },

@@ -660,7 +660,8 @@ export function* GET_STAKE_STATE() {
   const walletStakeRewards = rawStakeInfo.rewardsHistory || []
   const walletStake = {
     hasStakingKey: rawStakeInfo.hasStakingKey || false,
-    rewardsAmount: rawStakeInfo.rewardsAmount || 0,
+    rewardsAmount:
+      new BigNumber(rawStakeInfo.rewardsAmount).toFixed() || new BigNumber(0).toFixed(),
     currentPoolId: rawStakeInfo.currentPool?.poolId || '',
     nextRewardsHistory: rawStakeInfo.nextRewardsHistory || [],
   }
