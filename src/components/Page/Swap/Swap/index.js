@@ -40,7 +40,10 @@ const Swap = () => {
                   <span className={style.assetIcon}>
                     <AssetImage fingerprint="ada" />
                   </span>
-                  <span className={style.assetTo}>ADA</span>
+                  <span className="mr-2">ADA</span>
+                  <span className="ray__badge">
+                    <small>ada</small>
+                  </span>
                 </div>
               </Select.Option>
               {walletAssetsSummary.tokens.map((token) => {
@@ -50,7 +53,12 @@ const Swap = () => {
                       <span className={style.assetIcon}>
                         <AssetImage fingerprint={token.fingerprint} />
                       </span>
-                      <span className={style.assetTo}>{token.ticker}</span>
+                      <span className="mr-2">{token.ticker}</span>
+                      <span className="ray__badge">
+                        <small>
+                          {token.fingerprint.slice(0, 9)}...{token.fingerprint.slice(-4)}
+                        </small>
+                      </span>
                     </div>
                   </Select.Option>
                 )
@@ -78,16 +86,18 @@ const Swap = () => {
         >
           <Select size="large" placeholder="Select">
             {swapAssets &&
-              swapAssets.map((item) => {
+              swapAssets.map((token) => {
                 return (
-                  <Select.Option key={item.fingerprint} value={item.fingerprint}>
+                  <Select.Option key={token.fingerprint} value={token.fingerprint}>
                     <div className={style.assetTo}>
                       <span className={style.assetIcon}>
-                        <AssetImage fingerprint={item.fingerprint} />
+                        <AssetImage fingerprint={token.fingerprint} />
                       </span>
-                      <span className="mr-2">{item.ticker}</span>
+                      <span className="mr-2">{token.ticker}</span>
                       <span className="ray__badge">
-                        {item.fingerprint.slice(0, 9)}...{item.fingerprint.slice(-4)}
+                        <small>
+                          {token.fingerprint.slice(0, 9)}...{token.fingerprint.slice(-4)}
+                        </small>
                       </span>
                     </div>
                   </Select.Option>

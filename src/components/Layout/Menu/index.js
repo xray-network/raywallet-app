@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, Spin, Tooltip, Empty } from 'antd'
+import { Button, Select, Spin, Tooltip, Empty, Statistic } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
@@ -12,6 +12,7 @@ const Menu = () => {
   const walletList = useSelector((state) => state.wallets.walletList)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const networkInfo = useSelector((state) => state.wallets.networkInfo)
+  const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
@@ -19,6 +20,9 @@ const Menu = () => {
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const isPrivateMode = useSelector((state) => state.settings.isPrivateMode)
   const sections = useSelector((state) => state.settings.sections)
+  const isWalletInfo = useSelector((state) => state.settings.isWalletInfo)
+  const isNetworkInfo = useSelector((state) => state.settings.isNetworkInfo)
+  const isAssetsInfo = useSelector((state) => state.settings.isAssetsInfo)
 
   const selectRef = useRef()
 
@@ -90,6 +94,36 @@ const Menu = () => {
     })
   }
 
+  const toggleWalletAssets = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'isAssetsInfo',
+        value: !isAssetsInfo,
+      },
+    })
+  }
+
+  const toggleWalletInfo = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'isWalletInfo',
+        value: !isWalletInfo,
+      },
+    })
+  }
+
+  const toggleNetworkInfo = () => {
+    dispatch({
+      type: 'settings/CHANGE_SETTING',
+      payload: {
+        setting: 'isNetworkInfo',
+        value: !isNetworkInfo,
+      },
+    })
+  }
+
   return (
     <div>
       <div className={style.negativeSpace}>
@@ -140,8 +174,7 @@ const Menu = () => {
           >
             {walletList.map((item) => {
               const totalTickers = walletStore[item.accountId]
-                ? Number(!!walletStore[item.accountId].tokens) +
-                Number(!!walletStore[item.accountId].value)
+                ? Number(walletStore[item.accountId].tokens)
                 : '?'
               return (
                 <Select.Option key={item.accountId} value={item.accountId}>
@@ -149,13 +182,15 @@ const Menu = () => {
                     {item.encrypted && (
                       <i className={`fe fe-lock ${style.selectWalletsItemLock}`} />
                     )}
-                    <div>
+                    <div className={style.selectWalletsItemLine}>
                       <strong className={style.selectWalletsItemName}>{item.name}</strong>
-                      <span className="ray__badge">
-                        <small>
-                          {totalTickers} {totalTickers === 1 ? 'token' : 'tokens'}
-                        </small>
-                      </span>
+                      {!!totalTickers && (
+                        <span className="ray__badge">
+                          <small>
+                            {totalTickers} {totalTickers === 1 ? 'asset' : 'assets'}
+                          </small>
+                        </span>
+                      )}
                     </div>
                     <div className={style.selectWalletsItemDescr}>
                       ID: {item.accountId.slice(0, 8)}...{item.accountId.slice(-12)}
@@ -249,61 +284,112 @@ const Menu = () => {
           {walletParams.accountId && (
             <AmountFormatterAda amount={walletAssetsSummary.value} availablePrivate />
           )}
-          {walletAssetsSummary.tokens.map((token, tokenIndex) => {
-            return (
-              <AmountFormatterAsset
-                key={tokenIndex}
-                amount={token.quantity}
-                ticker={token.ticker}
-                fingerprint={token.fingerprint}
-                small
-                availablePrivate
-              />
-            )
-          })}
         </div>
         {walletParams.accountId && (
-          <div className="mb-5">
-            <div className={style.walletInfo}>
-              {sections.includes('stake') && (
-                <div>
-                  <small>Stake Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
-                  {walletStake.hasStakingKey && (
-                    <span>
-                      <AmountFormatterAda
-                        amount={walletStake.rewardsAmount}
-                        small
-                        inline
-                        availablePrivate
-                      />
-                    </span>
-                  )}
-                </div>
-              )}
-              {sections.includes('rewards') && (
-                <div>
-                  <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
-                  {walletStake.hasStakingKey && (
-                    <span>
+          <div>
+            <div>
+              <span
+                className={style.walletToggle}
+                onClick={toggleWalletAssets}
+                onKeyPress={toggleWalletAssets}
+                role="button"
+                tabIndex="0"
+              >
+                Wallet Assets ({walletAssetsSummary.tokens.length})
+                <i className={style.walletToggleArrow} />
+              </span>
+              {isAssetsInfo && (
+                <div className={`${style.walletInfo} ${style.walletScroll}`}>
+                  {walletAssetsSummary.tokens.map((token, tokenIndex) => {
+                    return (
                       <AmountFormatterAsset
-                        amount="0"
-                        fingerprint="asset1ray"
-                        ticker="RAY"
+                        key={tokenIndex}
+                        amount={token.quantity}
+                        ticker={token.ticker}
+                        fingerprint={token.fingerprint}
                         small
-                        inline
                         availablePrivate
                       />
-                    </span>
-                  )}
+                    )
+                  })}
+                  {!walletAssetsSummary.tokens.length && <small>No Assets</small>}
                 </div>
               )}
+            </div>
+            <div>
+              <span
+                className={style.walletToggle}
+                onClick={toggleWalletInfo}
+                onKeyPress={toggleWalletInfo}
+                role="button"
+                tabIndex="0"
+              >
+                Wallet Info
+                <i className={style.walletToggleArrow} />
+              </span>
+              {isWalletInfo && (
+                <div className={style.walletInfo}>
+                  {sections.includes('stake') && (
+                    <div>
+                      <small>Stake Rewards:</small>{' '}
+                      {!walletStake.hasStakingKey && <strong>—</strong>}
+                      {walletStake.hasStakingKey && (
+                        <span>
+                          <AmountFormatterAda
+                            amount={walletStake.rewardsAmount}
+                            small
+                            inline
+                            availablePrivate
+                          />
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {sections.includes('rewards') && (
+                    <div>
+                      <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
+                      {walletStake.hasStakingKey && (
+                        <span>
+                          <AmountFormatterAsset
+                            amount="0"
+                            fingerprint="asset1ray"
+                            ticker="RAY"
+                            small
+                            inline
+                            availablePrivate
+                          />
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <div className="mb-2">
+                    <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
+                    {!!walletTransactions.length && (
+                      <span>
+                        <AmountFormatterAsset amount={walletTransactions.length} small inline />
+                        <strong>{walletTransactions.length > 99 ? '+' : ''}</strong>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        <div className="mb-5">
+          <span
+            className={style.walletToggle}
+            onClick={toggleNetworkInfo}
+            onKeyPress={toggleNetworkInfo}
+            role="button"
+            tabIndex="0"
+          >
+            Network Info
+            <i className={style.walletToggleArrow} />
+          </span>
+          {isNetworkInfo && (
+            <div className={style.walletInfo}>
               <div>
-                <small>Transactions:</small> {!walletTransactions.length && <strong>—</strong>}
-                {!!walletTransactions.length && (
-                  <AmountFormatterAsset amount={walletTransactions.length} small inline />
-                )}
-              </div>
-              <div className="mt-2">
                 <small>Network Block:</small>{' '}
                 <strong>
                   {networkInfo.tip?.number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') || '—'}
@@ -319,9 +405,19 @@ const Menu = () => {
                 <small>Current Epoch:</small>{' '}
                 <strong>{networkInfo.currentEpoch?.number || '—'}</strong>
               </div>
+              <div>
+                <small>Ends In:</small>{' '}
+                <strong>
+                  <Statistic.Countdown
+                    className="ray__count__inline"
+                    value={epochEndIns}
+                    format="D[d] HH[h] mm[m] ss[s]"
+                  />
+                </strong>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
         <div>
           <div className={style.walletMenu}>
             <a

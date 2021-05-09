@@ -15,7 +15,7 @@ const Address = ({ address, prefix, cut = false }) => {
           {!cut && <a className="ray__address">{address}</a>}
           {cut && (
             <a className="ray__address">
-              {address.slice(0, 8)}...{address.slice(-16)}
+              {address.slice(0, 8)}...{address.slice(-4)}
             </a>
           )}
         </span>

@@ -18,8 +18,14 @@ const StakeSubmenu = () => {
           <span>Pools</span>
         </NavLink>
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/history`}>
-          <span>Rewards History ({walletStakeRewardsHistory.length})</span>
-          <span>Rewards History ({walletStakeRewardsHistory.length})</span>
+          <span>
+            Rewards History ({walletStakeRewardsHistory.length}
+            {walletStakeRewardsHistory.length > 99 ? '+' : ''})
+          </span>
+          <span>
+            Rewards History ({walletStakeRewardsHistory.length}
+            {walletStakeRewardsHistory.length > 99 ? '+' : ''})
+          </span>
         </NavLink>
       </div>
     </div>

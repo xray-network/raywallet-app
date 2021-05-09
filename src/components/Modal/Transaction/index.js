@@ -1,94 +1,58 @@
-import React, { useState, useEffect } from 'react'
-import { Modal, Button, Input, message } from 'antd'
-import { AES, enc as EncodeTo } from 'crypto-js'
+import React from 'react'
+import { Modal } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
+import SendForm from './Forms/send'
+import DelegateForm from './Forms/delegate'
+import WaitingForm from './Forms/waiting'
+import WithdrawForm from './Forms/withdraw'
 // import style from './style.module.scss'
 
 const TransactionModal = () => {
   const dispatch = useDispatch()
-  const type = useSelector((state) => state.transactions.type)
-  const transaction = useSelector((state) => state.transactions.transaction)
-  const walletParams = useSelector((state) => state.wallets.walletParams)
-  const [password, setPassword] = useState()
-
-  useEffect(() => {
-    setPassword('123123123')
-  }, [type])
+  const transactionType = useSelector((state) => state.transactions.transactionType)
+  const transactionWaitingHash = useSelector((state) => state.transactions.transactionWaitingHash)
+  const transactionSuccess = useSelector((state) => state.transactions.transactionSuccess)
 
   const handleCancel = () => {
+    if (transactionSuccess) {
+      dispatch({
+        type: 'transactions/CLEAR_TX',
+      })
+    }
     dispatch({
-      type: 'transactions/CHANGE_SETTING',
+      type: 'transactions/SET_STATE',
       payload: {
-        setting: 'type',
-        value: '',
+        transactionType: '',
+        transactionWaitingHash: '',
+        transactionSuccess: false,
       },
     })
   }
 
-  const sendTx = () => {
-    if (walletParams.encrypted) {
-      try {
-        const pass = AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8)
-        if (pass !== password) {
-          message.error('Wrong password')
-        }
-      } catch {
-        message.error('Wrong password')
-        return
-      }
-      if (AES.decrypt(walletParams.password, password).toString(EncodeTo.Utf8) !== password) {
-        return
-      }
-      dispatch({
-        type: 'transactions/SEND_TX',
-        payload: {
-          transaction,
-          privateKey: AES.decrypt(walletParams.privateKey, password).toString(EncodeTo.Utf8),
-        },
-      })
-    } else {
-      dispatch({
-        type: 'transactions/SEND_TX',
-        payload: {
-          transaction,
-          privateKey: walletParams.privateKey,
-        },
-      })
+  const getFormName = (type) => {
+    const names = {
+      send: 'Send Assets',
+      delegate: 'Pool Delegation',
     }
+
+    return names[type]
   }
 
   return (
     <Modal
-      title="Send Funds"
+      title={getFormName(transactionType)}
       footer={null}
-      visible={type}
+      visible={transactionType}
       onCancel={handleCancel}
-      width={620}
+      width={420}
+      closable={!(transactionWaitingHash && !transactionSuccess)}
+      maskClosable={!(transactionWaitingHash && !transactionSuccess)}
+      keyboard={!(transactionWaitingHash && !transactionSuccess)}
     >
-      {transaction.toAddress}
-      <br />
-      {transaction.value / 1000000} ADA
-      {walletParams.encrypted && (
-        <div className="mb-3">
-          <Input.Password
-            size="large"
-            placeholder="Wallet Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-      )}
-      <div className="text-center">
-        <Button
-          onClick={sendTx}
-          size="large"
-          type="primary"
-          className="ray__btn__send w-100"
-        >
-          <i className="fe fe-send" />
-          <strong>Send</strong>
-        </Button>
-      </div>
+      {transactionWaitingHash && <WaitingForm handleCancel={handleCancel} />}
+      {!transactionWaitingHash && transactionType === 'send' && <SendForm />}
+      {!transactionWaitingHash && transactionType === 'delegate' && <DelegateForm />}
+      {!transactionWaitingHash && transactionType === 'withdraw' && <WithdrawForm />}
     </Modal>
   )
 }

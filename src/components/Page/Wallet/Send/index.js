@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, Input, Button, Select, Empty, Tooltip } from 'antd'
-import { CardanoValidateAddress } from 'utils/ray-cardano-crypto'
+import { debounce } from 'lodash'
+import BigNumber from 'bignumber.js'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AssetImage from 'components/Layout/AssetImage'
 import style from './style.module.scss'
@@ -11,14 +12,20 @@ const WalletSend = () => {
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const transactionLoading = useSelector((state) => state.transactions.transactionLoading)
+  const transaction = useSelector((state) => state.transactions.transaction)
+  const [hasErrors, setHasErrors] = useState(false)
   const [form] = Form.useForm()
 
-  const initialValues = {
-    toAddress: 'addr_test1qracwxsrckgz6e4yjdy3h9h4ze8e8xzsl568dljm883gvf0gl9lhqelxxjhgxrlxzuhv52d7uxj05z2mw0fsqwt3pz4sz0c6yu',
-    value: 40,
-  }
-
-  const onFinish = (values) => {
+  const onFinish = () => {
+    const touched = form.isFieldsTouched()
+    if (hasErrors || !touched) {
+      if (!touched) {
+        form.validateFields()
+      }
+      return
+    }
+    const values = form.getFieldsValue()
+    console.log(values)
     dispatch({
       type: 'transactions/BUILD_TX',
       payload: {
@@ -28,47 +35,105 @@ const WalletSend = () => {
     })
   }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo)
-  }
-
   useEffect(() => {
     form.resetFields()
   }, [walletParams.accountId, form])
+
+  const handleOnChange = () => {
+    const values = form.getFieldsValue()
+    dispatch({
+      type: 'transactions/BUILD_TX',
+      payload: {
+        ...values,
+      },
+    })
+  }
+
+  useEffect(() => {
+    const values = form.getFieldsValue()
+    const isError = transaction instanceof Error
+    if (isError) {
+      setHasErrors(true)
+      const getErrorString = (key) => {
+        const mapKeys = {
+          ada_not_enough: 'value',
+          ada_less_than_min: 'value',
+          ada_not_number: 'value',
+          ada_wrong_value: 'value',
+          address_wrong: 'toAddress',
+        }
+        if (mapKeys[transaction.type] === key) {
+          return [transaction.message]
+        }
+        return []
+      }
+      const valueKeys = Object.keys(values)
+      const newFields = valueKeys.map((key) => {
+        return {
+          name: key,
+          value: values[key],
+          errors: getErrorString(key),
+        }
+      })
+      form.setFields(newFields)
+    } else {
+      setHasErrors(false)
+      const valueKeys = Object.keys(values)
+      if (!Object.keys(transaction).length) {
+        form.resetFields()
+        return
+      }
+      const newFields = valueKeys.map((key) => {
+        return {
+          name: key,
+          value: values[key],
+          errors: [],
+        }
+      })
+      form.setFields(newFields)
+    }
+  }, [transaction, form])
+
+  useLayoutEffect(() => {
+    return () => {
+      dispatch({
+        type: 'transactions/CLEAR_TX',
+      })
+    }
+  }, [dispatch])
+
+  const isError = transaction instanceof Error
+  const totalIsNan = new BigNumber(transaction.value).plus(transaction.fee).isNaN()
+  const feeIsNan = new BigNumber(transaction.fee).isNaN()
+  const total =
+    isError || totalIsNan ? '0' : new BigNumber(transaction.value).plus(transaction.fee).toFixed()
+  const fee = isError || feeIsNan ? '0' : new BigNumber(transaction.fee).toFixed()
 
   return (
     <div>
       <Form
         form={form}
         layout="vertical"
-        initialValues={initialValues}
         requiredMark={false}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        onChange={debounce(handleOnChange, 500)}
       >
         <Form.Item
           label="To Address"
           name="toAddress"
-          rules={[
-            { required: true, message: 'Please enter address' },
-            () => ({
-              async validator(_, value) {
-                if (!value || await CardanoValidateAddress(value)) {
-                  return Promise.resolve()
-                }
-                return Promise.reject(new Error('Address is wrong'))
-              },
-            })
-          ]}
-          hasFeedback
+          rules={[{ required: true, message: 'Required' }]}
         >
-          <Input size="large" placeholder="Address" allowClear autoComplete="off" />
+          <Input
+            size="large"
+            placeholder="Address (Shelley format)"
+            allowClear
+            autoComplete="off"
+          />
         </Form.Item>
         <Input.Group compact className={style.assetGroup}>
           <Form.Item
             className={style.assetTickerAda}
-            label="Token"
-            rules={[{ required: true, message: 'Required' }]}
+            label="Asset"
+            // rules={[{ required: true, message: 'Required' }]}
           >
             <Select
               size="large"
@@ -77,7 +142,7 @@ const WalletSend = () => {
               value="ada"
               notFoundContent={
                 <Empty
-                  description="No Tokens"
+                  description="No Asset"
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
                   className="mt-3 mb-2"
                 />
@@ -162,7 +227,7 @@ const WalletSend = () => {
             />
           </Form.Item>
           <Form.Item label=" " className={style.assetRemove}>
-            <Tooltip title="Remove Token from Tx">
+            <Tooltip title="Remove Asset from Tx">
               <Button size="large" disabled>
                 <i className="fe fe-trash-2" />
               </Button>
@@ -173,7 +238,7 @@ const WalletSend = () => {
           <Tooltip placement="right" title="Soon">
             <Button>
               <i className="fe fe-plus-circle mr-1" />
-              Add Token to Tx
+              Add Asset to Tx
             </Button>
           </Tooltip>
         </div>
@@ -183,7 +248,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={0} />
+                  <AmountFormatterAda amount={total} />
                 </div>
               </div>
             </div>
@@ -191,7 +256,7 @@ const WalletSend = () => {
               <div className="ray__form__item">
                 <div className="ray__form__label">Fee (inlc. in total)</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={0} small />
+                  <AmountFormatterAda amount={fee} small />
                 </div>
               </div>
             </div>
@@ -199,11 +264,11 @@ const WalletSend = () => {
         </div>
         <Form.Item className="mt-4">
           <Button
-            htmlType="submit"
+            onClick={onFinish}
             size="large"
             type="primary"
             className="ray__btn__send w-100"
-            loading={(walletLoading || transactionLoading)}
+            loading={walletLoading || transactionLoading}
             disabled={!walletParams.accountId}
           >
             <i className="fe fe-send" />

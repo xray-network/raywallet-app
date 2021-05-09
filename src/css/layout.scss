@@ -24,7 +24,7 @@
     &__menu {
       min-width: 300px;
       max-width: 300px;
-      padding: rem(30) rem(20);
+      padding: rem(25) rem(20);
 
       &__sticky {
         position: sticky;
@@ -33,7 +33,7 @@
     }
 
     &__page {
-      padding: rem(30) rem(20);
+      padding: rem(25) rem(20);
       flex-grow: 1;
     }
 

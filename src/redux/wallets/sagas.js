@@ -2,12 +2,14 @@ import { all, takeEvery, put, take, call, select } from 'redux-saga/effects'
 import store from 'store'
 import { AES, enc as EncodeTo } from 'crypto-js'
 import { message } from 'antd'
+import BigNumber from 'bignumber.js'
 import * as CardanoUtils from 'utils/ray-cardano-utils'
 import * as Cardano from 'utils/ray-cardano-crypto'
 import * as Explorer from 'services/api/cardano'
 import * as ExplorerHelper from 'services/api/cardano-helper'
 import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
+import * as Adapools from 'services/api/adapools'
 import actions from './actions'
 
 const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
@@ -66,6 +68,8 @@ export function* ADD_WALLET({ payload: { mnemonic } }) {
       accountId: newWallet.accountId,
     },
   })
+
+  store.set('RAY.walletLast', newWallet.accountId)
 }
 
 export function* IMPORT_WALLET({ payload: { data } }) {
@@ -160,6 +164,8 @@ export function* DELETE_WALLET() {
 
 export function* CHANGE_WALLET({ payload: { accountId } }) {
   if (accountId === 'empty') {
+    store.remove('RAY.walletLast')
+
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
@@ -247,6 +253,8 @@ export function* CHANGE_WALLET({ payload: { accountId } }) {
       value: selectedWallet,
     },
   })
+
+  store.set('RAY.walletLast', selectedWallet.accountId)
 
   yield put({
     type: 'wallets/FETCH_WALLET_DATA',
@@ -384,7 +392,11 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
 
 export function* GET_PUBLIC_ADRESSES() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
-  const tmpWalletAddresses = yield call(Cardano.CardanoGetAccountAdresses, CARDANO_NETWORK, publicKey)
+  const tmpWalletAddresses = yield call(
+    Cardano.CardanoGetAccountAdresses,
+    CARDANO_NETWORK,
+    publicKey,
+  )
   const walletAddresses = Object.keys(tmpWalletAddresses)
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -399,11 +411,19 @@ export function* FETCH_NETWORK_STATE() {
   const networkInfo = yield call(Explorer.GetNetworkInfo)
   if (networkInfo) {
     const { cardano } = networkInfo.data
+    const { startedAt } = cardano.currentEpoch
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
         setting: 'networkInfo',
         value: cardano,
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'epochEndIns',
+        value: new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000,
       },
     })
   }
@@ -430,7 +450,7 @@ export function* GET_VERIFIED_TOKENS_LIST() {
 export function* GET_EXCHANGE_RATES() {
   const exchangeRates = yield call(
     Coingecko.GetRawUrl,
-    '/simple/price?ids=bitcoin,cardano&vs_currencies=USD,EUR',
+    '/simple/price?ids=bitcoin,cardano&vs_currencies=USD,EUR,JPY',
   )
   if (exchangeRates) {
     yield put({
@@ -448,12 +468,12 @@ export function* GET_UTXO_STATE() {
 
   const getAssetsSummary = (processAddresses) => {
     const assetsSummary = {
-      value: 0,
+      value: new BigNumber(0),
       tokens: {},
     }
 
     processAddresses.forEach((addr) => {
-      assetsSummary.value += parseInt(addr.value, 10)
+      assetsSummary.value = assetsSummary.value.plus(addr.value)
       const { tokens } = addr
       if (tokens.length) {
         tokens.forEach((token) => {
@@ -461,7 +481,7 @@ export function* GET_UTXO_STATE() {
           const { assetId } = asset
           if (!assetsSummary.tokens[assetId]) {
             assetsSummary.tokens[assetId] = {
-              quantity: BigInt(0),
+              quantity: new BigNumber(0),
             }
           }
           assetsSummary.tokens[assetId] = {
@@ -469,14 +489,14 @@ export function* GET_UTXO_STATE() {
             ...asset,
             ticker:
               asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-            quantity: BigInt(assetsSummary.tokens[assetId].quantity) + BigInt(quantity),
+            quantity: new BigNumber(assetsSummary.tokens[assetId].quantity).plus(quantity),
           }
         })
       }
     })
 
     return {
-      value: assetsSummary.value,
+      value: new BigNumber(assetsSummary.value).toFixed(),
       tokens: Object.keys(assetsSummary.tokens).map((key) => assetsSummary.tokens[key]),
     }
   }
@@ -492,12 +512,13 @@ export function* GET_UTXO_STATE() {
     )
     const checkedAdresses = Object.keys(tmpAddresses)
     const tmpAddresssesUTXO = yield call(Explorer.GetAdressesUTXO, checkedAdresses)
-    const adressesWithUTXOs = tmpAddresssesUTXO.data?.utxos.map(utxo => {
-      return {
-        ...utxo,
-        addressing: tmpAddresses[utxo.address],
-      }
-    }) || []
+    const adressesWithUTXOs =
+      tmpAddresssesUTXO.data?.utxos.map((utxo) => {
+        return {
+          ...utxo,
+          addressing: tmpAddresses[utxo.address],
+        }
+      }) || []
 
     return [adressesWithUTXOs, checkedAdresses]
   }
@@ -534,19 +555,19 @@ export function* GET_UTXO_STATE() {
   const rawTransactions = transactionsInputsOutputs.data.transactions
 
   const transformedTransactions = rawTransactions.map((tx) => {
-    let inputAmount = 0
-    let outputAmount = 0
+    let inputAmount = new BigNumber(0)
+    let outputAmount = new BigNumber(0)
     const tokens = {}
 
     tx.inputs.forEach((input) => {
       if (adressesArray.includes(input.address)) {
-        inputAmount += parseInt(input.value, 10)
+        inputAmount = inputAmount.plus(input.value)
         input.tokens.forEach((token) => {
           const { asset, quantity } = token
           const { assetId } = asset
           if (!tokens[assetId]) {
             tokens[assetId] = {
-              quantity: BigInt(0),
+              quantity: new BigNumber(0),
             }
           }
           tokens[assetId] = {
@@ -554,14 +575,14 @@ export function* GET_UTXO_STATE() {
             ...asset,
             ticker:
               asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-            quantity: BigInt(tokens[assetId].quantity) - BigInt(quantity),
+            quantity: new BigNumber(tokens[assetId].quantity).minus(quantity),
           }
         })
       }
     })
     tx.outputs.forEach((output) => {
       if (adressesArray.includes(output.address)) {
-        outputAmount += parseInt(output.value, 10)
+        outputAmount = outputAmount.plus(output.value)
         output.tokens.forEach((token) => {
           const { asset, quantity } = token
           const { assetId } = asset
@@ -575,7 +596,7 @@ export function* GET_UTXO_STATE() {
             ...asset,
             ticker:
               asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-            quantity: BigInt(tokens[assetId].quantity) + BigInt(quantity),
+            quantity: new BigNumber(tokens[assetId].quantity).plus(quantity),
           }
         })
       }
@@ -583,8 +604,8 @@ export function* GET_UTXO_STATE() {
 
     return {
       ...tx,
-      type: inputAmount ? 'send' : 'receive',
-      value: outputAmount - inputAmount,
+      type: new BigNumber(inputAmount).isZero() ? 'receive' : 'send',
+      value: new BigNumber(outputAmount).minus(inputAmount),
       tokens: Object.keys(tokens).map((key) => tokens[key]),
     }
   })
@@ -639,7 +660,8 @@ export function* GET_STAKE_STATE() {
   const walletStakeRewards = rawStakeInfo.rewardsHistory || []
   const walletStake = {
     hasStakingKey: rawStakeInfo.hasStakingKey || false,
-    rewardsAmount: rawStakeInfo.rewardsAmount || 0,
+    rewardsAmount:
+      new BigNumber(rawStakeInfo.rewardsAmount).toFixed() || new BigNumber(0).toFixed(),
     currentPoolId: rawStakeInfo.currentPool?.poolId || '',
     nextRewardsHistory: rawStakeInfo.nextRewardsHistory || [],
   }
@@ -662,29 +684,51 @@ export function* GET_STAKE_STATE() {
 }
 
 export function* GET_POOLS_INFO() {
-  const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
   const pools = yield select((state) => state.wallets.pools)
+  const urls = Object.keys(pools).map((id) => `/pools/${id}/summary.json`)
 
-  const fetchPools = yield call(Explorer.GetPoolsInfo, Object.keys(pools), currentEpoch.number)
-  const poolsInfo = fetchPools.data.stakePools
+  const poolsInfo = yield call(Adapools.GetRawUrlBulk, urls)
 
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'poolsInfo',
-      value: poolsInfo.map((item) => {
-        return {
-          ...item,
-          ...pools[item.id],
-        }
-      }),
-    },
-  })
+  if (poolsInfo) {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'poolsInfo',
+        value: poolsInfo.map((item) => {
+          return {
+            ...item.data,
+            ...pools[item.data.pool_id],
+          }
+        }),
+      },
+    })
+  }
+
+  // TODO: wait live stake on cardano-graphql
+  // const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
+  // const pools = yield select((state) => state.wallets.pools)
+
+  // const fetchPools = yield call(Explorer.GetPoolsInfo, Object.keys(pools), currentEpoch.number)
+  // const poolsInfo = fetchPools.data.stakePools
+
+  // yield put({
+  //   type: 'wallets/CHANGE_SETTING',
+  //   payload: {
+  //     setting: 'poolsInfo',
+  //     value: poolsInfo.map((item) => {
+  //       return {
+  //         ...item,
+  //         ...pools[item.id],
+  //       }
+  //     }),
+  //   },
+  // })
 }
 
 export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
-  if (!publicKey) {
+  const networkInfo = yield select((state) => state.wallets.networkInfo)
+  if (!publicKey || !networkInfo.tip) {
     return
   }
 
@@ -719,21 +763,23 @@ export function* FETCH_SIDE_DATA() {
 export function* SETUP() {
   const { walletList } = yield select((state) => state.wallets)
   if (walletList.length) {
+    const lastWallet = store.get('RAY.walletLast')
+    const selectedWallet = lastWallet
+      ? walletList.filter((item) => item.accountId === lastWallet)[0]
+      : walletList[0]
+
     yield put({
       type: 'wallets/CHANGE_SETTING',
       payload: {
         setting: 'walletParams',
-        value: walletList[0],
+        value: selectedWallet,
       },
     })
   }
   yield call(FETCH_NETWORK_STATE)
   yield take(FETCH_NETWORK_STATE)
-  const networkInfo = yield select((state) => state.wallets.networkInfo)
-  if (networkInfo.tip) {
-    yield call(FETCH_WALLET_DATA)
-    yield call(FETCH_SIDE_DATA)
-  }
+  yield call(FETCH_WALLET_DATA)
+  yield call(FETCH_SIDE_DATA)
 }
 
 export default function* rootSaga() {

@@ -77,6 +77,10 @@ strong {
   font-weight: 600;
 }
 
+.font-weight-700 {
+  font-weight: 700;
+}
+
 ::placeholder {
   color: $gray-5 !important;
 }
@@ -102,7 +106,7 @@ strong {
     &:hover,
     &:active,
     &:focus {
-      color: $blue;
+      color: $blue-dark;
     }
   }
 

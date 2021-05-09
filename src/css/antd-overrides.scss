@@ -64,6 +64,12 @@
   transition: border-color 0.1s ease-in-out, color 0.1s ease-in-out !important;
 }
 
+.ant-result {
+  &-subtitle {
+    color: $gray-5 !important;
+  }
+}
+
 // dark theme
 [data-vb-theme='dark'] {
   .ant-form {
@@ -79,6 +85,12 @@
   .ant-input-affix-wrapper-disabled {
     color: $dark-gray-3 !important;
     background: $dark-border !important;
+  }
+
+  .ant-input-suffix {
+    svg {
+      fill: $dark-gray-1 !important;
+    }
   }
 
   .ant-btn[disabled] {

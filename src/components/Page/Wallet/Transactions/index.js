@@ -6,7 +6,6 @@ import Empty from 'components/Layout/Empty'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
-import { BigIntAbs } from 'utils/utils'
 
 const WalletTransactions = () => {
   const [count, setCount] = useState(5)
@@ -37,7 +36,7 @@ const WalletTransactions = () => {
                     return (
                       <AmountFormatterAsset
                         key={tokenIndex}
-                        amount={BigIntAbs(token.quantity)}
+                        amount={token.quantity}
                         ticker={token.ticker}
                         fingerprint={token.fingerprint}
                         prefix={tx.type === 'send' ? '-' : '+'}
@@ -58,7 +57,7 @@ const WalletTransactions = () => {
             )
           })}
           {count < transactions.length && (
-            <div className="mb-3">
+            <div className="mb-4">
               <Button onClick={() => setCount(count + 5)} className="w-100">
                 <strong>Show next 5 transactions</strong>
               </Button>

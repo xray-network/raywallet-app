@@ -75,6 +75,11 @@
       fill: $success;
     }
   }
+
+  &Label {
+    color: $gray-5;
+    font-weight: normal;
+  }
 }
 
 // dark theme
@@ -86,6 +91,10 @@
   .info {
     &Item {
       color: $white;
+    }
+
+    &Label {
+      color: $dark-gray-2;
     }
   }
 
