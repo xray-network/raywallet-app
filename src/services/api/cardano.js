@@ -213,6 +213,10 @@ export async function GetTransactionsIO(hashes) {
            ) {
              fee
              hash
+             deposit
+             withdrawals {
+               amount
+             }
              includedAt
              inputs {
                address

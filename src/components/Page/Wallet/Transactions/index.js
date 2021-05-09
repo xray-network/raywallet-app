@@ -19,16 +19,24 @@ const WalletTransactions = () => {
         <div>
           {transactions.slice(0, count).map((tx, txIndex) => {
             const date = format(new Date(tx.includedAt), 'dd/MM/Y HH:mm:ss')
+            const isWithdrawal = tx.deposit < 0 || !!tx.withdrawals.length
             return (
               <div key={txIndex} className="ray__tx">
                 <div className="font-size-36 mr-3">
-                  {tx.type === 'send' && <i className="fe fe-arrow-up-circle text-danger" />}
-                  {tx.type === 'receive' && <i className="fe fe-arrow-down-circle text-success" />}
+                  {isWithdrawal && <i className="fe fe-plus-circle text-success" />}
+                  {!isWithdrawal && (
+                    <div>
+                      {tx.type === 'send' && <i className="fe fe-arrow-up-circle text-danger" />}
+                      {tx.type === 'receive' && (
+                        <i className="fe fe-arrow-down-circle text-success" />
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <AmountFormatterAda
                     amount={Math.abs(tx.value)}
-                    prefix={tx.type === 'send' ? '-' : '+'}
+                    prefix={tx.type === 'send' && !isWithdrawal ? '-' : '+'}
                     small
                     availablePrivate
                   />
