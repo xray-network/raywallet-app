@@ -111,16 +111,16 @@ const StakeBalances = () => {
                           </div>
                         </Tooltip>
                       )}
-                      <div className="ray__form__label mb-0">
-                        {current && 'Current'}
-                        {!current && 'Payout Date'}
-                      </div>
                       <div className={style.rewardsEpoch}>
                         <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
                         <div className={style.rewardsEpochInfo}>
                           <div>for</div>
                           <div>epoch</div>
                         </div>
+                      </div>
+                      <div className={style.rewardsLabel}>
+                        {current && 'Current'}
+                        {!current && 'Payout Date'}
                       </div>
                       <div className={style.rewardsDate}>
                         {correctDate && date}

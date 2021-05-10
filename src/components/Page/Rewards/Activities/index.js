@@ -13,6 +13,7 @@ const RewardsActivities = () => {
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
+  const walletRayRewards = useSelector((state) => state.wallets.walletRayRewards)
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount)
@@ -101,16 +102,16 @@ const RewardsActivities = () => {
                           </div>
                         </Tooltip>
                       )}
-                      <div className="ray__form__label mb-0">
-                        {current && 'Current'}
-                        {!current && 'Payout Date'}
-                      </div>
                       <div className={style.rewardsEpoch}>
                         <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
                         <div className={style.rewardsEpochInfo}>
                           <div>for</div>
                           <div>epoch</div>
                         </div>
+                      </div>
+                      <div className={style.rewardsLabel}>
+                        {current && 'Current'}
+                        {!current && 'Payout Date'}
                       </div>
                       <div className={style.rewardsDate}>
                         {correctDate && date}
@@ -130,15 +131,12 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <div className="font-size-24 font-weight-700">
-                  <strong>Coming Soon</strong>
-                </div>
-                {/* <AmountFormatterAsset
-                  amount={0}
+                <AmountFormatterAsset
+                  amount={walletRayRewards}
                   fingerprint="asset1ray"
                   ticker="RAY"
                   availablePrivate
-                /> */}
+                />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">

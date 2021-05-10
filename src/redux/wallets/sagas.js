@@ -654,8 +654,9 @@ export function* GET_UTXO_STATE() {
 }
 
 export function* GET_STAKE_STATE() {
-  const { accountId } = yield select((state) => state.wallets.walletParams)
+  const { accountId, rewardAddress } = yield select((state) => state.wallets.walletParams)
   const rawStakeInfo = yield call(ExplorerHelper.GetStakeInfo, accountId)
+  const walletRayRewards = yield call(ExplorerHelper.GetRewardsInfo, rewardAddress)
 
   const walletStakeRewards = rawStakeInfo.rewardsHistory || []
   const walletStake = {
@@ -679,6 +680,24 @@ export function* GET_STAKE_STATE() {
     payload: {
       setting: 'walletStakeRewardsHistory',
       value: walletStakeRewards,
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletRayRewards',
+      value: walletRayRewards.total || 0,
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletRayRewardsHistory',
+      value: walletRayRewards.rewardsHistory?.length
+        ? walletRayRewards.rewardsHistory.filter((item) => item.amount !== 0)
+        : [],
     },
   })
 }
@@ -765,7 +784,7 @@ export function* SETUP() {
   if (walletList.length) {
     const lastWallet = store.get('RAY.walletLast')
     const selectedWallet = lastWallet
-      ? walletList.filter((item) => item.accountId === lastWallet)[0]
+      ? walletList.filter((item) => item.accountId === lastWallet)[0] || walletList[0]
       : walletList[0]
 
     yield put({

@@ -66,6 +66,18 @@ export async function GetStakeInfo(account) {
     .catch((err) => console.log(err))
 }
 
+export async function GetRewardsInfo(stakeKey) {
+  return apiClient
+    .get(`/rewards/ray/${stakeKey}`)
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
 export async function GetPoolsInfo(poolsIds, currentEpoch) {
   return apiClient
     .post('/pools/info/', {

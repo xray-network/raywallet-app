@@ -10,7 +10,7 @@
   &Icon {
     color: $gray-3;
     position: absolute;
-    top: rem(45);
+    top: rem(18);
     left: 0;
 
     &Success {
@@ -18,11 +18,17 @@
     }
   }
 
+  &Label {
+    text-transform: uppercase;
+    font-size: rem(12);
+    margin-bottom: rem(3);
+  }
+
   &Epoch {
     font-size: rem(21);
     font-weight: 700;
     display: flex;
-    margin: rem(5) 0 rem(5) rem(25);
+    margin: 0 0 rem(5) rem(25);
 
     &Count {
       margin-right: rem(5);
@@ -40,6 +46,7 @@
 
   &Date {
     font-size: rem(12);
+    font-weight: bold;
   }
 }
 

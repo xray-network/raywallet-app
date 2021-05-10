@@ -343,9 +343,6 @@ export const CardanoBuildTx = async (
     const currentInputValue = txBuilder.get_explicit_input().checked_add(implicitSum)
     const output = targetOutput.checked_add(CardanoWasm.API.Value.new(txBuilder.min_fee()))
 
-    console.log('!!', currentInputValue.coin().to_str())
-    console.log('!!', output.coin().to_str())
-
     const compare = currentInputValue.compare(output)
     const isEnough = compare != null && compare >= 0
 
