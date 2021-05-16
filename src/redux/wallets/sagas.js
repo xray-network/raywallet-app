@@ -654,9 +654,9 @@ export function* GET_UTXO_STATE() {
 }
 
 export function* GET_STAKE_STATE() {
-  const { accountId, rewardAddress } = yield select((state) => state.wallets.walletParams)
-  const rawStakeInfo = yield call(ExplorerHelper.GetStakeInfo, accountId)
-  const walletRayRewards = yield call(ExplorerHelper.GetRewardsInfo, rewardAddress)
+  const { rewardAddress } = yield select((state) => state.wallets.walletParams)
+  const rawStakeInfo = yield call(ExplorerHelper.GetStakeStateByKey, rewardAddress)
+  const walletRayRewards = yield call(ExplorerHelper.GetDelegationRewardsStateByKey, rewardAddress)
 
   const walletStakeRewards = rawStakeInfo.rewardsHistory || []
   const walletStake = {

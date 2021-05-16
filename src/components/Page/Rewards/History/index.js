@@ -23,7 +23,7 @@ const RewardsHistory = () => {
             <div>
               <AmountFormatterAsset
                 amount={reward.amount}
-                ticker="RAY"
+                ticker="XRAY"
                 fingerprint="asset1ray"
                 small
               />

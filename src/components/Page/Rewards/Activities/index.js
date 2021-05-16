@@ -49,7 +49,7 @@ const RewardsActivities = () => {
                     <AmountFormatterAsset
                       amount={expectedPayout}
                       fingerprint="asset1ray"
-                      ticker="RAY"
+                      ticker="XRAY"
                       availablePrivate
                     />
                   )}
@@ -134,7 +134,7 @@ const RewardsActivities = () => {
                 <AmountFormatterAsset
                   amount={walletRayRewards}
                   fingerprint="asset1ray"
-                  ticker="RAY"
+                  ticker="XRAY"
                   availablePrivate
                 />
               </div>
@@ -178,7 +178,7 @@ const RewardsActivities = () => {
               <div className="ray__form__amount">
                 <small>
                   <p className="mb-0">
-                    Receive additional RAY rewards every epoch (5 days) for delegating your ADA
+                    Receive additional XRAY rewards every epoch (5 days) for delegating your ADA
                     coins to any RAY pool
                   </p>
                 </small>
@@ -201,7 +201,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
-                <span className="ray__badge">50 ADA = 1 RAY</span>
+                <span className="ray__badge">50 ADA = 1 XRAY</span>
               </div>
             </div>
           </div>
@@ -234,7 +234,7 @@ const RewardsActivities = () => {
                 {/* <AmountFormatterAsset
                   amount={0}
                   fingerprint="asset1ray"
-                  ticker="RAY"
+                  ticker="XRAY"
                   availablePrivate
                 /> */}
               </div>
@@ -264,7 +264,7 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
                 <small>
-                  <div>Airdrop to early RAY Swap liquidity providers</div>
+                  <div>Airdrop to early Ray Swap liquidity providers</div>
                 </small>
               </div>
             </div>
@@ -283,7 +283,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
-                <span className="ray__badge">**,***,*** RAY</span>
+                <span className="ray__badge">**,***,*** XRAY</span>
               </div>
             </div>
           </div>
@@ -294,7 +294,7 @@ const RewardsActivities = () => {
                 <p className="mb-0">
                   To receive your rewards, you must send 2 ADA to cover txs commissions. These
                   funds, excluding Cardano txs commissions (~0.4 ADA), will be returned to you along
-                  with RAY tokens
+                  with XRAY tokens
                 </p>
               </small>
             </div>

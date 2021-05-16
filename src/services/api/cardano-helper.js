@@ -54,9 +54,9 @@ apiClient.interceptors.response.use(
   },
 )
 
-export async function GetStakeInfo(account) {
+export async function GetStakeStateByKey(account) {
   return apiClient
-    .get(`/account/stake/${account}`)
+    .get(`/stake/state/${account}`)
     .then((response) => {
       if (response) {
         return response.data
@@ -66,9 +66,9 @@ export async function GetStakeInfo(account) {
     .catch((err) => console.log(err))
 }
 
-export async function GetRewardsInfo(stakeKey) {
+export async function GetDelegationRewardsStateByKey(stakeKey) {
   return apiClient
-    .get(`/rewards/ray/${stakeKey}`)
+    .get(`/rewards/delegation/state/${stakeKey}`)
     .then((response) => {
       if (response) {
         return response.data

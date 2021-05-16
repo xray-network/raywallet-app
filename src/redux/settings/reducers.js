@@ -20,7 +20,6 @@ const initialState = {
     theme: 'default',
     locale: 'en-US',
     routerAnimation: 'slide-fadein-up',
-    primaryColor: '#017AFF',
     modalAddWallet: false,
     modalSettings: false,
     modalEncrypt: false,

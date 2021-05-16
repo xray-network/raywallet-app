@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, Input, Button, Tabs, Checkbox, Alert } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/ray-cardano-crypto'
@@ -17,10 +17,15 @@ const MnemonicForm = () => {
 
   useEffect(() => {
     form.resetFields()
-    generateNewMnemonic()
+    // generateNewMnemonic()
     setWroteDownMnemonic(false)
     setAgreeTerms(false)
   }, [isModalVisible, form])
+
+  useEffect(() => {
+    generateNewMnemonic()
+    // eslint-disable-next-line
+  }, [])
 
   const unlockWallet = (mnemonic) => {
     dispatch({
@@ -36,6 +41,7 @@ const MnemonicForm = () => {
         value: false,
       },
     })
+    generateNewMnemonic()
   }
 
   const onFinish = (values) => {

@@ -7,7 +7,7 @@ import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const StakePools = () => {
   const dispatch = useDispatch()
-  // const walletParams = useSelector((state) => state.wallets.walletParams)
+  const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
 
@@ -111,7 +111,11 @@ const StakePools = () => {
                 </Button>
               )}
               {(pool.delegateId !== walletStake.currentPoolId || !walletStake.hasStakingKey) && (
-                <Button type="primary" onClick={() => delegate(pool.delegateId)}>
+                <Button
+                  type="primary"
+                  onClick={() => delegate(pool.delegateId)}
+                  disabled={!walletParams.accountId}
+                >
                   <i className="fe fe-arrow-up-circle mr-1" />
                   <strong>Delegate</strong>
                 </Button>

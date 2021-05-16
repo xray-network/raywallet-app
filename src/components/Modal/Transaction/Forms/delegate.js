@@ -97,7 +97,7 @@ const DelegateForm = () => {
             <Alert
               message="Not ehough ADA"
               description="Should cover transaction fee"
-              type="error"
+              type="info"
               showIcon
               className=""
             />
@@ -106,7 +106,7 @@ const DelegateForm = () => {
             <Alert
               message="Not ehough ADA"
               description="Should cover transaction fee fee plus 2 ADA for staking key deposit"
-              type="error"
+              type="info"
               showIcon
             />
           )}

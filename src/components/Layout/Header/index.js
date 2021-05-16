@@ -12,7 +12,7 @@ const Header = () => {
     <div className={style.header}>
       <div className={style.menu}>
         <NavLink to="/wallet">
-          <img className={style.letter} src="/logo_letter.svg" alt="" />
+          <img className={style.letter} src="/logo.svg" alt="" />
         </NavLink>
         <NavLink activeClassName={style.active} to="/wallet">
           <span>Wallet</span>

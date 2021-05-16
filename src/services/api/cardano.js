@@ -37,7 +37,7 @@ apiClient.interceptors.response.use(
       data.errors.forEach((item) => {
         notification.warning({
           message: 'Something went wrong :(',
-          description: 'Please try to update your wallet data or reload the app',
+          description: 'Try to update your wallet data or reload the app',
         })
         console.log(item)
       })
