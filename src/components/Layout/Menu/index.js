@@ -292,7 +292,7 @@ const Menu = () => {
                 message={
                   <div>
                     Outgoing transactions from wallets with native tokens are currently not
-                    supported.{' '}
+                    supported. Please use Yoroi temporarily.{' '}
                     <a href="https://rraayy.com/updates" target="_blank" rel="noopener noreferrer">
                       Status →
                     </a>

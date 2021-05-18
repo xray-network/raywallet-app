@@ -78,19 +78,19 @@ export async function GetDelegationRewardsStateByKey(stakeKey) {
     .catch((err) => console.log(err))
 }
 
-export async function GetPoolsInfo(poolsIds, currentEpoch) {
-  return apiClient
-    .post('/pools/info/', {
-      poolsIds,
-      currentEpoch,
-    })
-    .then((response) => {
-      if (response) {
-        return response.data
-      }
-      return false
-    })
-    .catch((err) => console.log(err))
-}
+// export async function GetPoolsInfo(poolsIds, currentEpoch) {
+//   return apiClient
+//     .post('/pools/info/', {
+//       poolsIds,
+//       currentEpoch,
+//     })
+//     .then((response) => {
+//       if (response) {
+//         return response.data
+//       }
+//       return false
+//     })
+//     .catch((err) => console.log(err))
+// }
 
 export const dummy = () => null

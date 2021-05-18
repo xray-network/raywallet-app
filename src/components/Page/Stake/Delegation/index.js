@@ -119,7 +119,7 @@ const StakeBalances = () => {
                         </div>
                       </div>
                       <div className={style.rewardsLabel}>
-                        {current && 'Current'}
+                        {current && <strong>Current</strong>}
                         {!current && 'Payout Date'}
                       </div>
                       <div className={style.rewardsDate}>

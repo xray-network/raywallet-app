@@ -28,8 +28,8 @@ const QRModal = () => {
     <Modal title={null} footer={null} visible={QRCodeAddress} onCancel={handleCancel} width={440}>
       <div>
         <div className={style.logo}>
-          <img src="/logo.svg" alt="" />
-          <span className={style.logoName}>WALLET</span>
+          <img src="/ray-logo.svg" alt="" />
+          <span className={style.logoName}>Ray Wallet</span>
         </div>
       </div>
       <div className="text-center">

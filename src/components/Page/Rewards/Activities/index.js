@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Button, Tooltip, Statistic } from 'antd'
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import BigNumber from 'bignumber.js'
-import { format } from 'date-fns'
+import { format, addDays } from 'date-fns'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 import style from './style.module.scss'
@@ -79,7 +79,7 @@ const RewardsActivities = () => {
           <div className="row pt-3">
             {nextRewards.map((item, index) => {
               const correctDate = item.rewardDate || false
-              const date = format(new Date(correctDate), 'dd/MM/Y HH:mm')
+              const date = format(addDays(new Date(correctDate), -10), 'dd/MM/Y HH:mm')
               const current = nextRewards.length === index + 2
               const inRay = checkInRayPools(item.poolId)
               return (
@@ -110,7 +110,7 @@ const RewardsActivities = () => {
                         </div>
                       </div>
                       <div className={style.rewardsLabel}>
-                        {current && 'Current'}
+                        {current && <strong>Current</strong>}
                         {!current && 'Payout Date'}
                       </div>
                       <div className={style.rewardsDate}>

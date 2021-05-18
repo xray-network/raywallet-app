@@ -37,7 +37,7 @@ const WalletsAddresses = () => {
       {!!walletAddresses.length && !show && (
         <div className="mb-4">
           <Button onClick={() => setShow(true)} className="w-100">
-            <strong>Show all</strong>
+            <strong>Show all addresses</strong>
           </Button>
         </div>
       )}
