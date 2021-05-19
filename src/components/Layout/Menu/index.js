@@ -15,6 +15,7 @@ const Menu = () => {
   const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletStake = useSelector((state) => state.wallets.walletStake)
+  const walletRayRewards = useSelector((state) => state.wallets.walletRayRewards)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
@@ -348,8 +349,7 @@ const Menu = () => {
                 <div className={style.walletInfo}>
                   {sections.includes('stake') && (
                     <div>
-                      <small>Stake Rewards:</small>{' '}
-                      {!walletStake.hasStakingKey && <strong>—</strong>}
+                      <small>ADA Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
                       {walletStake.hasStakingKey && (
                         <span>
                           <AmountFormatterAda
@@ -364,11 +364,12 @@ const Menu = () => {
                   )}
                   {sections.includes('rewards') && (
                     <div>
-                      <small>RAY Rewards:</small> {!walletStake.hasStakingKey && <strong>—</strong>}
+                      <small>XRAY Rewards:</small>{' '}
+                      {!walletStake.hasStakingKey && <strong>—</strong>}
                       {walletStake.hasStakingKey && (
                         <span>
                           <AmountFormatterAsset
-                            amount="0"
+                            amount={walletRayRewards}
                             fingerprint="asset1ray"
                             ticker="XRAY"
                             small

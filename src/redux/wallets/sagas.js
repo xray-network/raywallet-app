@@ -694,6 +694,17 @@ export function* GET_STAKE_STATE() {
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
+      setting: 'walletRayRewardsBonus',
+      value: {
+        amount: walletRayRewards.totalEarlyBonus,
+        share: parseFloat(walletRayRewards.totalEarlyShare),
+      },
+    },
+  })
+
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
       setting: 'walletRayRewardsHistory',
       value: walletRayRewards.rewardsHistory?.length
         ? walletRayRewards.rewardsHistory.filter((item) => item.amount !== 0)

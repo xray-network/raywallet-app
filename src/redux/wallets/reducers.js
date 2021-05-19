@@ -57,6 +57,7 @@ const initialState = {
   walletStakeRewardsHistory: [],
   walletRayRewards: 0,
   walletRayRewardsHistory: [],
+  walletRayRewardsBonus: {},
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
   networkInfo: {},

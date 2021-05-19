@@ -28,8 +28,8 @@ const RewardsHistory = () => {
                 small
               />
               <div className="ray__address mt-2">
-                <span className="mr-3">Epoch: {reward.epochNo}</span>
-                <span className="mr-3">For Epoch: {reward.forDelegationInEpoch}</span>
+                <span className="mr-3">Epoch: {reward.forDelegationInEpoch}</span>
+                <span className="mr-3">For Epoch: {reward.forDelegationInEpoch - 2}</span>
                 <span>Date: {format(new Date(reward.time), 'dd/MM/Y HH:mm:ss')}</span>
                 <div>
                   <Address address={reward.poolId} prefix="Pool ID:" cut />

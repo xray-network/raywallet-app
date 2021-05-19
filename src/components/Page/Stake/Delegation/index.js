@@ -57,7 +57,7 @@ const StakeBalances = () => {
                     <strong className="ray__color font-size-24">Not delegated</strong>
                   )}
                   {/* {walletStake.hasStakingKey && !inRayPools && (
-                    <strong className="ray__color font-size-24">Not in RAY Pool</strong>
+                    <strong className="ray__color font-size-24">Not in Ray pool</strong>
                   )} */}
                   {walletStake.hasStakingKey && (
                     <AmountFormatterAda amount={expectedPayout} prefix="~" availablePrivate />
