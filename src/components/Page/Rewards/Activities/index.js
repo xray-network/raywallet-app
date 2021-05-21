@@ -16,8 +16,6 @@ const RewardsActivities = () => {
   const walletRayRewards = useSelector((state) => state.wallets.walletRayRewards)
   const walletRayRewardsBonus = useSelector((state) => state.wallets.walletRayRewardsBonus)
 
-  console.log(walletRayRewardsBonus)
-
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount)
     .dividedBy(1000000)

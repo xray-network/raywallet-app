@@ -427,6 +427,10 @@ export function* FETCH_NETWORK_STATE() {
       },
     })
   }
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {},
+  })
 }
 
 export function* GET_VERIFIED_TOKENS_LIST() {

@@ -9,21 +9,22 @@ const WalletsAddresses = () => {
   const walletAddresses = useSelector((state) => state.wallets.walletAddresses)
 
   const shift = 1
-  const mainAddresses = [...walletAddresses].slice(0, shift)
-  const additionalAddresses = [...walletAddresses].slice(shift)
+  const mainAddresses = walletAddresses.slice(0, shift)
+  const additionalAddresses = walletAddresses.slice(shift)
+  const addressesFound = walletAddresses.length > 0
 
   return (
     <div>
       <div className="ray__heading">Receiving Address</div>
-      {!walletAddresses.length && <Empty title="No addresses found" />}
-      {!!walletAddresses.length &&
+      {!addressesFound && <Empty title="No addresses found" />}
+      {addressesFound &&
         mainAddresses.map((address, index) => (
           <div key={index}>
             <AddressQR key={index} index={index} address={address} />
             <div className="ray__line" />
           </div>
         ))}
-      {!!walletAddresses.length &&
+      {addressesFound &&
         show &&
         additionalAddresses.map((address, index) => (
           <div key={index}>
@@ -31,7 +32,7 @@ const WalletsAddresses = () => {
             <div className="ray__line" />
           </div>
         ))}
-      {!!walletAddresses.length && !show && (
+      {addressesFound && !show && (
         <div className="mb-4">
           <Button onClick={() => setShow(true)} className="w-100">
             <strong>Show all addresses</strong>
