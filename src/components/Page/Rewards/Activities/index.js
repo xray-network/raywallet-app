@@ -156,7 +156,9 @@ const RewardsActivities = () => {
               </div>
               <div className="col-6">
                 <div className="ray__form__label">Your Bonus Share</div>
-                <strong className="font-size-24">{walletRayRewardsBonus.share * 100}%</strong>
+                <strong className="font-size-24">
+                  {(walletRayRewardsBonus.share * 100 || 0).toFixed(2)}%
+                </strong>
               </div>
             </div>
           </div>
