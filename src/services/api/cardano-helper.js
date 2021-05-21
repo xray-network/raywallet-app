@@ -54,6 +54,18 @@ apiClient.interceptors.response.use(
   },
 )
 
+export async function GetStatus() {
+  return apiClient
+    .get('/status/')
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
 export async function GetStakeStateByKey(account) {
   return apiClient
     .get(`/stake/state/${account}`)

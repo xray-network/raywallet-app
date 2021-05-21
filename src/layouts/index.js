@@ -17,9 +17,12 @@ const Layouts = {
   nft: LayoutNFT,
 }
 
-const mapStateToProps = ({ settings }) => ({ title: settings.title })
+const mapStateToProps = ({ settings, wallets }) => ({
+  title: settings.title,
+  status: wallets.status,
+})
 
-const LayoutIndex = ({ children, title, location: { pathname } }) => {
+const LayoutIndex = ({ children, title, status, location: { pathname } }) => {
   const isNftSection = /^\/nft(?=\/|$)/i.test(pathname)
   const getLayoutName = () => {
     if (isNftSection) {
@@ -39,9 +42,15 @@ const LayoutIndex = ({ children, title, location: { pathname } }) => {
       <TermsModal />
       <TransactionModal />
       <div className={`ray__layout ${isNftSection ? 'ray__layout__full' : ''}`}>
-        {/* <div className="ray__banner">
-          Wallet node is under maintance. Services may not be available from UTC 18:00 May 15 to 02:00 May 16.
-        </div> */}
+        {status.maintenance && (
+          <div className="ray__banner">
+            {status.message}{' '}
+            <a href={status.url} target="_blank" rel="noopener noreferrer" className="text-white">
+              <span>Status</span>
+              <i className="fe fe-arrow-up-right" />
+            </a>
+          </div>
+        )}
         {process.env.REACT_APP_NETWORK !== 'mainnet' && <div className="ray__testnet">testnet</div>}
         <div className="ray__layout__container">
           <div className="ray__layout__header">

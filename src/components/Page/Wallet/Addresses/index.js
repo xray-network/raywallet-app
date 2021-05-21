@@ -12,8 +12,6 @@ const WalletsAddresses = () => {
   const mainAddresses = [...walletAddresses].slice(0, shift)
   const additionalAddresses = [...walletAddresses].slice(shift)
 
-  console.log(additionalAddresses.length)
-
   return (
     <div>
       <div className="ray__heading">Receiving Address</div>
@@ -25,7 +23,6 @@ const WalletsAddresses = () => {
             <div className="ray__line" />
           </div>
         ))}
-      {!!walletAddresses.length && <div className="ray__heading">Additional</div>}
       {!!walletAddresses.length &&
         show &&
         additionalAddresses.map((address, index) => (

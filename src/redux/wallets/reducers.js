@@ -66,6 +66,11 @@ const initialState = {
   exchangeRates: {},
   pools,
   poolsInfo: [],
+  status: {
+    maintenance: false,
+    message: 'Wallet node is under maintenance. Services may not be available.',
+    url: 'https://status.rraayy.com',
+  },
 }
 
 export default function settingsReducer(state = initialState, action) {

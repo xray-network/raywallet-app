@@ -758,6 +758,9 @@ export function* GET_POOLS_INFO() {
 export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
+
+  yield call(GET_PUBLIC_ADRESSES)
+
   if (!publicKey || !networkInfo.tip) {
     return
   }
@@ -770,8 +773,8 @@ export function* FETCH_WALLET_DATA() {
     },
   })
 
-  yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
+  yield call(GET_STAKE_STATE)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -780,8 +783,21 @@ export function* FETCH_WALLET_DATA() {
       value: false,
     },
   })
+}
 
-  yield call(GET_STAKE_STATE)
+export function* FETCH_STATUS() {
+  const apiStatus = yield call(ExplorerHelper.GetStatus)
+  console.log('apiStatus', apiStatus)
+
+  if (apiStatus) {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'status',
+        value: apiStatus,
+      },
+    })
+  }
 }
 
 export function* FETCH_SIDE_DATA() {
@@ -806,6 +822,7 @@ export function* SETUP() {
       },
     })
   }
+  yield call(FETCH_STATUS)
   yield call(FETCH_NETWORK_STATE)
   yield take(FETCH_NETWORK_STATE)
   yield call(FETCH_WALLET_DATA)
@@ -831,6 +848,7 @@ export default function* rootSaga() {
     takeEvery(actions.IMPORT_WALLET, IMPORT_WALLET),
     takeEvery(actions.GET_STAKE_STATE, GET_STAKE_STATE),
     takeEvery(actions.GET_POOLS_INFO, GET_POOLS_INFO),
+    takeEvery(actions.FETCH_STATUS, FETCH_STATUS),
     SETUP(), // run once on app load to init listeners
   ])
 }
