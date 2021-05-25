@@ -763,8 +763,6 @@ export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
 
-  yield call(GET_PUBLIC_ADRESSES)
-
   if (!publicKey || !networkInfo.tip) {
     return
   }
@@ -777,6 +775,7 @@ export function* FETCH_WALLET_DATA() {
     },
   })
 
+  yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
   yield call(GET_STAKE_STATE)
 
@@ -791,8 +790,6 @@ export function* FETCH_WALLET_DATA() {
 
 export function* FETCH_STATUS() {
   const apiStatus = yield call(ExplorerHelper.GetStatus)
-  console.log('apiStatus', apiStatus)
-
   if (apiStatus) {
     yield put({
       type: 'wallets/CHANGE_SETTING',

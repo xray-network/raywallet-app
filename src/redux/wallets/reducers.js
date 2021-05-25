@@ -74,7 +74,6 @@ const initialState = {
 }
 
 export default function settingsReducer(state = initialState, action) {
-  console.log(action)
   switch (action.type) {
     case actions.SET_STATE:
       return { ...state, ...action.payload }
