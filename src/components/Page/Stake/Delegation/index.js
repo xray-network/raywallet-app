@@ -211,7 +211,7 @@ const StakeBalances = () => {
                   <div className="ray__form__item">
                     <div className="ray__form__label">Live Stake</div>
                     <div className="ray__form__amount">
-                      <AmountFormatterAda amount={pool.total_stake} />
+                      <AmountFormatterAda amount={pool.total_stake || 0} />
                     </div>
                   </div>
                 </div>
@@ -219,7 +219,7 @@ const StakeBalances = () => {
                   <div className="ray__form__item">
                     <div className="ray__form__label">Active Stake</div>
                     <div className="ray__form__amount">
-                      <AmountFormatterAda amount={pool.active_stake} small />
+                      <AmountFormatterAda amount={pool.active_stake || 0} small />
                     </div>
                   </div>
                 </div>
