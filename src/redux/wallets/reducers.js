@@ -27,6 +27,16 @@ const pools =
           ticker: 'RAY',
           name: 'RAY Network Pool #1',
         },
+        '9ad2692a4865c5999f27d65baf170be5ba38b25489c8e21007193edd': {
+          delegateId: 'pool1ntfxj2jgvhzen8e86ed679ctukar3vj538ywyyq8ryld66jj4sx',
+          ticker: 'RAY2',
+          name: 'RAY Network Pool #2',
+        },
+        '22cfa3b8612c146a0737c974dcfcbb8cddd86f3a511cf531ce8d91a1': {
+          delegateId: 'pool1yt868wrp9s2x5pehe96del9m3nwasme62yw02vww3kg6zwzspcz',
+          ticker: 'RAY3',
+          name: 'RAY Network Pool #3',
+        },
       }
 
 const initialState = {

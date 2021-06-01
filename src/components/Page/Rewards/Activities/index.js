@@ -49,7 +49,7 @@ const RewardsActivities = () => {
                   {walletStake.hasStakingKey && inRayPools && (
                     <AmountFormatterAsset
                       amount={expectedPayout}
-                      fingerprint="asset1ray"
+                      fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                       ticker="XRAY"
                       availablePrivate
                     />
@@ -147,7 +147,7 @@ const RewardsActivities = () => {
                 <div className="ray__form__label">Bonus Balance</div>
                 <AmountFormatterAsset
                   amount={walletRayRewardsBonus.amount}
-                  fingerprint="asset1ray"
+                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                   ticker="XRAY"
                   availablePrivate
                 />
@@ -168,7 +168,7 @@ const RewardsActivities = () => {
               <div className="ray__form__amount">
                 <AmountFormatterAsset
                   amount={walletRayRewards}
-                  fingerprint="asset1ray"
+                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                   ticker="XRAY"
                   availablePrivate
                 />
@@ -256,7 +256,7 @@ const RewardsActivities = () => {
                 </div>
                 {/* <AmountFormatterAsset
                   amount={0}
-                  fingerprint="asset1ray"
+                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                   ticker="XRAY"
                   availablePrivate
                 /> */}

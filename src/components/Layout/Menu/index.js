@@ -370,7 +370,7 @@ const Menu = () => {
                         <span>
                           <AmountFormatterAsset
                             amount={walletRayRewards}
-                            fingerprint="asset1ray"
+                            fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                             ticker="XRAY"
                             small
                             inline

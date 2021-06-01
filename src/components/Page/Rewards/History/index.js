@@ -24,7 +24,7 @@ const RewardsHistory = () => {
               <AmountFormatterAsset
                 amount={reward.amount}
                 ticker="XRAY"
-                fingerprint="asset1ray"
+                fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                 small
               />
               <div className="ray__address mt-2">
