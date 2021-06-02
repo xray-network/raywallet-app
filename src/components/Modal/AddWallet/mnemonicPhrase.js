@@ -11,6 +11,7 @@ const MnemonicForm = () => {
   const [wroteDownMnemonic, setWroteDownMnemonic] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [generatedMnemonic, setGeneratedMnemonic] = useState('')
+  const [confirmMnemonic, setConfirmMnemonic] = useState('')
   const isModalVisible = useSelector((state) => state.settings.modalAddWallet)
   const hiddenMnemonic =
     '**** **** ******* ***** ****** ***** ***** ****** **** ***** **** ****** ***** ******* **** **** **** ******* ****** ******** ****** **** ***** *******'
@@ -20,6 +21,7 @@ const MnemonicForm = () => {
     // generateNewMnemonic()
     setWroteDownMnemonic(false)
     setAgreeTerms(false)
+    setConfirmMnemonic('')
   }, [isModalVisible, form])
 
   useEffect(() => {
@@ -205,6 +207,15 @@ const MnemonicForm = () => {
             </div>
             {wroteDownMnemonic && (
               <div className="mb-4">
+                <div className="ray__form__label">Repeat your mnemonic</div>
+                <Input
+                  value={confirmMnemonic}
+                  onChange={(e) => setConfirmMnemonic(e.target.value)}
+                />
+              </div>
+            )}
+            {wroteDownMnemonic && (
+              <div className="mb-4">
                 <Alert
                   showIcon
                   type="warning"
@@ -226,7 +237,7 @@ const MnemonicForm = () => {
               </div>
             )}
             <Button
-              disabled={!(wroteDownMnemonic && agreeTerms)}
+              disabled={!(wroteDownMnemonic && agreeTerms && generatedMnemonic === confirmMnemonic)}
               htmlType="submit"
               size="large"
               type="primary"

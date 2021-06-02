@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Form, Input, Button, Select, Empty, Tooltip } from 'antd'
+import { Form, Input, Button, Select, Empty, Tooltip, Alert } from 'antd'
 import { debounce } from 'lodash'
 import BigNumber from 'bignumber.js'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
@@ -13,6 +13,9 @@ const WalletSend = () => {
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
   const transactionLoading = useSelector((state) => state.transactions.transactionLoading)
   const transaction = useSelector((state) => state.transactions.transaction)
+  const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
+  const { tokens } = walletAssetsSummary
+
   const [hasErrors, setHasErrors] = useState(false)
   const [form] = Form.useForm()
 
@@ -110,6 +113,22 @@ const WalletSend = () => {
 
   return (
     <div>
+      {!!tokens.length && (
+        <div className="mb-3">
+          <Alert
+            type="error"
+            message={
+              <div>
+                Outgoing transactions from wallets with native tokens are currently not supported.
+                Please use Yoroi temporarily.{' '}
+                <a href="https://rraayy.com/updates" target="_blank" rel="noopener noreferrer">
+                  Status →
+                </a>
+              </div>
+            }
+          />
+        </div>
+      )}
       <Form
         form={form}
         layout="vertical"
@@ -268,7 +287,7 @@ const WalletSend = () => {
             type="primary"
             className="ray__btn__send w-100"
             loading={walletLoading || transactionLoading}
-            disabled={!walletParams.accountId}
+            disabled={!walletParams.accountId || !!tokens.length}
           >
             <i className="fe fe-send" />
             <strong>Send</strong>

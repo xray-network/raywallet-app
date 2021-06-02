@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, Spin, Tooltip, Empty, Statistic, Alert } from 'antd'
+import { Button, Select, Spin, Tooltip, Empty, Statistic } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
@@ -24,7 +24,7 @@ const Menu = () => {
   const isWalletInfo = useSelector((state) => state.settings.isWalletInfo)
   const isNetworkInfo = useSelector((state) => state.settings.isNetworkInfo)
   const isAssetsInfo = useSelector((state) => state.settings.isAssetsInfo)
-  const { tokens } = walletAssetsSummary
+  // const { tokens } = walletAssetsSummary
 
   const selectRef = useRef()
 
@@ -285,22 +285,6 @@ const Menu = () => {
         <div className={style.walletAssets}>
           {walletParams.accountId && (
             <AmountFormatterAda amount={walletAssetsSummary.value} availablePrivate />
-          )}
-          {!!tokens.length && (
-            <div className="mt-3">
-              <Alert
-                type="error"
-                message={
-                  <div>
-                    Outgoing transactions from wallets with native tokens are currently not
-                    supported. Please use Yoroi temporarily.{' '}
-                    <a href="https://rraayy.com/updates" target="_blank" rel="noopener noreferrer">
-                      Status →
-                    </a>
-                  </div>
-                }
-              />
-            </div>
           )}
         </div>
         {walletParams.accountId && (
