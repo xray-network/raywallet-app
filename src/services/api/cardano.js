@@ -21,7 +21,10 @@ import { notification } from 'antd'
 const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
 
 const apiClient = axios.create({
-  baseURL: CARDANO_NETWORK === 'testnet' ? 'http://localhost:3100' : 'https://graphql.rraayy.com', // testnet
+  baseURL:
+    CARDANO_NETWORK === 'testnet'
+      ? 'https://graphql-testnet.rraayy.com'
+      : 'https://graphql.rraayy.com',
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
@@ -128,7 +131,7 @@ export async function GetTransactionsByInputs(addresses) {
   return apiClient
     .post('/', {
       query: `
-         query getTxs($addresses: [String]) {
+         query getTxsByInputs($addresses: [String]) {
            transactions(
              limit: 100
              order_by: { includedAt: desc }
@@ -164,7 +167,7 @@ export async function GetTransactionsByOutputs(addresses) {
   return apiClient
     .post('/', {
       query: `
-         query getTxs($addresses: [String]) {
+         query getTxsByOutputs($addresses: [String]) {
            transactions(
              limit: 100
              order_by: { includedAt: desc }

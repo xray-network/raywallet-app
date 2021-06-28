@@ -1219,6 +1219,16 @@
   resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-browser/-/cardano-serialization-lib-browser-7.0.0.tgz#d5f0f036b4a59f77a48f8bdeb45119755ce00476"
   integrity sha512-4/xgSE7u4BKdBsDOk54zMuTJl3IAHTldCkSiZvS/s6XSxNcoVnPKs0wfZb/swwSqyNKukTodz8GE1K7JhuVW9Q==
 
+"@emurgo/cardano-serialization-lib-browser@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-browser/-/cardano-serialization-lib-browser-7.1.0.tgz#aa6f90cbf5c7f4e03ad6499b25ecd8473e4b10b7"
+  integrity sha512-d6fPgTYxni4+CSrMg1sxU5sgxGO2VrmgCw9/UdojhensDes/rez1hvvVAJW44qVIWwGnAfm70DfAkNAlP+YKXQ==
+
+"@emurgo/cardano-serialization-lib-nodejs@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-nodejs/-/cardano-serialization-lib-nodejs-7.1.0.tgz#657ce11655d29560c2e302b616dc0fe86c4d2920"
+  integrity sha512-ogAUL23kJLDdc5nfRGBMhx/84aq0hnmEJea6VNozm3vnTYPsE1tmdvcYAmoRvsn+k745/E89ToSYBrjwnuZZpg==
+
 "@emurgo/cip14-js@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@emurgo/cip14-js/-/cip14-js-2.0.0.tgz#6ef78ddac8a35f2725e9ccebfd5ae114716c4b48"
@@ -3457,6 +3467,15 @@ capture-exit@^2.0.0:
   integrity sha512-PiT/hQmTonHhl/HFGN+Lx3JJUznrVYJ3+AQsnthneZbvW7x+f08Tk7yLJTLEOUvBTbduLeeBkxEaYXUOUrRq6g==
   dependencies:
     rsvp "^4.8.4"
+
+"cardano-web3.js@file:../cardano-web3.js/publish":
+  version "0.1.0"
+  dependencies:
+    "@emurgo/cardano-serialization-lib-browser" "^7.1.0"
+    "@emurgo/cardano-serialization-lib-nodejs" "^7.1.0"
+    bech32 "^2.0.0"
+    bignumber.js "^9.0.1"
+    bip39-light "^1.0.7"
 
 case-sensitive-paths-webpack-plugin@2.3.0:
   version "2.3.0"

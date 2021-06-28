@@ -1,6 +1,5 @@
 import { all, takeEvery, put, select, call, take } from 'redux-saga/effects'
-import * as Cardano from 'utils/ray-cardano-crypto'
-import * as Explorer from 'services/api/cardano'
+import Cardano from 'services/cardano'
 import BigNumber from 'bignumber.js'
 import actions from './actions'
 import { FETCH_NETWORK_STATE } from '../wallets/sagas'
@@ -46,7 +45,7 @@ export function* BUILD_TX({ payload }) {
   if (type === 'delegate') {
     isSend = false
     const certs = yield call(
-      Cardano.CardanoGenerateDelegationCertificates,
+      Cardano.crypto.generateDelegationCerts,
       publicKey,
       hasStakingKey,
       poolId,
@@ -63,7 +62,7 @@ export function* BUILD_TX({ payload }) {
   }
 
   const response = yield call(
-    Cardano.CardanoBuildTx,
+    Cardano.crypto.txBuild,
     isSend,
     computedValue,
     toAddress,
@@ -108,10 +107,10 @@ export function* SEND_TX({ payload }) {
   })
 
   const { transaction, privateKey } = payload
-  const signedTx = yield call(Cardano.CardanoSignTx, transaction, privateKey)
-  const sendTx = yield call(Explorer.SendTransaction, signedTx)
+  const signedTx = yield call(Cardano.crypto.txSign, transaction, privateKey)
+  const { data: sendTx } = yield call(Cardano.explorer.txSend, signedTx)
   if (sendTx) {
-    const transactionHash = sendTx.data?.submitTransaction?.hash
+    const transactionHash = sendTx?.submitTransaction?.hash
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
@@ -130,8 +129,8 @@ export function* SEND_TX({ payload }) {
 
 export function* CHECK_TX({ payload }) {
   const { hash } = payload
-  const success = yield call(Explorer.GetTransactionsIO, [hash])
-  if (success.data?.transactions?.length) {
+  const { data: success } = yield call(Cardano.explorer.getTransactionsIO, [hash])
+  if (success?.transactions?.length) {
     yield put({
       type: 'transactions/SET_STATE',
       payload: {

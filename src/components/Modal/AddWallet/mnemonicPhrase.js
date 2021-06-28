@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Input, Button, Tabs, Checkbox, Alert } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/ray-cardano-crypto'
+import Cardano from 'services/cardano'
 import style from './style.module.scss'
 
 const MnemonicForm = () => {
@@ -68,7 +68,7 @@ const MnemonicForm = () => {
   }
 
   const generateNewMnemonic = () => {
-    const mnemonicPhrase = CardanoGenerateMnemonic()
+    const mnemonicPhrase = Cardano.crypto.generateMnemonic()
     setGeneratedMnemonic(mnemonicPhrase)
   }
 
@@ -124,7 +124,7 @@ const MnemonicForm = () => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (!value || CardanoValidateMnemonic(value)) {
+                    if (!value || Cardano.crypto.validateMnemonic(value)) {
                       return Promise.resolve()
                     }
                     return Promise.reject(new Error('Mnemonic Phrase is wrong'))
