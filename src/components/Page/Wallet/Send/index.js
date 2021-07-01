@@ -47,6 +47,7 @@ const WalletSend = () => {
       type: 'transactions/BUILD_TX',
       payload: {
         ...values,
+        type: 'calculate',
       },
     })
   }

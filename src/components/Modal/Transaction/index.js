@@ -42,7 +42,7 @@ const TransactionModal = () => {
     <Modal
       title={getFormName(transactionType)}
       footer={null}
-      visible={transactionType}
+      visible={transactionType !== 'calculate' && transactionType !== ''}
       onCancel={handleCancel}
       width={420}
       closable={!(transactionWaitingHash && !transactionSuccess)}

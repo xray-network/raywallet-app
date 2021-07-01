@@ -249,7 +249,7 @@ const Crypto = function Crypto(pkg, settings) {
 
     /**
      * Build Transaction
-     * @param {boolean} isSend build final transaction (not for calculation fees)
+     * @param {string} type transaction type
      * @param {BigNumber} value ADA amount
      * @param {string} toAddress to address
      * @param {string} changeAddress change address
@@ -262,7 +262,7 @@ const Crypto = function Crypto(pkg, settings) {
      */
 
     this.txBuild = (
-      isSend,
+      type,
       value,
       toAddress,
       changeAddress,
@@ -275,6 +275,8 @@ const Crypto = function Crypto(pkg, settings) {
       const { Cardano } = this
 
       try {
+        const isSend = type === 'send' || type === 'calculate'
+
         // initial checks
         if (isSend && this.validateAddress(toAddress) !== 'base') {
           throw Errors('address_wrong')

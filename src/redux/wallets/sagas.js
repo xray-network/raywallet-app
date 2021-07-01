@@ -3,13 +3,13 @@ import store from 'store'
 import { AES, enc as EncodeTo } from 'crypto-js'
 import { message } from 'antd'
 import Cardano from 'services/cardano'
+import BigNumber from 'bignumber.js'
 import * as CardanoHelper from 'services/cardano-helper'
 import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
 import * as Adapools from 'services/api/adapools'
 import actions from './actions'
 
-const { BigNumber } = Cardano.crypto
 const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
 
 export function* CHANGE_SETTING({ payload: { setting, value } }) {
@@ -463,7 +463,12 @@ export function* GET_EXCHANGE_RATES() {
 
 export function* GET_UTXO_STATE() {
   const { publicKey, accountId } = yield select((state) => state.wallets.walletParams)
-  const { assets, transactions, utxos } = yield call(Cardano.explorer.getAccountState, publicKey)
+  const { assets, transactions, utxos } = yield call(
+    Cardano.explorer.getAccountStateByPublicKey,
+    publicKey,
+  )
+
+  console.log('sagas -> utxos', utxos)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',

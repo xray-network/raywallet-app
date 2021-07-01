@@ -18,6 +18,7 @@ const WalletTransactions = () => {
       {!!transactions.length > 0 && (
         <div>
           {transactions.slice(0, count).map((tx, txIndex) => {
+            console.log(tx)
             const date = format(new Date(tx.includedAt), 'dd/MM/Y HH:mm:ss')
             const isWithdrawal = tx.deposit < 0 || !!tx.withdrawals.length
             return (

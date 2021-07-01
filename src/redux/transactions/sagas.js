@@ -40,10 +40,8 @@ export function* BUILD_TX({ payload }) {
   let metadata
   const certificates = []
   const withdrawals = []
-  let isSend = true
 
   if (type === 'delegate') {
-    isSend = false
     const certs = yield call(
       Cardano.crypto.generateDelegationCerts,
       publicKey,
@@ -54,7 +52,6 @@ export function* BUILD_TX({ payload }) {
   }
 
   if (type === 'withdraw') {
-    isSend = false
     withdrawals.push({
       address: rewardAddress,
       amount: rewardsAmount,
@@ -63,7 +60,7 @@ export function* BUILD_TX({ payload }) {
 
   const response = yield call(
     Cardano.crypto.txBuild,
-    isSend,
+    type,
     computedValue,
     toAddress,
     changeAddress,

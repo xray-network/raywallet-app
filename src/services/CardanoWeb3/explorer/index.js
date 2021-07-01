@@ -40,240 +40,339 @@ const Explorer = function Explorer(pkg, settings) {
   this.getNetworkInfo = () => {
     return client.post('/', {
       query: `
-           {
-             cardano {
-               tip {
-                 number
-                 slotNo
-               }
-               currentEpoch {
-                 number
-                 startedAt
-                 blocksCount
-               }
-             }
-           }
-         `,
+        {
+          cardano {
+            tip {
+              number
+              slotNo
+            }
+            currentEpoch {
+              number
+              startedAt
+              blocksCount
+            }
+          }
+        }
+      `,
+    })
+  }
+
+  this.fetchComplete = async (params) => {
+    // init config
+
+    const config = {
+      aggregateString: '',
+      limit: 2500,
+      maxPages: 100,
+      offset: 0,
+      query: () => '',
+      variables: {},
+      ...params,
+    }
+
+    // objects deep concat
+
+    const arraysDeepMerge = (a, b) => {
+      const ret = Object.keys(a).length === 0 ? b : a
+      Object.keys(b).forEach((prop) => {
+        const propA = a[prop]
+        const propB = b[prop]
+
+        if (typeof propA === typeof propB && typeof propA === 'object') {
+          if (Array.isArray(propA)) {
+            ret[prop] = propA.concat(propB)
+          } else {
+            ret[prop] = arraysDeepMerge(propA, propB)
+          }
+        } else if (propB) {
+          ret[prop] = propB
+        }
+      })
+      return ret
+    }
+
+    let response = {}
+    let iteration = 0
+    async function mergeDeep() {
+      const update = await client.post('/', {
+        query: config.query(
+          config.aggregateString,
+          config.limit,
+          iteration * config.limit + config.offset,
+        ),
+        variables: config.variables,
+      })
+      response = arraysDeepMerge(response, update)
+      if (update.errors) {
+        return
+      }
+      iteration += 1
+      const totalCount = Number(update.data[config.aggregateString].aggregate.count)
+      const currentPage = iteration * config.limit + config.offset
+      const limitReason = iteration < config.maxPages
+      if (currentPage < totalCount && limitReason) {
+        await mergeDeep()
+      }
+    }
+    await mergeDeep()
+
+    return response
+  }
+
+  this.getPoolsIds = () => {
+    const query = (aggregateString, limit, offset) => `
+      query stakePools {
+        ${aggregateString} {
+          aggregate {
+            count
+          }
+        }
+        stakePools (
+          limit: ${limit},
+          offset: ${offset}
+        ) {
+          id
+        }
+      }`
+
+    return this.fetchComplete({
+      aggregateString: 'stakePools_aggregate',
+      query,
     })
   }
 
   this.getAddressesUTXO = (addresses) => {
-    return client.post('/', {
-      query: `
-         query utxoSetForAddress($addresses: [String]) {
-           utxos(order_by: { value: desc }, where: { address: { _in: $addresses } }) {
-             transaction {
-               hash
-             }
-             address
-             value
-             index
-             tokens {
-               quantity
-               asset {
-                 assetId
-                 assetName
-                 description
-                 fingerprint
-                 logo
-                 name
-                 ticker
-                 url
-                 policyId
-               }
-             }
-           }
-         }
-       `,
+    const query = (aggregateString, limit, offset) => `
+      query getAddressesUTXO($addresses: [String]) {
+        ${aggregateString}(where: { address: { _in: $addresses } }) {
+          aggregate {
+            count
+          }
+        }
+        utxos(
+          limit: ${limit},
+          offset: ${offset},
+          where: { address: { _in: $addresses } }
+        ) {
+          transaction {
+            hash
+          }
+          address
+          value
+          index
+          tokens {
+            quantity
+            asset {
+              assetId
+              assetName
+              description
+              fingerprint
+              logo
+              name
+              ticker
+              url
+              policyId
+            }
+          }
+        }
+      }
+    `
+
+    return this.fetchComplete({
+      aggregateString: 'utxos_aggregate',
+      query,
       variables: {
         addresses,
       },
     })
   }
 
-  this.getTransactionsByInputs = (addresses) => {
-    return client.post('/', {
-      query: `
-           query getTxsByInputs($addresses: [String]) {
-             transactions(
-               limit: 100
-               order_by: { includedAt: desc }
-               offset: 0
-               where: {
-                 inputs: {
-                   address: {
-                     _in: $addresses
-                   }
-                 }
-               }
-             ) {
-               fee
-               hash
-               includedAt
-             }
-           }
-         `,
+  this.getTxHashFromInputs = (addresses) => {
+    const query = (aggregateString, limit, offset) => `
+        query getTxsByInputs($addresses: [String]) {
+          ${aggregateString}(
+            where: {
+              inputs: {
+                address: {
+                  _in: $addresses
+                }
+              }
+            }
+          ) {
+            aggregate {
+              count
+            }
+          }
+          transactions(
+            limit: ${limit},
+            offset: ${offset},
+            order_by: { includedAt: desc }
+            where: {
+              inputs: {
+                address: {
+                  _in: $addresses
+                }
+              }
+            }
+          ) {
+            fee
+            hash
+            includedAt
+          }
+        }
+      `
+
+    return this.fetchComplete({
+      aggregateString: 'transactions_aggregate',
+      query,
       variables: {
         addresses,
       },
     })
   }
 
-  this.getTransactionsByOutputs = (addresses) => {
-    return client.post('/', {
-      query: `
-           query getTxsByOutputs($addresses: [String]) {
-             transactions(
-               limit: 100
-               order_by: { includedAt: desc }
-               offset: 0
-               where: {
-                 outputs: {
-                   address: {
-                     _in: $addresses
-                   }
-                 }
-               }
-             ) {
-               fee
-               hash
-               includedAt
-             }
-           }
-         `,
+  this.getTxHashFromOutputs = (addresses) => {
+    const query = (aggregateString, limit, offset) => `
+        query getTxsByOutputs($addresses: [String]) {
+          ${aggregateString}(
+            where: {
+              outputs: {
+                address: {
+                  _in: $addresses
+                }
+              }
+            }
+          ) {
+            aggregate {
+              count
+            }
+          }
+          transactions(
+            limit: ${limit},
+            offset: ${offset},
+            order_by: { includedAt: desc }
+            where: {
+              outputs: {
+                address: {
+                  _in: $addresses
+                }
+              }
+            }
+          ) {
+            fee
+            hash
+            includedAt
+          }
+        }
+      `
+
+    return this.fetchComplete({
+      aggregateString: 'transactions_aggregate',
+      query,
       variables: {
         addresses,
       },
     })
   }
 
-  this.getTransactionsIO = (hashes) => {
-    return client.post('/', {
-      query: `
-           query getTxsInfo($hashes: [Hash32Hex]!) {
-             transactions(
-               limit: 100
-               order_by: { includedAt: desc }
-               offset: 0
-               where: {
-                 hash: {
-                   _in: $hashes
-                 }
-               }
-             ) {
-               fee
-               hash
-               deposit
-               withdrawals {
-                 amount
-               }
-               includedAt
-               inputs {
-                 address
-                 value
-                 tokens {
-                   quantity
-                   asset {
-                     assetId
-                     assetName
-                     description
-                     fingerprint
-                     logo
-                     name
-                     ticker
-                     url
-                     policyId
-                   }
-                 }
-               }
-               outputs {
-                 address
-                 value
-                 tokens {
-                   quantity
-                   asset {
-                     assetId
-                     assetName
-                     description
-                     fingerprint
-                     logo
-                     name
-                     ticker
-                     url
-                     policyId
-                   }
-                 }
-               }
-             }
-           }
-         `,
+  this.getTxByHash = (hashes) => {
+    const query = (aggregateString, limit, offset) => `
+        query getTxsInfo($hashes: [Hash32Hex]!) {
+          ${aggregateString}(
+            where: {
+              hash: {
+                _in: $hashes
+              }
+            }
+          ) {
+            aggregate {
+              count
+            }
+          }
+          transactions(
+            limit: ${limit},
+            offset: ${offset},
+            order_by: { includedAt: desc }
+            where: {
+              hash: {
+                _in: $hashes
+              }
+            }
+          ) {
+            hash
+            includedAt
+            fee
+            deposit
+            withdrawals {
+              amount
+            }
+            inputs {
+              address
+              value
+              tokens {
+                quantity
+                asset {
+                  assetId
+                  assetName
+                  description
+                  fingerprint
+                  logo
+                  name
+                  ticker
+                  url
+                  policyId
+                }
+              }
+            }
+            outputs {
+              address
+              value
+              tokens {
+                quantity
+                asset {
+                  assetId
+                  assetName
+                  description
+                  fingerprint
+                  logo
+                  name
+                  ticker
+                  url
+                  policyId
+                }
+              }
+            }
+          }
+        }
+      `
+
+    return this.fetchComplete({
+      aggregateString: 'transactions_aggregate',
+      query,
       variables: {
         hashes,
       },
     })
   }
 
-  this.txSend = (transaction) => {
-    return client.post('/', {
-      query: `
-          mutation submitTransaction($transaction: String!) {
-            submitTransaction(transaction: $transaction) {
-              hash
-            }
-          }
-         `,
-      variables: {
-        transaction,
-      },
-    })
-  }
+  this.getAccountStateByPublicKey = async (
+    publicKey,
+    pageSize = 20,
+    maxShiftIndex = 10,
+    type = 'all',
+  ) => {
+    // generate address pack and get addresses utxos with addressing paths
 
-  this.getAccountState = function* getAccountState(publicKey) {
-    const getAssetsSummary = (processAddresses) => {
-      const assetsSummary = {
-        value: new BigNumber(0),
-        tokens: {},
-      }
-
-      processAddresses.forEach((addr) => {
-        assetsSummary.value = assetsSummary.value.plus(addr.value)
-        const { tokens } = addr
-        if (tokens.length) {
-          tokens.forEach((token) => {
-            const { asset, quantity } = token
-            const { assetId } = asset
-            if (!assetsSummary.tokens[assetId]) {
-              assetsSummary.tokens[assetId] = {
-                quantity: new BigNumber(0),
-              }
-            }
-            assetsSummary.tokens[assetId] = {
-              ...assetsSummary.tokens[assetId],
-              ...asset,
-              ticker:
-                asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
-              quantity: new BigNumber(assetsSummary.tokens[assetId].quantity).plus(quantity),
-            }
-          })
-        }
-      })
-
-      return {
-        value: new BigNumber(assetsSummary.value).toFixed(),
-        tokens: Object.keys(assetsSummary.tokens).map((key) => assetsSummary.tokens[key]),
-      }
-    }
-
-    function* checkAddresses(type, pageSize, shift) {
-      const tmpAddresses = yield Cardano.crypto.getAccountAddresses(
+    async function checkAddressesUTXO(checkType, checkPageSize, checkShift) {
+      const tmpAddresses = await Cardano.crypto.getAccountAddresses(
         publicKey,
-        type,
-        pageSize,
-        shift,
+        checkType,
+        checkPageSize,
+        checkShift,
       )
 
       const checkedAdresses = tmpAddresses.addresses
-      const { data: tmpAddresssesUTXO } = yield Cardano.explorer.getAddressesUTXO(checkedAdresses)
+      const { data: tmpAddresssesUTXO } = await Cardano.explorer.getAddressesUTXO(checkedAdresses)
 
       const adressesWithUTXOs = tmpAddresssesUTXO.utxos
         ? tmpAddresssesUTXO.utxos.map((utxo) => {
@@ -287,41 +386,43 @@ const Explorer = function Explorer(pkg, settings) {
       return [adressesWithUTXOs, checkedAdresses]
     }
 
-    const UTXOArray = []
+    // check addresses utxos with shift until next pack will be with zero utxos
+
+    const utxos = []
     const adressesArray = []
-    const pageSize = 20
-    const type = 'all'
-    const maxShiftIndex = 10
-    let shiftIndex = 0
-    function* getAddressesWithShift(shift) {
-      const [adressesWithUTXOs, checkedAdresses] = yield checkAddresses(type, pageSize, shift)
+
+    async function checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift) {
+      const [adressesWithUTXOs, checkedAdresses] = await checkAddressesUTXO(
+        checkType,
+        checkPageSize,
+        checkShift,
+      )
       adressesArray.push(...checkedAdresses)
-      if (shiftIndex < maxShiftIndex) {
+      if (checkShift < maxShiftIndex) {
         if (adressesWithUTXOs.length) {
-          shiftIndex += 1
-          UTXOArray.push(...adressesWithUTXOs)
-          yield getAddressesWithShift(shiftIndex)
+          checkShift += 1
+          utxos.push(...adressesWithUTXOs)
+          await checkAddressesUTXOWithShift(checkType, checkPageSize, checkShift)
         }
       }
     }
-    yield getAddressesWithShift(shiftIndex)
 
-    const assetsSummary = getAssetsSummary(UTXOArray)
+    await checkAddressesUTXOWithShift(type, pageSize, 0)
 
-    const { data: rawTxInputs } = yield Cardano.explorer.getTransactionsByInputs(adressesArray)
-    const { data: rawTxOutputs } = yield Cardano.explorer.getTransactionsByOutputs(adressesArray)
-    const transactions = [
+    // get transactions by hashes and transform to readable object
+
+    const { data: rawTxInputs } = await Cardano.explorer.getTxHashFromInputs(adressesArray)
+    const { data: rawTxOutputs } = await Cardano.explorer.getTxHashFromOutputs(adressesArray)
+    const rawTransactions = [
       ...(rawTxInputs?.transactions || []),
       ...(rawTxOutputs?.transactions || []),
     ]
-    const transactionsHashes = transactions.map((tx) => tx.hash)
-    const { data: transactionsInputsOutputs } = yield Cardano.explorer.getTransactionsIO(
-      transactionsHashes,
+
+    const { data: transactionsInputsOutputs } = await Cardano.explorer.getTxByHash(
+      rawTransactions.map((tx) => tx.hash),
     )
 
-    const rawTransactions = transactionsInputsOutputs?.transactions || []
-
-    const transformedTransactions = rawTransactions.map((tx) => {
+    const transactions = (transactionsInputsOutputs?.transactions || []).map((tx) => {
       let inputAmount = new BigNumber(0)
       let outputAmount = new BigNumber(0)
       const tokens = {}
@@ -377,11 +478,67 @@ const Explorer = function Explorer(pkg, settings) {
       }
     })
 
-    return {
-      assets: assetsSummary,
-      transactions: transformedTransactions,
-      utxos: UTXOArray,
+    // get account assets summary from utxos
+
+    const getAssetsSummary = (processAddresses) => {
+      const assetsSummary = {
+        value: new BigNumber(0),
+        tokens: {},
+      }
+
+      processAddresses.forEach((addr) => {
+        assetsSummary.value = assetsSummary.value.plus(addr.value)
+        const { tokens } = addr
+        if (tokens.length) {
+          tokens.forEach((token) => {
+            const { asset, quantity } = token
+            const { assetId } = asset
+            if (!assetsSummary.tokens[assetId]) {
+              assetsSummary.tokens[assetId] = {
+                quantity: new BigNumber(0),
+              }
+            }
+            assetsSummary.tokens[assetId] = {
+              ...assetsSummary.tokens[assetId],
+              ...asset,
+              ticker:
+                asset.ticker || Buffer.from(asset.assetName || '', 'hex').toString('utf-8') || '?',
+              quantity: new BigNumber(assetsSummary.tokens[assetId].quantity).plus(quantity),
+            }
+          })
+        }
+      })
+
+      return {
+        value: new BigNumber(assetsSummary.value).toFixed(),
+        tokens: Object.keys(assetsSummary.tokens).map((key) => assetsSummary.tokens[key]),
+      }
     }
+
+    const assets = getAssetsSummary(utxos)
+
+    // return account state object
+
+    return {
+      assets,
+      transactions,
+      utxos,
+    }
+  }
+
+  this.txSend = (transaction) => {
+    return client.post('/', {
+      query: `
+          mutation submitTransaction($transaction: String!) {
+            submitTransaction(transaction: $transaction) {
+              hash
+            }
+          }
+         `,
+      variables: {
+        transaction,
+      },
+    })
   }
 }
 

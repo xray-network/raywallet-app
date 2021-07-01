@@ -5,7 +5,7 @@ const Cardano = new CardanoWeb3({
     network: 'mainnet',
   },
   explorer: {
-    url: 'https://graphql.rraayy.com/test',
+    url: 'https://graphql.rraayy.com',
   },
 })
 
