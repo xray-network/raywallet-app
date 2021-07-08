@@ -66,7 +66,7 @@ const AmountFormatterAsset = ({
       {ticker && (
         <Popover content={content} title={null}>
           <span className={style.ticker}>
-            {ticker.length > 10 ? `${ticker.slice(0, 2)}...${ticker.slice(-6)}` : ticker}
+            {ticker.length > 12 ? `${ticker.slice(0, 4)}...${ticker.slice(-6)}` : ticker}
           </span>
         </Popover>
       )}

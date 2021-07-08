@@ -1,6 +1,7 @@
+import { eventChannel } from 'redux-saga'
 import { all, takeEvery, put, select, call, take } from 'redux-saga/effects'
 import Cardano from 'services/cardano'
-import BigNumber from 'bignumber.js'
+// import BigNumber from 'bignumber.js'
 import actions from './actions'
 import { FETCH_NETWORK_STATE } from '../wallets/sagas'
 
@@ -14,9 +15,19 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
 }
 
 export function* BUILD_TX({ payload }) {
-  const { value, toAddress, type, poolId } = payload
+  const {
+    outputs = [],
+    metadata,
+    certificates = [],
+    withdrawals = [],
+    type,
+    allowNoOutputs = true,
+  } = payload
 
-  if (type) {
+  const isSend = type !== 'calculate'
+
+  // if build sending transaction update network currentSlot
+  if (isSend) {
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
@@ -29,60 +40,74 @@ export function* BUILD_TX({ payload }) {
 
   const [changeAddress] = yield select((state) => state.wallets.walletAddresses)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
-  const hasStakingKey = yield select((state) => state.wallets.walletStake.hasStakingKey)
-  const rewardsAmount = yield select((state) => state.wallets.walletStake.rewardsAmount)
-  const rewardAddress = yield select((state) => state.wallets.walletParams.rewardAddress)
   const walletUTXOs = yield select((state) => state.wallets.walletUTXOs)
-  const publicKey = yield select((state) => state.wallets.walletParams.publicKey)
   const currentSlot = networkInfo.tip?.slotNo
 
-  const computedValue = value ? new BigNumber(value).multipliedBy(1000000).toFixed() : undefined
-  let metadata
-  const certificates = []
-  const withdrawals = []
+  // const hasStakingKey = yield select((state) => state.wallets.walletStake.hasStakingKey)
+  // const rewardsAmount = yield select((state) => state.wallets.walletStake.rewardsAmount)
+  // const rewardAddress = yield select((state) => state.wallets.walletParams.rewardAddress)
+  // const publicKey = yield select((state) => state.wallets.walletParams.publicKey)
 
-  if (type === 'delegate') {
-    const certs = yield call(
-      Cardano.crypto.generateDelegationCerts,
-      publicKey,
-      hasStakingKey,
-      poolId,
-    )
-    certificates.push(...certs)
-  }
+  // if (type === 'delegate') {
+  //   const certs = yield call(
+  //     Cardano.crypto.generateDelegationCerts,
+  //     publicKey,
+  //     hasStakingKey,
+  //     poolId,
+  //   )
+  //   certificates.push(...certs)
+  // }
 
-  if (type === 'withdraw') {
-    withdrawals.push({
-      address: rewardAddress,
-      amount: rewardsAmount,
-    })
-  }
+  // if (type === 'withdraw') {
+  //   withdrawals.push({
+  //     address: rewardAddress,
+  //     amount: rewardsAmount,
+  //   })
+  // }
 
-  const response = yield call(
+  const { data, error } = yield call(
     Cardano.crypto.txBuild,
-    type,
-    computedValue,
-    toAddress,
+    outputs,
+    walletUTXOs,
     changeAddress,
     currentSlot,
-    walletUTXOs,
     metadata,
     certificates,
     withdrawals,
+    allowNoOutputs,
   )
 
-  yield put({
-    type: 'transactions/SET_STATE',
-    payload: {
-      transaction: response,
-    },
-  })
-
-  if (type) {
+  if (data) {
+    console.log('tx.build.data', data)
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
-        transactionType: type,
+        transactionData: data,
+      },
+    })
+
+    if (isSend) {
+      yield put({
+        type: 'transactions/SET_STATE',
+        payload: {
+          transactionType: type,
+        },
+      })
+    }
+  }
+
+  if (error) {
+    console.log('tx.build.error', error)
+    yield put({
+      type: 'transactions/SET_STATE',
+      payload: {
+        transactionData: {},
+      },
+    })
+    yield put({
+      type: 'transactions/SET_STATE',
+      payload: {
+        transactionError: error,
       },
     })
   }
@@ -105,15 +130,20 @@ export function* SEND_TX({ payload }) {
 
   const { transaction, privateKey } = payload
   const signedTx = yield call(Cardano.crypto.txSign, transaction, privateKey)
-  const { data: sendTx } = yield call(Cardano.explorer.txSend, signedTx)
-  if (sendTx) {
-    const transactionHash = sendTx?.submitTransaction?.hash
+  const { data, errors } = yield call(Cardano.explorer.txSend, signedTx)
+
+  if (data) {
+    const transactionHash = data.submitTransaction?.hash
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
         transactionWaitingHash: transactionHash,
       },
     })
+  }
+
+  if (errors) {
+    console.log(errors)
   }
 
   yield put({
@@ -126,7 +156,7 @@ export function* SEND_TX({ payload }) {
 
 export function* CHECK_TX({ payload }) {
   const { hash } = payload
-  const { data: success } = yield call(Cardano.explorer.getTransactionsIO, [hash])
+  const { data: success } = yield call(Cardano.explorer.getTxByHash, [hash])
   if (success?.transactions?.length) {
     yield put({
       type: 'transactions/SET_STATE',
@@ -143,17 +173,36 @@ export function* CLEAR_TX() {
     payload: {
       transactionLoading: false,
       transactionType: '',
-      transaction: {},
+      transactionData: {},
+      transactionError: {},
       transactionWaitingHash: '',
+      transactionWaiting: false,
       transactionSuccess: false,
     },
   })
 }
 
+export function* SETUP() {
+  const chan = eventChannel((emitter) => {
+    window.addEventListener('hashchange', (message) => emitter(message))
+    return () => {}
+  })
+
+  while (true) {
+    yield take(chan)
+    yield put({
+      type: 'transactions/CLEAR_TX',
+    })
+  }
+}
+
 export default function* rootSaga() {
-  yield all([takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING)])
-  yield all([takeEvery(actions.BUILD_TX, BUILD_TX)])
-  yield all([takeEvery(actions.SEND_TX, SEND_TX)])
-  yield all([takeEvery(actions.CLEAR_TX, CLEAR_TX)])
-  yield all([takeEvery(actions.CHECK_TX, CHECK_TX)])
+  yield all([
+    takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
+    takeEvery(actions.BUILD_TX, BUILD_TX),
+    takeEvery(actions.SEND_TX, SEND_TX),
+    takeEvery(actions.CLEAR_TX, CLEAR_TX),
+    takeEvery(actions.CHECK_TX, CHECK_TX),
+    SETUP(), // run once on app load to init listeners
+  ])
 }

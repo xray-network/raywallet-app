@@ -21,6 +21,10 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
   })
 }
 
+export function* RESOLVER() {
+  yield undefined
+}
+
 export function* ADD_WALLET({ payload: { mnemonic } }) {
   const { walletList } = yield select((state) => state.wallets)
   const firstWord = mnemonic.split(' ')[0]
@@ -633,7 +637,7 @@ export function* FETCH_WALLET_DATA() {
 
   yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
-  yield call(GET_STAKE_STATE)
+  // yield call(GET_STAKE_STATE)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -689,6 +693,7 @@ export function* SETUP() {
 export default function* rootSaga() {
   yield all([
     takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
+    takeEvery(actions.RESOLVER, RESOLVER),
     takeEvery(actions.FETCH_NETWORK_STATE, FETCH_NETWORK_STATE),
     takeEvery(actions.FETCH_WALLET_DATA, FETCH_WALLET_DATA),
     takeEvery(actions.FETCH_SIDE_DATA, FETCH_SIDE_DATA),

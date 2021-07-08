@@ -1,7 +1,6 @@
 {
-  "name": "cardano-web3.js",
+  "name": "cardano-web3-browser",
   "version": "0.1.0",
-  "author": "Ray Network",
   "description": "Cardano Web3 JavaScript API",
   "license": "MIT",
   "repository": {
@@ -17,12 +16,11 @@
     "JavaScript",
     "API"
   ],
-  "module": "cardano-web3.js",
-  "sideEffects": false,
   "main": "index.js",
   "dependencies": {
     "@emurgo/cardano-serialization-lib-browser": "^7.1.0",
     "@emurgo/cardano-serialization-lib-nodejs": "^7.1.0",
+    "@emurgo/cardano-serialization-lib-asmjs": "^7.1.0",
     "axios": "^0.21.1",
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.1",

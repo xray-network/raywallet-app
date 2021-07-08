@@ -1,4 +1,4 @@
-import CardanoWeb3 from 'services/CardanoWeb3'
+import CardanoWeb3 from 'cardano-web3-browser'
 
 const Cardano = new CardanoWeb3({
   crypto: {
@@ -12,7 +12,5 @@ const Cardano = new CardanoWeb3({
 // Cardano.addProvider('helper', function Helper(pkg) {
 //   this.settings = pkg.settings
 // })
-
-window.ww = Cardano
 
 export default Cardano

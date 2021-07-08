@@ -41,7 +41,15 @@ const AmountFormatterAda = ({ amount, small, inline, noDecimals, prefix, availab
             <span className={style.infoLabel}>Total:</span> $
             {isPrivateMode
               ? privateSymbols
-              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd || '0.00'))}
+              : price(computedAmount.multipliedBy(exchangeRates.cardano?.usd || '0.00'))}{' '}
+            | €
+            {isPrivateMode
+              ? privateSymbols
+              : price(computedAmount.multipliedBy(exchangeRates.cardano?.eur || '0.00'))}{' '}
+            | ¥
+            {isPrivateMode
+              ? privateSymbols
+              : price(computedAmount.multipliedBy(exchangeRates.cardano?.jpy || '0.00'))}
           </strong>
         </div>
       </div>

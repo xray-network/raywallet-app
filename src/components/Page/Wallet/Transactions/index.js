@@ -18,7 +18,6 @@ const WalletTransactions = () => {
       {!!transactions.length > 0 && (
         <div>
           {transactions.slice(0, count).map((tx, txIndex) => {
-            console.log(tx)
             const date = format(new Date(tx.includedAt), 'dd/MM/Y HH:mm:ss')
             const isWithdrawal = tx.deposit < 0 || !!tx.withdrawals.length
             return (
@@ -42,16 +41,19 @@ const WalletTransactions = () => {
                     availablePrivate
                   />
                   {tx.tokens.map((token, tokenIndex) => {
+                    const quantity = parseInt(token.quantity.toString(), 10)
                     return (
-                      <AmountFormatterAsset
-                        key={tokenIndex}
-                        amount={token.quantity}
-                        ticker={token.ticker}
-                        fingerprint={token.fingerprint}
-                        prefix={tx.type === 'send' ? '-' : '+'}
-                        small
-                        availablePrivate
-                      />
+                      quantity > 0 && (
+                        <AmountFormatterAsset
+                          key={tokenIndex}
+                          amount={token.quantity}
+                          ticker={token.ticker}
+                          fingerprint={token.fingerprint}
+                          prefix={tx.type === 'send' ? '-' : '+'}
+                          small
+                          availablePrivate
+                        />
+                      )
                     )
                   })}
                   <div className="ray__address mt-2">
