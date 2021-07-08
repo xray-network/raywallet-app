@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Form, Input, InputNumber, Button, Select, Empty } from 'antd'
+import { Form, Input, InputNumber, Button, Select, Empty, Alert } from 'antd'
 import { debounce } from 'lodash'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
@@ -15,8 +15,9 @@ const WalletSend = () => {
   const transactionLoading = useSelector((state) => state.transactions.transactionLoading)
   const { tokens } = useSelector((state) => state.wallets.walletAssetsSummary)
   const transactionData = useSelector((state) => state.transactions.transactionData)
-  const transactionError = useSelector((state) => state.transactions.transactionError)
+  // const transactionError = useSelector((state) => state.transactions.transactionError)
   const [hasErrors, setHasErrors] = useState(false)
+  const [hasErrorsMessage, setHasErrorsMessage] = useState('')
   const [shouldUpdate, setShouldUpdate] = useState(false)
   const [form] = Form.useForm()
 
@@ -25,14 +26,18 @@ const WalletSend = () => {
   }, [walletParams.accountId, form])
 
   useEffect(() => {
-    clearErrors()
+    console.log(transactionData)
+    if (transactionData.error) {
+      setErrors(transactionData.error)
+    } else {
+      clearErrors()
+    }
     // eslint-disable-next-line
   }, [transactionData])
 
-  useEffect(() => {
-    setErrors(transactionError)
-    // eslint-disable-next-line
-  }, [transactionError])
+  // useEffect(() => {
+  //   // eslint-disable-next-line
+  // }, [transactionError])
 
   const transformOutputs = (values) => {
     const outputs = []
@@ -88,13 +93,15 @@ const WalletSend = () => {
     const values = form.getFieldsValue()
     const outputs = transformOutputs(values.outputs)
 
-    dispatch({
-      type: 'transactions/BUILD_TX',
-      payload: {
-        outputs,
-        type: 'calculate',
-      },
-    })
+    if (outputs.length) {
+      dispatch({
+        type: 'transactions/BUILD_TX',
+        payload: {
+          outputs,
+          type: 'calculate',
+        },
+      })
+    }
   }
 
   const handleRemove = () => {
@@ -105,46 +112,92 @@ const WalletSend = () => {
     }
   }
 
-  const setErrors = (error) => {
-    console.log('ERROR', error.type, error.index)
-    const values = form.getFieldsValue()
-    setHasErrors(true)
-    const getErrorString = (key) => {
+  const proccessErrors = (outputs, error) => {
+    const getErrorString = (err, path) => {
       const mapKeys = {
-        not_enough: 'value',
-        ada_less_than_min: 'value',
+        address_wrong: 'address',
         ada_not_number: 'value',
+        ada_less_than_min: 'value',
         ada_wrong_value: 'value',
-        address_wrong: 'toAddress',
+        tokens_not_enough: 'quantity',
       }
-      if (mapKeys[error.type] === key) {
-        return [error.message]
+
+      const [outputIndex, tokenIndex] = err.index
+
+      if (outputIndex === path[1] && tokenIndex === path[3]) {
+        const key = path[4]
+        if (mapKeys[err.type] === key) {
+          return [error.message]
+        }
       }
+
+      if (outputIndex === path[1]) {
+        const key = path[2]
+        if (mapKeys[err.type] === key) {
+          return [error.message]
+        }
+      }
+
       return []
     }
-    const valueKeys = Object.keys(values)
-    const newFields = valueKeys.map((key) => {
-      return {
-        name: key,
-        value: values[key],
-        errors: getErrorString(key),
+
+    const newFields = []
+
+    outputs.forEach((output, ii) => {
+      // process ada errors
+      ;['address', 'value'].forEach((key) => {
+        const path = ['outputs', ii, key]
+        newFields.push({
+          name: path,
+          value: output[key],
+          ...(error && { errors: getErrorString(error, path) }),
+        })
+      })
+
+      // process token errors
+      if (output.tokens && output.tokens.length) {
+        output.tokens.forEach((token, ti) => {
+          ;['assetId', 'quantity'].forEach((key) => {
+            const path = ['outputs', ii, 'tokens', ti, key]
+            newFields.push({
+              name: path,
+              value: token[key],
+              ...(error && { errors: getErrorString(error, path) }),
+            })
+          })
+        })
       }
     })
+
     form.setFields(newFields)
   }
 
-  const clearErrors = () => {
-    setHasErrors(false)
+  const setErrors = (error) => {
     const values = form.getFieldsValue()
-    const valueKeys = Object.keys(values)
-    const newFields = valueKeys.map((key) => {
-      return {
-        name: key,
-        value: values[key],
-        errors: [],
+    setHasErrors(true)
+
+    // attach error to fields
+    if (typeof error === 'object') {
+      const errorKeys = Object.keys(error)
+      if (errorKeys.includes('index')) {
+        proccessErrors(values.outputs, error)
+      } else {
+        setHasErrorsMessage(error.message)
       }
-    })
-    form.setFields(newFields)
+    }
+
+    // if not, show general error
+    if (typeof error === 'string') {
+      setHasErrorsMessage(error)
+    }
+  }
+
+  const clearErrors = () => {
+    console.log('CLEARED')
+    setHasErrors(false)
+    setHasErrorsMessage('')
+    const values = form.getFieldsValue()
+    proccessErrors(values.outputs)
   }
 
   return (
@@ -348,15 +401,17 @@ const WalletSend = () => {
             </>
           )}
         </Form.List>
+
+        {hasErrorsMessage && <Alert className="mb-4" type="error" message={hasErrorsMessage} />}
         <div className="ray__item ray__item--success">
           <div className="row">
             <div className="col-lg-6">
               <div className="ray__form__item">
                 <div className="ray__form__label">Total</div>
                 <div className="ray__form__amount">
-                  <AmountFormatterAda amount={transactionData?.spending?.value || '0'} />
-                  {transactionData?.spending?.tokens?.length > 0 &&
-                    transactionData.spending.tokens.map((token, tokenIndex) => {
+                  <AmountFormatterAda amount={transactionData?.data?.spending?.value || '0'} />
+                  {transactionData?.data?.spending?.tokens?.length > 0 &&
+                    transactionData?.data?.spending.tokens.map((token, tokenIndex) => {
                       const { fingerprint, ticker } = tokens.filter(
                         (item) => item.assetId === token.asset.assetId,
                       )[0]

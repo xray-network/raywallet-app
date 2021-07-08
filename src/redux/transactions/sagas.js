@@ -65,7 +65,7 @@ export function* BUILD_TX({ payload }) {
   //   })
   // }
 
-  const { data, error } = yield call(
+  const result = yield call(
     Cardano.crypto.txBuild,
     outputs,
     walletUTXOs,
@@ -77,37 +77,19 @@ export function* BUILD_TX({ payload }) {
     allowNoOutputs,
   )
 
-  if (data) {
-    console.log('tx.build.data', data)
-    yield put({
-      type: 'transactions/SET_STATE',
-      payload: {
-        transactionData: data,
-      },
-    })
+  console.log('tx.build', result)
+  yield put({
+    type: 'transactions/SET_STATE',
+    payload: {
+      transactionData: result,
+    },
+  })
 
-    if (isSend) {
-      yield put({
-        type: 'transactions/SET_STATE',
-        payload: {
-          transactionType: type,
-        },
-      })
-    }
-  }
-
-  if (error) {
-    console.log('tx.build.error', error)
+  if (isSend) {
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
-        transactionData: {},
-      },
-    })
-    yield put({
-      type: 'transactions/SET_STATE',
-      payload: {
-        transactionError: error,
+        transactionType: type,
       },
     })
   }

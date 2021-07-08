@@ -55,6 +55,7 @@ const Crypto = function Crypto(pkg, settings) {
         ada_wrong_value: 'Wrong ADA value',
         address_wrong: 'Wrong address',
         no_outputs: 'Transaction requires at least 1 output, but no output was added',
+        no_change: 'No change added even though it should be forced',
       }
       const error = new Error()
       error.message = messages[type] || 'An unspecified error has occurred'
@@ -714,7 +715,7 @@ const Crypto = function Crypto(pkg, settings) {
           const changeWasAdded = txBuilder.add_change_if_needed(calcChangeAddress)
           if (calcForceChange && !changeWasAdded) {
             // note: this should never happened since it should have been handled by earlier code
-            throw new Error(`No change added even though it should be forced`)
+            throw ErrorException('no_change')
           }
 
           const changeAda = txBuilder
