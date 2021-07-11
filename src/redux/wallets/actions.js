@@ -1,5 +1,6 @@
 const actions = {
   SET_STATE: 'wallets/SET_STATE',
+  RESOLVER: 'wallets/RESOLVER',
   CHANGE_SETTING: 'wallets/CHANGE_SETTING',
   FETCH_WALLET_DATA: 'wallets/FETCH_WALLET_DATA',
   FETCH_NETWORK_STATE: 'wallets/FETCH_NETWORK_STATE',
@@ -17,6 +18,7 @@ const actions = {
   IMPORT_WALLET: 'wallets/IMPORT_WALLET',
   GET_STAKE_STATE: 'wallets/GET_STAKE_STATE',
   GET_POOLS_INFO: 'wallets/GET_POOLS_INFO',
+  FETCH_STATUS: 'wallets/FETCH_STATUS',
 }
 
 export default actions

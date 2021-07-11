@@ -23,30 +23,14 @@ import './css/utils.scss'
 import './css/router.scss'
 import './css/antd-overrides.scss'
 
-const mapStateToProps = ({ settings: { theme, primaryColor } }) => ({
+const mapStateToProps = ({ settings: { theme } }) => ({
   theme,
-  primaryColor,
 })
 
-const StylesLoader = ({ children, theme, primaryColor }) => {
-  // listen & set vb-theme (dark, default, ...)
+const StylesLoader = ({ children, theme }) => {
   useEffect(() => {
     document.querySelector('html').setAttribute('data-vb-theme', theme)
   }, [theme])
-
-  // listen & set primaryColor
-  useEffect(() => {
-    const styleElement = document.querySelector('#primaryColor')
-    if (styleElement) {
-      styleElement.remove()
-    }
-    const body = document.querySelector('body')
-    const styleEl = document.createElement('style')
-    const css = document.createTextNode(`:root { --vb-color-primary: ${primaryColor};}`)
-    styleEl.setAttribute('id', 'primaryColor')
-    styleEl.appendChild(css)
-    body.appendChild(styleEl)
-  }, [primaryColor])
 
   return children
 }

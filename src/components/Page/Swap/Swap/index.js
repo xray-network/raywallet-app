@@ -11,7 +11,7 @@ const swapAssets = [
     fingerprint: 'ada',
   },
   {
-    ticker: 'RAY',
+    ticker: 'XRAY',
     fingerprint: 'asset1zyyjv27uxh3kcz0cvmyrfrc7lpht2hcjwr9lul',
   },
   {

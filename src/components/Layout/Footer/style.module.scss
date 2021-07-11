@@ -2,7 +2,7 @@
 
 .logo {
   img {
-    height: rem(18);
+    height: rem(21);
     margin-right: rem(6);
     position: relative;
     top: -1px;
@@ -11,7 +11,6 @@
   &Name {
     font-weight: bold;
     color: $black;
-    letter-spacing: 2px;
     margin-right: rem(10);
     font-size: rem(14);
   }

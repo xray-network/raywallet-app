@@ -6,12 +6,11 @@ import BigNumber from 'bignumber.js'
 // import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
-const DelegateForm = () => {
+const DeregistrateForm = () => {
   const dispatch = useDispatch()
   const transactionData = useSelector((state) => state.transactions.transactionData)
   const transactionWaiting = useSelector((state) => state.transactions.transactionWaiting)
   const walletParams = useSelector((state) => state.wallets.walletParams)
-  const hasStakingKey = useSelector((state) => state.wallets.walletStake.hasStakingKey)
   const transactionType = useSelector((state) => state.transactions.transactionType)
   const [password, setPassword] = useState()
 
@@ -58,9 +57,7 @@ const DelegateForm = () => {
   }
 
   const isError = transactionData.error
-  const fee = hasStakingKey
-    ? new BigNumber(transactionData.data?.fee)
-    : new BigNumber(transactionData.data?.fee).plus(2000000)
+  const fee = new BigNumber(transactionData.data?.fee)
 
   return (
     <div>
@@ -69,10 +66,20 @@ const DelegateForm = () => {
           <div className="row">
             <div className="col-12">
               <div className="ray__form__item">
-                <div className="ray__form__label">
-                  Delegation Fee
-                  {!hasStakingKey && ' + Key Deposit'}
-                </div>
+                <div className="ray__form__label">Deregistration Info</div>
+                <p>Deregistraton will return 2 ADA from the retired registration certificate.</p>
+                <p>
+                  You do NOT need to deregister to delegate to a different stake pool. You can
+                  change your delegation preference at any time just by delegating to another stake
+                  pool.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-12">
+              <div className="ray__form__item">
+                <div className="ray__form__label">Deregistration Fee</div>
                 <div className="ray__item ray__item--tinted text-center mb-4">
                   <div className="ray__form__amount d-inline-block ml-auto mr-auto">
                     <AmountFormatterAda amount={fee} />
@@ -100,23 +107,13 @@ const DelegateForm = () => {
       )}
       {isError && (
         <div className="mb-4">
-          {hasStakingKey && (
-            <Alert
-              message="Not ehough ADA"
-              description="Should cover transaction fee"
-              type="info"
-              showIcon
-              className=""
-            />
-          )}
-          {!hasStakingKey && (
-            <Alert
-              message="Not ehough ADA"
-              description="Should cover transaction fee fee plus 2 ADA for staking key deposit"
-              type="info"
-              showIcon
-            />
-          )}
+          <Alert
+            message="Not ehough ADA"
+            description="Should cover transaction fee"
+            type="info"
+            showIcon
+            className=""
+          />
         </div>
       )}
       <div className="text-center">
@@ -135,4 +132,4 @@ const DelegateForm = () => {
   )
 }
 
-export default DelegateForm
+export default DeregistrateForm

@@ -69,11 +69,18 @@ const AddWalletModal = () => {
       onCancel={handleCancel}
       footer={null}
       width={760}
+      forceRender
     >
       <div className="px-3 pb-2">
-        {currentTab === '1' && <MnemonicForm />}
-        {currentTab === '2' && <HardwareWallet />}
-        {currentTab === '3' && <KeyFile />}
+        <div className={currentTab === '1' ? '' : 'd-none'}>
+          <MnemonicForm />
+        </div>
+        <div className={currentTab === '2' ? '' : 'd-none'}>
+          <HardwareWallet />
+        </div>
+        <div className={currentTab === '3' ? '' : 'd-none'}>
+          <KeyFile />
+        </div>
       </div>
     </Modal>
   )

@@ -16,11 +16,10 @@ const STORED_SETTINGS = (storedSettings) => {
 
 const initialState = {
   ...STORED_SETTINGS({
-    title: 'RAY',
+    title: 'Ray',
     theme: 'default',
     locale: 'en-US',
     routerAnimation: 'slide-fadein-up',
-    primaryColor: '#017AFF',
     modalAddWallet: false,
     modalSettings: false,
     modalEncrypt: false,

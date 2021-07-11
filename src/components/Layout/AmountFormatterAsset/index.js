@@ -20,6 +20,8 @@ const AmountFormatterAsset = ({
   const isVerified = verifiedTokensList.some((item) => item.fingerprint === fingerprint)
   const privateSymbols = '******'
   const computedAmount = new BigNumber(amount)
+  const testcoin = 'asset1cvmyrfrc7lpht2hcjwr9lulzyyjv27uxh3kcz0'
+  const tickerName = fingerprint === testcoin ? 'TEST' : ticker
 
   const numberWithCommas = (x) => new BigNumber(x).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
@@ -30,7 +32,7 @@ const AmountFormatterAsset = ({
   const content = (
     <div className={style.info}>
       <div className={style.infoItem}>
-        <div className={style.infoTicker}>{ticker}</div>
+        <div className={style.infoTicker}>{tickerName}</div>
         {isVerified && (
           <span className={style.infoVerified}>
             <CheckCircleFilled /> Verified by RAY
@@ -63,10 +65,12 @@ const AmountFormatterAsset = ({
           </span>
         </span>
       </div>
-      {ticker && (
+      {tickerName && (
         <Popover content={content} title={null}>
           <span className={style.ticker}>
-            {ticker.length > 10 ? `${ticker.slice(0, 2)}...${ticker.slice(-6)}` : ticker}
+            {tickerName.length > 12
+              ? `${tickerName.slice(0, 4)}...${tickerName.slice(-6)}`
+              : tickerName}
           </span>
         </Popover>
       )}

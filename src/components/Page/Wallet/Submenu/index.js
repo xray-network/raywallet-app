@@ -24,11 +24,11 @@ const WalletSubmenu = () => {
         <NavLink exact activeClassName="ray__submenu__item--active" to={`${url}/transactions`}>
           <span>
             Transactions ({walletTransactions.length}
-            {walletTransactions.length > 99 ? '+' : ''})
+            {walletTransactions.length > 2499 ? '+' : ''})
           </span>
           <span>
             Transactions ({walletTransactions.length}
-            {walletTransactions.length > 99 ? '+' : ''})
+            {walletTransactions.length > 2499 ? '+' : ''})
           </span>
         </NavLink>
       </div>

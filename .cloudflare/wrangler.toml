@@ -1,10 +1,14 @@
-name = "ray-wallet"
+name = "ray-wallet-dev"
 type = "webpack"
 account_id = "792461088a4c863230f3faee467094b1"
 # workers_dev = true
-route = "raywallet.io/*"
+route = "beta.raywallet.io/*"
 zone_id = "52e500366bb28eae347b932bf92162ca"
 
 [site]
 bucket = "../build"
 entry-point = "workers-site"
+
+[env.production]
+name = "ray-wallet"
+route = "app.raywallet.io/*"

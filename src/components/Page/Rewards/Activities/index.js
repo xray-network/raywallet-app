@@ -13,6 +13,8 @@ const RewardsActivities = () => {
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
+  const walletRayRewards = useSelector((state) => state.wallets.walletRayRewards)
+  const walletRayRewardsBonus = useSelector((state) => state.wallets.walletRayRewardsBonus)
 
   const totalAmount = new BigNumber(walletAssetsSummary.value).plus(walletStake.rewardsAmount)
   const expectedPayout = new BigNumber(totalAmount)
@@ -26,7 +28,7 @@ const RewardsActivities = () => {
 
   return (
     <div>
-      <div className="ray__heading">RAY Pools Delegators Distribution</div>
+      <div className="ray__heading">Stake Delegators Distribution</div>
       <div
         className={`ray__item ${
           walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
@@ -42,13 +44,13 @@ const RewardsActivities = () => {
                     <strong className="ray__color font-size-24">Not delegated</strong>
                   )}
                   {walletStake.hasStakingKey && !inRayPools && (
-                    <strong className="ray__color font-size-24">Not in RAY Pool</strong>
+                    <strong className="ray__color font-size-24">Not in Ray pool</strong>
                   )}
                   {walletStake.hasStakingKey && inRayPools && (
                     <AmountFormatterAsset
                       amount={expectedPayout}
-                      fingerprint="asset1ray"
-                      ticker="RAY"
+                      fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
+                      ticker="XRAY"
                       availablePrivate
                     />
                   )}
@@ -101,16 +103,16 @@ const RewardsActivities = () => {
                           </div>
                         </Tooltip>
                       )}
-                      <div className="ray__form__label mb-0">
-                        {current && 'Current'}
-                        {!current && 'Payout Date'}
-                      </div>
                       <div className={style.rewardsEpoch}>
                         <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
                         <div className={style.rewardsEpochInfo}>
                           <div>for</div>
                           <div>epoch</div>
                         </div>
+                      </div>
+                      <div className={style.rewardsLabel}>
+                        {current && <strong>Current</strong>}
+                        {!current && 'Payout Date'}
                       </div>
                       <div className={style.rewardsDate}>
                         {correctDate && date}
@@ -124,21 +126,52 @@ const RewardsActivities = () => {
             })}
           </div>
         )}
-        <div className="ray__line" />
+        {/* <div className="ray__line" /> */}
+        {walletRayRewardsBonus.amount && (
+          <div className="ray__bonus mt-4">
+            <div className="text-center">
+              <h4>
+                <strong>
+                  Congratulations!{' '}
+                  <span role="img" aria-label="">
+                    🎉
+                  </span>
+                </strong>
+              </h4>
+              <p>
+                <small>The Early Delegators Program has been achieved by you</small>
+              </p>
+            </div>
+            <div className="row">
+              <div className="col-6">
+                <div className="ray__form__label">Bonus Balance</div>
+                <AmountFormatterAsset
+                  amount={walletRayRewardsBonus.amount}
+                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
+                  ticker="XRAY"
+                  availablePrivate
+                />
+              </div>
+              <div className="col-6">
+                <div className="ray__form__label">Your Bonus Share</div>
+                <strong className="font-size-24">
+                  {(walletRayRewardsBonus.share * 100 || 0).toFixed(2)}%
+                </strong>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="row">
           <div className="col-lg-6">
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Rewards Balance</div>
               <div className="ray__form__amount">
-                <div className="font-size-24 font-weight-700">
-                  <strong>Coming Soon</strong>
-                </div>
-                {/* <AmountFormatterAsset
-                  amount={0}
-                  fingerprint="asset1ray"
-                  ticker="RAY"
+                <AmountFormatterAsset
+                  amount={walletRayRewards}
+                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
+                  ticker="XRAY"
                   availablePrivate
-                /> */}
+                />
               </div>
             </div>
             <div className="mb-3 mb-lg-2">
@@ -163,25 +196,13 @@ const RewardsActivities = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="ray__form__item mb-3">
-              <div className="ray__form__label text-danger">Launch Information</div>
-              <small>
-                <p className="mb-0">
-                  All rewards from November 1, 2020 will be recalculated and added to your account
-                  after the withdrawal feature is launched. Your rewards are safe.
-                </p>
-              </small>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="ray__form__item mb-3">
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
                 <small>
                   <p className="mb-0">
-                    Receive additional RAY rewards every epoch (5 days) for delegating your ADA
-                    coins to any RAY pool
+                    Receive additional XRAY rewards (total 100,000,000 XRAY) every epoch (5 days)
+                    for delegating your ADA coins to any RAY pool. Additional distribution of Early
+                    Delegators Program (total 1,538,200 XRAY) for early delegators ({'<275'} epoch).
                   </p>
                 </small>
               </div>
@@ -194,7 +215,7 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Condition</div>
               <div className="ray__form__amount">
                 <small>
-                  <p>You should delegate at least 50 ADA to any RAY pool</p>
+                  <p>You should delegate at least 50 ADA to any Ray pool</p>
                 </small>
               </div>
             </div>
@@ -203,7 +224,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-0">
               <div className="ray__form__label">Reward Rate</div>
               <div className="ray__form__amount">
-                <span className="ray__badge">50 ADA = 1 RAY</span>
+                <span className="ray__badge">min 50 ADA = 1 XRAY</span>
               </div>
             </div>
           </div>
@@ -223,7 +244,7 @@ const RewardsActivities = () => {
           </div>
         </div>
       </div>
-      <div className="ray__heading">Early Liquidity Providers Distribution</div>
+      <div className="ray__heading">Liquidity Providers Distribution</div>
       <div className="ray__item ray__item--gray">
         <div className="row">
           <div className="col-lg-6">
@@ -235,8 +256,8 @@ const RewardsActivities = () => {
                 </div>
                 {/* <AmountFormatterAsset
                   amount={0}
-                  fingerprint="asset1ray"
-                  ticker="RAY"
+                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
+                  ticker="XRAY"
                   availablePrivate
                 /> */}
               </div>
@@ -266,7 +287,7 @@ const RewardsActivities = () => {
               <div className="ray__form__label">Description</div>
               <div className="ray__form__amount">
                 <small>
-                  <div>Airdrop to early RAY Swap liquidity providers</div>
+                  <div>Airdrop to early Ray Swap liquidity providers</div>
                 </small>
               </div>
             </div>
@@ -285,7 +306,7 @@ const RewardsActivities = () => {
             <div className="ray__form__item mb-3">
               <div className="ray__form__label">Reward</div>
               <div className="ray__form__amount">
-                <span className="ray__badge">**,***,*** RAY</span>
+                <span className="ray__badge">**,***,*** XRAY</span>
               </div>
             </div>
           </div>
@@ -296,7 +317,7 @@ const RewardsActivities = () => {
                 <p className="mb-0">
                   To receive your rewards, you must send 2 ADA to cover txs commissions. These
                   funds, excluding Cardano txs commissions (~0.4 ADA), will be returned to you along
-                  with RAY tokens
+                  with XRAY tokens
                 </p>
               </small>
             </div>

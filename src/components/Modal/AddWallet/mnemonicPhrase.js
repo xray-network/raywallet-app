@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, Input, Button, Tabs, Checkbox, Alert } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { CardanoGenerateMnemonic, CardanoValidateMnemonic } from 'utils/ray-cardano-crypto'
+import Cardano from 'services/cardano'
 import style from './style.module.scss'
 
 const MnemonicForm = () => {
@@ -11,16 +11,23 @@ const MnemonicForm = () => {
   const [wroteDownMnemonic, setWroteDownMnemonic] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [generatedMnemonic, setGeneratedMnemonic] = useState('')
+  const [confirmMnemonic, setConfirmMnemonic] = useState('')
   const isModalVisible = useSelector((state) => state.settings.modalAddWallet)
   const hiddenMnemonic =
     '**** **** ******* ***** ****** ***** ***** ****** **** ***** **** ****** ***** ******* **** **** **** ******* ****** ******** ****** **** ***** *******'
 
   useEffect(() => {
     form.resetFields()
-    generateNewMnemonic()
+    // generateNewMnemonic()
     setWroteDownMnemonic(false)
     setAgreeTerms(false)
+    setConfirmMnemonic('')
   }, [isModalVisible, form])
+
+  useEffect(() => {
+    generateNewMnemonic()
+    // eslint-disable-next-line
+  }, [])
 
   const unlockWallet = (mnemonic) => {
     dispatch({
@@ -36,6 +43,7 @@ const MnemonicForm = () => {
         value: false,
       },
     })
+    generateNewMnemonic()
   }
 
   const onFinish = (values) => {
@@ -60,7 +68,7 @@ const MnemonicForm = () => {
   }
 
   const generateNewMnemonic = () => {
-    const mnemonicPhrase = CardanoGenerateMnemonic()
+    const mnemonicPhrase = Cardano.crypto.generateMnemonic()
     setGeneratedMnemonic(mnemonicPhrase)
   }
 
@@ -116,7 +124,7 @@ const MnemonicForm = () => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (!value || CardanoValidateMnemonic(value)) {
+                    if (!value || Cardano.crypto.validateMnemonic(value)) {
                       return Promise.resolve()
                     }
                     return Promise.reject(new Error('Mnemonic Phrase is wrong'))
@@ -199,6 +207,15 @@ const MnemonicForm = () => {
             </div>
             {wroteDownMnemonic && (
               <div className="mb-4">
+                <div className="ray__form__label">Repeat your mnemonic</div>
+                <Input
+                  value={confirmMnemonic}
+                  onChange={(e) => setConfirmMnemonic(e.target.value)}
+                />
+              </div>
+            )}
+            {wroteDownMnemonic && (
+              <div className="mb-4">
                 <Alert
                   showIcon
                   type="warning"
@@ -220,7 +237,7 @@ const MnemonicForm = () => {
               </div>
             )}
             <Button
-              disabled={!(wroteDownMnemonic && agreeTerms)}
+              disabled={!(wroteDownMnemonic && agreeTerms && generatedMnemonic === confirmMnemonic)}
               htmlType="submit"
               size="large"
               type="primary"

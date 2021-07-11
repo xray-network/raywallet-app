@@ -3,7 +3,8 @@ import actions from './actions'
 const initialState = {
   transactionLoading: false,
   transactionType: '',
-  transaction: {},
+  transactionData: {},
+  transactionError: {},
   transactionWaitingHash: '',
   transactionWaiting: false,
   transactionSuccess: false,

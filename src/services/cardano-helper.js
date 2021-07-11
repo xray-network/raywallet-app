@@ -22,7 +22,9 @@ const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
 
 const apiClient = axios.create({
   baseURL:
-    CARDANO_NETWORK === 'testnet' ? 'http://localhost:8080' : 'https://graphql-helper.rraayy.com', // testnet
+    CARDANO_NETWORK === 'testnet'
+      ? 'https://graphql-testnet-helper.rraayy.com'
+      : 'https://graphql-helper.rraayy.com',
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
@@ -46,17 +48,16 @@ apiClient.interceptors.response.use(
     return response
   },
   (error) => {
-    // Errors handling
     console.log(error)
-    notification.warning({
-      message: 'Something went wrong :(',
-    })
+    // notification.warning({
+    //   message: 'Something went wrong :(',
+    // })
   },
 )
 
-export async function GetStakeInfo(account) {
+export async function GetStatus() {
   return apiClient
-    .get(`/account/stake/${account}`)
+    .get('/status/')
     .then((response) => {
       if (response) {
         return response.data
@@ -66,12 +67,9 @@ export async function GetStakeInfo(account) {
     .catch((err) => console.log(err))
 }
 
-export async function GetPoolsInfo(poolsIds, currentEpoch) {
+export async function GetStakeStateByKey(account) {
   return apiClient
-    .post('/pools/info/', {
-      poolsIds,
-      currentEpoch,
-    })
+    .get(`/stake/state/${account}`)
     .then((response) => {
       if (response) {
         return response.data
@@ -80,5 +78,32 @@ export async function GetPoolsInfo(poolsIds, currentEpoch) {
     })
     .catch((err) => console.log(err))
 }
+
+export async function GetDelegationRewardsStateByKey(stakeKey) {
+  return apiClient
+    .get(`/rewards/delegation/state/${stakeKey}`)
+    .then((response) => {
+      if (response) {
+        return response.data
+      }
+      return false
+    })
+    .catch((err) => console.log(err))
+}
+
+// export async function GetPoolsInfo(poolsIds, currentEpoch) {
+//   return apiClient
+//     .post('/pools/info/', {
+//       poolsIds,
+//       currentEpoch,
+//     })
+//     .then((response) => {
+//       if (response) {
+//         return response.data
+//       }
+//       return false
+//     })
+//     .catch((err) => console.log(err))
+// }
 
 export const dummy = () => null

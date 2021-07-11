@@ -164,6 +164,25 @@
       color: inherit;
       border-bottom-color: $border;
     }
+
+    a {
+      span {
+        text-decoration: underline;
+      }
+
+      &:hover,
+      &:focus,
+      &:active {
+        span {
+          text-decoration: none;
+        }
+      }
+
+      .fe {
+        position: relative;
+        top: 2px;
+      }
+    }
   }
 
   &__item {
@@ -357,6 +376,14 @@
       }
     }
   }
+
+  &__bonus {
+    // background: $gray-1;
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
+    margin: 0 rem(-21) rem(20);
+    padding: rem(20);
+  }
 }
 
 // dark theme
@@ -364,6 +391,11 @@
   .ray {
     &__wrapper {
       background-color: $dark-gray-4;
+    }
+
+    &__bonus {
+      border-top: 1px solid $dark-border;
+      border-bottom: 1px solid $dark-border;
     }
 
     &__badge {

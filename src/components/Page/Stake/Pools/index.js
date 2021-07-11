@@ -7,7 +7,7 @@ import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const StakePools = () => {
   const dispatch = useDispatch()
-  // const walletParams = useSelector((state) => state.wallets.walletParams)
+  const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletStake = useSelector((state) => state.wallets.walletStake)
   const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
 
@@ -18,6 +18,16 @@ const StakePools = () => {
         hasStakingKey: walletStake.hasStakingKey,
         poolId: id,
         type: 'delegate',
+      },
+    })
+  }
+
+  const deregistrate = (id) => {
+    dispatch({
+      type: 'transactions/BUILD_TX',
+      payload: {
+        poolId: id,
+        type: 'deregistrate',
       },
     })
   }
@@ -63,7 +73,7 @@ const StakePools = () => {
                 <div className="ray__form__item">
                   <div className="ray__form__label">Live Stake</div>
                   <div className="ray__form__amount">
-                    <AmountFormatterAda amount={pool.total_stake} />
+                    <AmountFormatterAda amount={pool.total_stake || 0} />
                   </div>
                 </div>
               </div>
@@ -71,7 +81,7 @@ const StakePools = () => {
                 <div className="ray__form__item">
                   <div className="ray__form__label">Active Stake</div>
                   <div className="ray__form__amount">
-                    <AmountFormatterAda amount={pool.active_stake} small />
+                    <AmountFormatterAda amount={pool.active_stake || 0} small />
                   </div>
                 </div>
               </div>
@@ -105,13 +115,28 @@ const StakePools = () => {
             </div>
             <div className="mt-3">
               {inRayPools && (
-                <Button type="primary" disabled>
-                  <i className="fe fe-arrow-up-circle mr-1" />
-                  <strong>Delagated</strong>
-                </Button>
+                <div>
+                  <Button type="primary" disabled className="mr-3">
+                    <i className="fe fe-arrow-up-circle mr-1" />
+                    <strong>Delagated</strong>
+                  </Button>
+                  <a
+                    className="ray__link"
+                    onClick={() => deregistrate(pool.delegateId)}
+                    onKeyPress={() => deregistrate(pool.delegateId)}
+                    role="button"
+                    tabIndex="0"
+                  >
+                    Deregister
+                  </a>
+                </div>
               )}
               {(pool.delegateId !== walletStake.currentPoolId || !walletStake.hasStakingKey) && (
-                <Button type="primary" onClick={() => delegate(pool.delegateId)}>
+                <Button
+                  type="primary"
+                  onClick={() => delegate(pool.delegateId)}
+                  disabled={!walletParams.accountId}
+                >
                   <i className="fe fe-arrow-up-circle mr-1" />
                   <strong>Delegate</strong>
                 </Button>

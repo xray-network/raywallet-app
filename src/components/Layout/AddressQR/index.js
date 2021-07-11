@@ -22,12 +22,12 @@ const AddressQR = ({ address, index }) => {
 
   return (
     <div key={index} className="d-flex mb-3">
-      {index >= -1 && (
+      {/* {index >= -1 && (
         <div className="ray__address__path mr-2">
           <sup>/</sup>
           {index}
         </div>
-      )}
+      )} */}
       <Tooltip title="Show QR Code">
         <a
           className="ray__address__qr mr-2"
