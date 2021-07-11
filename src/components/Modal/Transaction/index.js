@@ -5,6 +5,7 @@ import SendForm from './Forms/send'
 import DelegateForm from './Forms/delegate'
 import WaitingForm from './Forms/waiting'
 import WithdrawForm from './Forms/withdraw'
+import DeregistrateForm from './Forms/deregistrate'
 // import style from './style.module.scss'
 
 const TransactionModal = () => {
@@ -42,7 +43,7 @@ const TransactionModal = () => {
     <Modal
       title={getFormName(transactionType)}
       footer={null}
-      visible={transactionType}
+      visible={transactionType !== 'calculate' && transactionType !== ''}
       onCancel={handleCancel}
       width={420}
       closable={!(transactionWaitingHash && !transactionSuccess)}
@@ -53,6 +54,7 @@ const TransactionModal = () => {
       {!transactionWaitingHash && transactionType === 'send' && <SendForm />}
       {!transactionWaitingHash && transactionType === 'delegate' && <DelegateForm />}
       {!transactionWaitingHash && transactionType === 'withdraw' && <WithdrawForm />}
+      {!transactionWaitingHash && transactionType === 'deregistrate' && <DeregistrateForm />}
     </Modal>
   )
 }

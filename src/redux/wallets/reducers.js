@@ -7,17 +7,17 @@ const pools =
     ? {
         '58e3124fbd0e33188658a616c97932e50ba40430d81d3ed61b33d2ab': {
           delegateId: 'pool15sfcpy4tps5073gmra0e6tm2dgtrn004yr437qmeh44sgjlg2ex',
-          ticker: 'JUNO',
+          ticker: 'JUNO [RAY]',
           name: 'Testpool #1',
         },
         '48794370608c8d41cf4ad665833da210ad4fed6c6fd40b48bfad9ca8': {
           delegateId: 'pool1d03p2xfdcq09efx0hgy4jkr0tqdgvklues5cg3ud45t9wndafmm',
-          ticker: 'ANGEL',
+          ticker: 'ANGEL [RAY2]',
           name: 'Testpool #2',
         },
         '683e89fa1bcde139504b11fbfd914f8ebe9b8db2678b3da0abdcb2f1': {
           delegateId: 'pool1tzmx7k40sm8kheam3pr2d4yexrp3jmv8l50suj6crnvn6dc2429',
-          ticker: 'WURST',
+          ticker: 'WURST [RAY3]',
           name: 'Testpool #3',
         },
       }

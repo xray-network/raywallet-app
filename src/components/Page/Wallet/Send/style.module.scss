@@ -1,5 +1,19 @@
 @import 'mixins.scss';
 
+.outputLine {
+  margin: rem(20) rem(-25);
+  height: 1px;
+  background: $border;
+}
+
+.removeOutput {
+  float: right;
+  i {
+    position: relative;
+    top: 1px;
+  }
+}
+
 .assetGroup {
   :global(.ant-input-number),
   :global(.ant-btn),
@@ -29,7 +43,7 @@
 
 .asset {
   &TickerAda {
-    width: 40%;
+    width: 50%;
 
     :global(.ant-select-selector) {
       opacity: 1 !important;
@@ -41,17 +55,17 @@
     }
   }
   &AmountAda {
-    width: 60%;
+    width: 50%;
 
     :global(.ant-input-affix-wrapper) {
       border-radius: 0 8px 8px 0 !important;
     }
   }
   &Ticker {
-    width: 40%;
+    width: 50%;
   }
   &Amount {
-    width: calc(60% - 50px);
+    width: calc(50% - 50px);
 
     :global(.ant-input-affix-wrapper) {
       border-radius: 0 8px 8px 0 !important;
@@ -65,7 +79,7 @@
 
     :global(.ant-btn) {
       width: 50px;
-      color: $gray-4;
+      color: $gray-5;
       &:hover {
         color: $primary;
       }
@@ -74,9 +88,28 @@
   &To {
     color: $black;
     font-weight: 700;
+    font-size: rem(14);
     text-transform: uppercase;
     display: flex;
     align-items: center;
+
+    &Token {
+      padding-top: rem(5);
+
+      .assetName {
+        span {
+          display: block !important;
+          line-height: rem(15);
+
+          &:last-child {
+            font-size: rem(12);
+            text-transform: uppercase;
+            font-weight: normal;
+            color: $gray-5;
+          }
+        }
+      }
+    }
   }
   &Icon {
     display: inline-block;
@@ -120,5 +153,9 @@
       background: $dark-border;
       border-color: $dark-border;
     }
+  }
+
+  .outputLine {
+    background: $dark-border;
   }
 }

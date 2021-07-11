@@ -1,5 +1,6 @@
 const actions = {
   SET_STATE: 'wallets/SET_STATE',
+  RESOLVER: 'wallets/RESOLVER',
   CHANGE_SETTING: 'wallets/CHANGE_SETTING',
   FETCH_WALLET_DATA: 'wallets/FETCH_WALLET_DATA',
   FETCH_NETWORK_STATE: 'wallets/FETCH_NETWORK_STATE',

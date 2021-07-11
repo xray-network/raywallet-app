@@ -1,7 +1,7 @@
+import { eventChannel } from 'redux-saga'
 import { all, takeEvery, put, select, call, take } from 'redux-saga/effects'
-import * as Cardano from 'utils/ray-cardano-crypto'
-import * as Explorer from 'services/api/cardano'
-import BigNumber from 'bignumber.js'
+import Cardano from 'services/cardano'
+// import BigNumber from 'bignumber.js'
 import actions from './actions'
 import { FETCH_NETWORK_STATE } from '../wallets/sagas'
 
@@ -15,74 +15,88 @@ export function* CHANGE_SETTING({ payload: { setting, value } }) {
 }
 
 export function* BUILD_TX({ payload }) {
-  const { value, toAddress, type, poolId } = payload
+  const {
+    outputs = [],
+    metadata,
+    certificates = [],
+    withdrawals = [],
+    type,
+    allowNoOutputs = false,
+    poolId,
+  } = payload
 
-  if (type) {
-    yield put({
-      type: 'transactions/SET_STATE',
-      payload: {
-        transactionLoading: true,
-      },
-    })
+  const isSend = type !== 'calculate'
+
+  // if build sending transaction update network currentSlot
+  yield put({
+    type: 'transactions/SET_STATE',
+    payload: {
+      transactionLoading: true,
+    },
+  })
+
+  if (isSend) {
     yield call(FETCH_NETWORK_STATE)
     yield take(FETCH_NETWORK_STATE)
   }
 
   const [changeAddress] = yield select((state) => state.wallets.walletAddresses)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
+  const walletUTXOs = yield select((state) => state.wallets.walletUTXOs)
+  const currentSlot = networkInfo.tip?.slotNo
+
   const hasStakingKey = yield select((state) => state.wallets.walletStake.hasStakingKey)
   const rewardsAmount = yield select((state) => state.wallets.walletStake.rewardsAmount)
   const rewardAddress = yield select((state) => state.wallets.walletParams.rewardAddress)
-  const walletUTXOs = yield select((state) => state.wallets.walletUTXOs)
   const publicKey = yield select((state) => state.wallets.walletParams.publicKey)
-  const currentSlot = networkInfo.tip?.slotNo
-
-  const computedValue = value ? new BigNumber(value).multipliedBy(1000000).toFixed() : undefined
-  let metadata
-  const certificates = []
-  const withdrawals = []
-  let isSend = true
 
   if (type === 'delegate') {
-    isSend = false
     const certs = yield call(
-      Cardano.CardanoGenerateDelegationCertificates,
+      Cardano.crypto.generateDelegationCerts,
       publicKey,
       hasStakingKey,
       poolId,
     )
-    certificates.push(...certs)
+    if (certs) {
+      certificates.push(...certs)
+    }
+  }
+
+  if (type === 'deregistrate') {
+    const certs = yield call(Cardano.crypto.generateDeregistrationCerts, publicKey, poolId)
+    if (certs) {
+      certificates.push(...certs)
+    }
   }
 
   if (type === 'withdraw') {
-    isSend = false
     withdrawals.push({
       address: rewardAddress,
       amount: rewardsAmount,
     })
   }
 
-  const response = yield call(
-    Cardano.CardanoBuildTx,
-    isSend,
-    computedValue,
-    toAddress,
+  const result = yield call(
+    Cardano.crypto.txBuild,
+    outputs,
+    walletUTXOs,
     changeAddress,
     currentSlot,
-    walletUTXOs,
     metadata,
     certificates,
     withdrawals,
+    allowNoOutputs,
   )
 
+  console.log('tx.build.result', result)
   yield put({
     type: 'transactions/SET_STATE',
     payload: {
-      transaction: response,
+      transactionData: result,
     },
   })
 
-  if (type) {
+  if (isSend) {
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
@@ -108,16 +122,21 @@ export function* SEND_TX({ payload }) {
   })
 
   const { transaction, privateKey } = payload
-  const signedTx = yield call(Cardano.CardanoSignTx, transaction, privateKey)
-  const sendTx = yield call(Explorer.SendTransaction, signedTx)
-  if (sendTx) {
-    const transactionHash = sendTx.data?.submitTransaction?.hash
+  const signedTx = yield call(Cardano.crypto.txSign, transaction, privateKey)
+  const { data, errors } = yield call(Cardano.explorer.txSend, signedTx)
+
+  if (data) {
+    const transactionHash = data.submitTransaction?.hash
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
         transactionWaitingHash: transactionHash,
       },
     })
+  }
+
+  if (errors) {
+    console.log(errors)
   }
 
   yield put({
@@ -130,8 +149,15 @@ export function* SEND_TX({ payload }) {
 
 export function* CHECK_TX({ payload }) {
   const { hash } = payload
-  const success = yield call(Explorer.GetTransactionsIO, [hash])
-  if (success.data?.transactions?.length) {
+  const { data: success } = yield call(Cardano.explorer.getTxByHash, [hash])
+  if (success?.transactions?.length) {
+    yield put({
+      type: 'transactions/SET_STATE',
+      payload: {
+        transactionData: {},
+        transactionError: {},
+      },
+    })
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
@@ -147,17 +173,36 @@ export function* CLEAR_TX() {
     payload: {
       transactionLoading: false,
       transactionType: '',
-      transaction: {},
+      transactionData: {},
+      transactionError: {},
       transactionWaitingHash: '',
+      transactionWaiting: false,
       transactionSuccess: false,
     },
   })
 }
 
+export function* SETUP() {
+  const chan = eventChannel((emitter) => {
+    window.addEventListener('hashchange', (message) => emitter(message))
+    return () => {}
+  })
+
+  while (true) {
+    yield take(chan)
+    yield put({
+      type: 'transactions/CLEAR_TX',
+    })
+  }
+}
+
 export default function* rootSaga() {
-  yield all([takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING)])
-  yield all([takeEvery(actions.BUILD_TX, BUILD_TX)])
-  yield all([takeEvery(actions.SEND_TX, SEND_TX)])
-  yield all([takeEvery(actions.CLEAR_TX, CLEAR_TX)])
-  yield all([takeEvery(actions.CHECK_TX, CHECK_TX)])
+  yield all([
+    takeEvery(actions.CHANGE_SETTING, CHANGE_SETTING),
+    takeEvery(actions.BUILD_TX, BUILD_TX),
+    takeEvery(actions.SEND_TX, SEND_TX),
+    takeEvery(actions.CLEAR_TX, CLEAR_TX),
+    takeEvery(actions.CHECK_TX, CHECK_TX),
+    SETUP(), // run once on app load to init listeners
+  ])
 }

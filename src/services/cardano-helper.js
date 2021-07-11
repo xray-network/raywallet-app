@@ -22,7 +22,9 @@ const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
 
 const apiClient = axios.create({
   baseURL:
-    CARDANO_NETWORK === 'testnet' ? 'http://localhost:8080' : 'https://graphql-helper.rraayy.com', // testnet
+    CARDANO_NETWORK === 'testnet'
+      ? 'https://graphql-testnet-helper.rraayy.com'
+      : 'https://graphql-helper.rraayy.com',
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
@@ -46,11 +48,10 @@ apiClient.interceptors.response.use(
     return response
   },
   (error) => {
-    // Errors handling
     console.log(error)
-    notification.warning({
-      message: 'Something went wrong :(',
-    })
+    // notification.warning({
+    //   message: 'Something went wrong :(',
+    // })
   },
 )
 

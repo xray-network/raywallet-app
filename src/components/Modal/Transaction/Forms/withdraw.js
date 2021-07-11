@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Input, message } from 'antd'
 import { AES, enc as EncodeTo } from 'crypto-js'
 import { useSelector, useDispatch } from 'react-redux'
@@ -8,11 +8,17 @@ import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
 
 const DelegateForm = () => {
   const dispatch = useDispatch()
-  const transaction = useSelector((state) => state.transactions.transaction)
+  const transactionData = useSelector((state) => state.transactions.transactionData)
   const transactionWaiting = useSelector((state) => state.transactions.transactionWaiting)
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const rewardsAmount = useSelector((state) => state.wallets.walletStake.rewardsAmount)
+  const transactionType = useSelector((state) => state.transactions.transactionType)
   const [password, setPassword] = useState()
+
+  useEffect(() => {
+    setPassword()
+    // eslint-disable-next-line
+  }, [transactionType])
 
   const sendTx = () => {
     if (password === '') {
@@ -35,7 +41,7 @@ const DelegateForm = () => {
       dispatch({
         type: 'transactions/SEND_TX',
         payload: {
-          transaction,
+          transaction: transactionData.data,
           privateKey: AES.decrypt(walletParams.privateKey, password).toString(EncodeTo.Utf8),
         },
       })
@@ -43,14 +49,15 @@ const DelegateForm = () => {
       dispatch({
         type: 'transactions/SEND_TX',
         payload: {
-          transaction,
+          transaction: transactionData.data,
           privateKey: walletParams.privateKey,
         },
       })
+      setPassword()
     }
   }
 
-  const fee = new BigNumber(transaction.fee)
+  const fee = new BigNumber(transactionData.data?.fee)
 
   return (
     <div>
