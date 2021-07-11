@@ -35,7 +35,7 @@ const WalletTransactions = () => {
                 </div>
                 <div>
                   <AmountFormatterAda
-                    amount={Math.abs(tx.value)}
+                    amount={tx.value}
                     prefix={tx.type === 'send' && !isWithdrawal ? '-' : '+'}
                     small
                     availablePrivate
@@ -43,7 +43,7 @@ const WalletTransactions = () => {
                   {tx.tokens.map((token, tokenIndex) => {
                     const quantity = parseInt(token.quantity.toString(), 10)
                     return (
-                      quantity > 0 && (
+                      quantity !== 0 && (
                         <AmountFormatterAsset
                           key={tokenIndex}
                           amount={token.quantity}

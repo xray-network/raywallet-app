@@ -21,19 +21,21 @@ export function* BUILD_TX({ payload }) {
     certificates = [],
     withdrawals = [],
     type,
-    allowNoOutputs = true,
+    allowNoOutputs = false,
+    poolId,
   } = payload
 
   const isSend = type !== 'calculate'
 
   // if build sending transaction update network currentSlot
+  yield put({
+    type: 'transactions/SET_STATE',
+    payload: {
+      transactionLoading: true,
+    },
+  })
+
   if (isSend) {
-    yield put({
-      type: 'transactions/SET_STATE',
-      payload: {
-        transactionLoading: true,
-      },
-    })
     yield call(FETCH_NETWORK_STATE)
     yield take(FETCH_NETWORK_STATE)
   }
@@ -43,27 +45,36 @@ export function* BUILD_TX({ payload }) {
   const walletUTXOs = yield select((state) => state.wallets.walletUTXOs)
   const currentSlot = networkInfo.tip?.slotNo
 
-  // const hasStakingKey = yield select((state) => state.wallets.walletStake.hasStakingKey)
-  // const rewardsAmount = yield select((state) => state.wallets.walletStake.rewardsAmount)
-  // const rewardAddress = yield select((state) => state.wallets.walletParams.rewardAddress)
-  // const publicKey = yield select((state) => state.wallets.walletParams.publicKey)
+  const hasStakingKey = yield select((state) => state.wallets.walletStake.hasStakingKey)
+  const rewardsAmount = yield select((state) => state.wallets.walletStake.rewardsAmount)
+  const rewardAddress = yield select((state) => state.wallets.walletParams.rewardAddress)
+  const publicKey = yield select((state) => state.wallets.walletParams.publicKey)
 
-  // if (type === 'delegate') {
-  //   const certs = yield call(
-  //     Cardano.crypto.generateDelegationCerts,
-  //     publicKey,
-  //     hasStakingKey,
-  //     poolId,
-  //   )
-  //   certificates.push(...certs)
-  // }
+  if (type === 'delegate') {
+    const certs = yield call(
+      Cardano.crypto.generateDelegationCerts,
+      publicKey,
+      hasStakingKey,
+      poolId,
+    )
+    if (certs) {
+      certificates.push(...certs)
+    }
+  }
 
-  // if (type === 'withdraw') {
-  //   withdrawals.push({
-  //     address: rewardAddress,
-  //     amount: rewardsAmount,
-  //   })
-  // }
+  if (type === 'deregistrate') {
+    const certs = yield call(Cardano.crypto.generateDeregistrationCerts, publicKey, poolId)
+    if (certs) {
+      certificates.push(...certs)
+    }
+  }
+
+  if (type === 'withdraw') {
+    withdrawals.push({
+      address: rewardAddress,
+      amount: rewardsAmount,
+    })
+  }
 
   const result = yield call(
     Cardano.crypto.txBuild,
@@ -77,7 +88,7 @@ export function* BUILD_TX({ payload }) {
     allowNoOutputs,
   )
 
-  console.log('tx.build', result)
+  console.log('tx.build.result', result)
   yield put({
     type: 'transactions/SET_STATE',
     payload: {
@@ -140,6 +151,13 @@ export function* CHECK_TX({ payload }) {
   const { hash } = payload
   const { data: success } = yield call(Cardano.explorer.getTxByHash, [hash])
   if (success?.transactions?.length) {
+    yield put({
+      type: 'transactions/SET_STATE',
+      payload: {
+        transactionData: {},
+        transactionError: {},
+      },
+    })
     yield put({
       type: 'transactions/SET_STATE',
       payload: {

@@ -404,26 +404,29 @@ export function* GET_PUBLIC_ADRESSES() {
 }
 
 export function* FETCH_NETWORK_STATE() {
-  const { data: networkInfo } = yield call(Cardano.explorer.getNetworkInfo)
+  const networkState = yield call(Cardano.explorer.getNetworkInfo)
 
-  if (networkInfo) {
-    const cardano = networkInfo?.cardano
-    const startedAt = networkInfo?.cardano?.currentEpoch?.startedAt
+  if (networkState) {
+    const { data } = networkState
+    if (data) {
+      const { cardano } = data
+      const startedAt = cardano.currentEpoch?.startedAt
 
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'networkInfo',
-        value: cardano,
-      },
-    })
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'epochEndIns',
-        value: new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000,
-      },
-    })
+      yield put({
+        type: 'wallets/CHANGE_SETTING',
+        payload: {
+          setting: 'networkInfo',
+          value: cardano,
+        },
+      })
+      yield put({
+        type: 'wallets/CHANGE_SETTING',
+        payload: {
+          setting: 'epochEndIns',
+          value: new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000,
+        },
+      })
+    }
   }
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -637,7 +640,7 @@ export function* FETCH_WALLET_DATA() {
 
   yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
-  // yield call(GET_STAKE_STATE)
+  yield call(GET_STAKE_STATE)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',

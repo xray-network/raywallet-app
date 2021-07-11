@@ -1,23 +1,11 @@
-const axios = require('axios')
+import axios from 'axios'
 
 const Explorer = function Explorer(pkg, settings) {
   const Cardano = pkg
   const { BigNumber } = Cardano.crypto
 
-  const errorHandler =
-    settings.errorHandler ||
-    ((error) => {
-      return error.response
-        ? error.response.data
-        : {
-            errors: [
-              {
-                name: error.name,
-                message: error.message,
-              },
-            ],
-          }
-    })
+  const responseHandler = settings.responseHandler || ((response) => response)
+  const errorHandler = settings.errorHandler || ((error) => error)
 
   const client = axios.create({
     baseURL: settings.url,
@@ -26,7 +14,7 @@ const Explorer = function Explorer(pkg, settings) {
 
   client.interceptors.response.use(
     (response) => {
-      return response?.data
+      return responseHandler(response)
     },
     (error) => {
       return errorHandler(error)
@@ -423,13 +411,14 @@ const Explorer = function Explorer(pkg, settings) {
     )
 
     const transactions = (transactionsInputsOutputs?.transactions || []).map((tx) => {
-      let inputAmount = new BigNumber(0)
-      let outputAmount = new BigNumber(0)
+      // let inputAmount = new BigNumber(0)
+      // let outputAmount = new BigNumber(0)
+      let amount = new BigNumber(0)
       const tokens = {}
 
       tx.inputs.forEach((input) => {
         if (adressesArray.includes(input.address)) {
-          inputAmount = inputAmount.plus(input.value)
+          amount = amount.minus(input.value)
           input.tokens.forEach((token) => {
             const { asset, quantity } = token
             const { assetId } = asset
@@ -450,7 +439,7 @@ const Explorer = function Explorer(pkg, settings) {
       })
       tx.outputs.forEach((output) => {
         if (adressesArray.includes(output.address)) {
-          outputAmount = outputAmount.plus(output.value)
+          amount = amount.plus(output.value)
           output.tokens.forEach((token) => {
             const { asset, quantity } = token
             const { assetId } = asset
@@ -472,9 +461,14 @@ const Explorer = function Explorer(pkg, settings) {
 
       return {
         ...tx,
-        type: new BigNumber(inputAmount).isZero() ? 'receive' : 'send',
-        value: new BigNumber(outputAmount).minus(inputAmount),
-        tokens: Object.keys(tokens).map((key) => tokens[key]),
+        type: new BigNumber(amount).lt(0) ? 'send' : 'receive',
+        value: new BigNumber(amount).abs(),
+        tokens: Object.keys(tokens).map((key) => {
+          return {
+            ...tokens[key],
+            quantity: tokens[key].quantity.abs(),
+          }
+        }),
       }
     })
 
@@ -542,4 +536,4 @@ const Explorer = function Explorer(pkg, settings) {
   }
 }
 
-module.exports = Explorer
+export default Explorer

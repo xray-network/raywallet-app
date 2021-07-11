@@ -1,17 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Input, message } from 'antd'
 import { AES, enc as EncodeTo } from 'crypto-js'
 import { useSelector, useDispatch } from 'react-redux'
-import BigNumber from 'bignumber.js'
 import Address from 'components/Layout/Address'
 import AmountFormatterAda from 'components/Layout/AmountFormatterAda'
+import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
 
 const SendForm = () => {
   const dispatch = useDispatch()
-  const transaction = useSelector((state) => state.transactions.transaction)
+  const transactionData = useSelector((state) => state.transactions.transactionData)
   const transactionWaiting = useSelector((state) => state.transactions.transactionWaiting)
   const walletParams = useSelector((state) => state.wallets.walletParams)
+  const transactionType = useSelector((state) => state.transactions.transactionType)
+  const { tokens } = useSelector((state) => state.wallets.walletAssetsSummary)
   const [password, setPassword] = useState()
+
+  useEffect(() => {
+    setPassword()
+    // eslint-disable-next-line
+  }, [transactionType])
 
   const sendTx = () => {
     if (password === '') {
@@ -34,7 +41,7 @@ const SendForm = () => {
       dispatch({
         type: 'transactions/SEND_TX',
         payload: {
-          transaction,
+          transaction: transactionData.data,
           privateKey: AES.decrypt(walletParams.privateKey, password).toString(EncodeTo.Utf8),
         },
       })
@@ -42,30 +49,34 @@ const SendForm = () => {
       dispatch({
         type: 'transactions/SEND_TX',
         payload: {
-          transaction,
+          transaction: transactionData.data,
           privateKey: walletParams.privateKey,
         },
       })
+      setPassword()
     }
   }
-
-  const amount = new BigNumber(transaction.value)
-  const fee = new BigNumber(transaction.fee)
-  const total = amount.plus(fee)
 
   return (
     <div>
       <div className="ray__form__item mb-4">
         <div className="ray__form__label">To Address</div>
         <div className="ray__form__amount">
-          <Address address={transaction.toAddress} />
+          {transactionData?.data &&
+            transactionData?.data?.outputs.map((output, index) => {
+              return (
+                <div className="text-center" key={index}>
+                  <Address address={output.address} cut />
+                </div>
+              )
+            })}
         </div>
       </div>
       <div className="ray__form__item">
         <div className="ray__form__label">Send Amount</div>
         <div className="ray__item ray__item--tinted text-center mb-4">
           <div className="ray__form__amount d-inline-block ml-auto mr-auto">
-            <AmountFormatterAda amount={amount} />
+            <AmountFormatterAda amount={transactionData?.data?.spending?.send} />
           </div>
         </div>
       </div>
@@ -74,7 +85,22 @@ const SendForm = () => {
           <div className="ray__form__item">
             <div className="ray__form__label">Total</div>
             <div className="ray__form__amount">
-              <AmountFormatterAda amount={total} small />
+              <AmountFormatterAda amount={transactionData?.data?.spending?.value} small />
+              {transactionData?.data?.spending?.tokens?.length > 0 &&
+                transactionData?.data?.spending.tokens.map((token, tokenIndex) => {
+                  const { fingerprint, ticker } = tokens.filter(
+                    (item) => item.assetId === token.asset.assetId,
+                  )[0]
+                  return (
+                    <AmountFormatterAsset
+                      amount={token.quantity || '0'}
+                      key={tokenIndex}
+                      ticker={ticker}
+                      fingerprint={fingerprint}
+                      availablePrivate
+                    />
+                  )
+                })}
             </div>
           </div>
         </div>
@@ -82,7 +108,7 @@ const SendForm = () => {
           <div className="ray__form__item">
             <div className="ray__form__label">Fee</div>
             <div className="ray__form__amount">
-              <AmountFormatterAda amount={fee} small />
+              <AmountFormatterAda amount={transactionData?.data?.fee} small />
             </div>
           </div>
         </div>

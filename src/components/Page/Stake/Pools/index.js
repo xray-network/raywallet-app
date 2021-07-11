@@ -22,6 +22,16 @@ const StakePools = () => {
     })
   }
 
+  const deregistrate = (id) => {
+    dispatch({
+      type: 'transactions/BUILD_TX',
+      payload: {
+        poolId: id,
+        type: 'deregistrate',
+      },
+    })
+  }
+
   return (
     <div>
       <div className="ray__heading">Stake Pools</div>
@@ -105,10 +115,21 @@ const StakePools = () => {
             </div>
             <div className="mt-3">
               {inRayPools && (
-                <Button type="primary" disabled>
-                  <i className="fe fe-arrow-up-circle mr-1" />
-                  <strong>Delagated</strong>
-                </Button>
+                <div>
+                  <Button type="primary" disabled className="mr-3">
+                    <i className="fe fe-arrow-up-circle mr-1" />
+                    <strong>Delagated</strong>
+                  </Button>
+                  <a
+                    className="ray__link"
+                    onClick={() => deregistrate(pool.delegateId)}
+                    onKeyPress={() => deregistrate(pool.delegateId)}
+                    role="button"
+                    tabIndex="0"
+                  >
+                    Deregister
+                  </a>
+                </div>
               )}
               {(pool.delegateId !== walletStake.currentPoolId || !walletStake.hasStakingKey) && (
                 <Button

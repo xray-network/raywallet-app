@@ -369,7 +369,7 @@ const Menu = () => {
                     {!!walletTransactions.length && (
                       <span>
                         <AmountFormatterAsset amount={walletTransactions.length} small inline />
-                        <strong>{walletTransactions.length > 99 ? '+' : ''}</strong>
+                        <strong>{walletTransactions.length > 2499 ? '+' : ''}</strong>
                       </span>
                     )}
                   </div>

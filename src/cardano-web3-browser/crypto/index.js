@@ -1,6 +1,27 @@
-const Bech32 = require('bech32').bech32
-const BigNumber = require('bignumber.js')
-const Bip39 = require('bip39-light')
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2021, Ray Network <hello@rraayy.com>
+ * https://rraayy.com, https://raywallet.io
+ *
+ * Copyright (c) 2018 EMURGO
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+import { bech32 as Bech32 } from 'bech32'
+import BigNumber from 'bignumber.js'
+import Bip39 from 'bip39-light'
 
 const Crypto = function Crypto(pkg, settings) {
   return (async () => {
@@ -37,34 +58,28 @@ const Crypto = function Crypto(pkg, settings) {
 
     const errorHandler =
       settings.errorHandler ||
-      // ((error) => {
-      //   console.error(error)
-      // })
-      (() => {})
+      ((error) => {
+        console.error(error)
+      })
 
     /**
      * Errors
      */
 
-    const ErrorException = (type, index) => {
-      const messages = {
-        not_enough: 'Not enough funds to send a transaction',
-        tokens_not_enough: 'Not enough tokens to send a transaction',
-        ada_less_than_min: 'Minimum 1 ADA',
-        ada_not_number: 'Wrong ADA value',
-        ada_wrong_value: 'Wrong ADA value',
-        address_wrong: 'Wrong address',
-        no_outputs: 'Transaction requires at least 1 output, but no output was added',
-        no_change: 'No change added even though it should be forced',
-      }
-      const error = new Error()
-      error.message = messages[type] || 'An unspecified error has occurred'
-      error.type = type || 'general_error'
-      if (index) {
-        error.index = index
-      }
+    const ErrorMessages = {
+      DEFAULT: 'An unspecified error has occurred',
+      NOT_ENOUGH: 'Not enough funds to send a transaction',
+      TOKENS_NOT_ENOUGH: 'Token output must be greater than 1',
+      ADA_LESS_THAN_MIN: 'Minimum 1 ADA',
+      ADA_NOT_NUMBER: 'Wrong ADA value',
+      ADA_WRONG_VALUE: 'Wrong ADA value',
+      ADDRESS_WRONG: 'Wrong Cardano address',
+      NO_OUTPUTS: 'Transaction requires at least 1 output, but no output was added',
+      NO_CHANGE: 'No change added even though it should be forced',
+    }
 
-      return error
+    const ErrorException = (type) => {
+      return new Error(type || ErrorMessages.DEFAULT)
     }
 
     /**
@@ -275,8 +290,7 @@ const Crypto = function Crypto(pkg, settings) {
         const result = []
         const hashes = assets.keys()
 
-        // eslint-disable-next-line
-        for (let i = 0; i < hashes.len(); i++) {
+        for (let i = 0; i < hashes.len(); i += 1) {
           const policyId = hashes.get(i)
           const assetsForPolicy = assets.get(policyId)
           // eslint-disable-next-line
@@ -284,8 +298,7 @@ const Crypto = function Crypto(pkg, settings) {
 
           const policies = assetsForPolicy.keys()
 
-          // eslint-disable-next-line
-          for (let j = 0; j < policies.len(); j++) {
+          for (let j = 0; j < policies.len(); j += 1) {
             const assetName = policies.get(j)
             const amount = assetsForPolicy.get(assetName)
             // eslint-disable-next-line
@@ -344,23 +357,23 @@ const Crypto = function Crypto(pkg, settings) {
 
         const cardanoValue = Cardano.Value.new(Cardano.BigNum.from_str(utxo.value))
 
-        if (!utxo.tokens || utxo.tokens.length === 0) {
+        if (utxo.tokens.length === 0) {
           return cardanoValue
         }
 
         const assets = Cardano.MultiAsset.new()
 
         // eslint-disable-next-line
-        for (const token of utxo.tokens) {
+        utxo.tokens.forEach((token) => {
           const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
           const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'))
           const quantity = Cardano.BigNum.from_str(token.quantity)
 
-          const asset = assets.get(policyId) ?? Cardano.Assets.new()
+          const policyContent = assets.get(policyId) ?? Cardano.Assets.new()
 
-          asset.insert(assetName, quantity)
-          assets.insert(policyId, asset)
-        }
+          policyContent.insert(assetName, quantity)
+          assets.insert(policyId, policyContent)
+        })
 
         if (assets.len() > 0) {
           cardanoValue.set_multiasset(assets)
@@ -404,11 +417,11 @@ const Crypto = function Crypto(pkg, settings) {
         const { Cardano, Utils } = this
 
         const txAddr = Cardano.Address.from_bech32(input.address)
-        const txAmount = Utils.cardanoValueFromRemoteFormat(input)
         const txInput = Cardano.TransactionInput.new(
           Cardano.TransactionHash.from_bytes(Buffer.from(input.transaction.hash, 'hex')),
           input.index,
         )
+        const txAmount = Utils.cardanoValueFromRemoteFormat(input)
 
         const skipOverflow = () => {
           const currentInputSum = txBuilder
@@ -448,7 +461,7 @@ const Crypto = function Crypto(pkg, settings) {
             const feeForInput = new BigNumber(
               txBuilder.fee_for_input(txAddr, txInput, txAmount).to_str(),
             )
-            if (feeForInput.gt(input.amount)) {
+            if (feeForInput.gt(input.value)) {
               return AddInputResult.TOO_SMALL
             }
           }
@@ -487,33 +500,33 @@ const Crypto = function Crypto(pkg, settings) {
       metadata,
       certificates = [],
       withdrawals = [],
-      allowNoOutputs = true,
+      allowNoOutputs = false,
     ) => {
       const { Cardano, Utils } = this
 
       try {
         // initial checks for errors
-        outputs.forEach((output, outputIndex) => {
+        outputs.forEach((output) => {
           if (this.validateAddress(output.address) !== 'base') {
-            throw ErrorException('address_wrong', [outputIndex])
+            throw ErrorException(ErrorMessages.ADDRESS_WRONG)
           }
 
           if (new BigNumber(output.value).isNaN()) {
-            throw ErrorException('ada_not_number', [outputIndex])
+            throw ErrorException(ErrorMessages.ADA_NOT_NUMBER)
           }
 
           if (new BigNumber(output.value).lt(new BigNumber(protocolParams.minimumUtxoVal))) {
-            throw ErrorException('ada_less_than_min', [outputIndex])
+            throw ErrorException(ErrorMessages.ADA_LESS_THAN_MIN)
           }
 
           if (new BigNumber(output.value).decimalPlaces() > 6) {
-            throw ErrorException('ada_wrong_value', [outputIndex])
+            throw ErrorException(ErrorMessages.ADA_WRONG_VALUE)
           }
 
           if (output.tokens) {
-            output.tokens.forEach((token, tokenIndex) => {
+            output.tokens.forEach((token) => {
               if (new BigNumber(token.quantity).lt(new BigNumber(1))) {
-                throw ErrorException('tokens_not_enough', [outputIndex, tokenIndex])
+                throw ErrorException(ErrorMessages.TOKENS_NOT_ENOUGH)
               }
             })
           }
@@ -523,13 +536,14 @@ const Crypto = function Crypto(pkg, settings) {
         const shouldForceChange = (assetsForChange) => {
           const noOutputDisallowed = !allowNoOutputs && outputs.length === 0
           if (noOutputDisallowed && changeAddress == null) {
-            throw ErrorException('no_outputs')
+            throw ErrorException(ErrorMessages.NO_OUTPUTS)
           }
           if (assetsForChange != null && assetsForChange.len() > 0) {
             return true
           }
           return noOutputDisallowed
         }
+        const emptyAsset = Cardano.MultiAsset.new()
         shouldForceChange(undefined)
 
         // create transaction
@@ -542,9 +556,6 @@ const Crypto = function Crypto(pkg, settings) {
           Cardano.BigNum.from_str(protocolParams.poolDeposit),
           Cardano.BigNum.from_str(protocolParams.keyDeposit),
         )
-
-        // set ttl
-        txBuilder.set_ttl(currentSlot + settings.ttl)
 
         const hasCertificates = certificates.length > 0
         const hasWithdrawal = withdrawals.length > 0
@@ -581,6 +592,9 @@ const Crypto = function Crypto(pkg, settings) {
           txBuilder.set_metadata(metadata)
         }
 
+        // set ttl
+        txBuilder.set_ttl(currentSlot + settings.ttl)
+
         // add outputs
         outputs.forEach((output) => {
           txBuilder.add_output(
@@ -596,113 +610,127 @@ const Crypto = function Crypto(pkg, settings) {
         const targetOutput = txBuilder
           .get_explicit_output()
           .checked_add(Cardano.Value.new(txBuilder.get_deposit()))
+
         // used utxos for build transaction
         const usedUtxos = []
-        // recall: we might have some implicit input to start with from deposit refunds
-        const implicitSum = txBuilder.get_implicit_input()
-        const emptyAsset = Cardano.MultiAsset.new()
+        {
+          // recall: we might have some implicit input to start with from deposit refunds
+          const implicitSum = txBuilder.get_implicit_input()
 
-        // add utxos until we have enough to send the transaction
-        // eslint-disable-next-line
-        for (const utxo of utxos) {
-          const currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum)
-          const output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()))
-          const remainingNeeded = output.clamped_sub(currentInputSum)
+          // add utxos until we have enough to send the transaction
+          // eslint-disable-next-line
+          utxos.forEach((utxo) => {
+            const currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum)
+            const output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()))
+            const remainingNeeded = output.clamped_sub(currentInputSum)
 
-          // update amount required to make sure we have ADA required for change UTXO entry
-          if (
-            shouldForceChange(currentInputSum.multiasset()?.sub(output.multiasset() ?? emptyAsset))
-          ) {
-            if (changeAddress == null) throw ErrorException('no_outputs')
-            const difference = currentInputSum.clamped_sub(output)
+            // update amount required to make sure we have ADA required for change UTXO entry
+            if (
+              shouldForceChange(
+                currentInputSum.multiasset()?.sub(output.multiasset() ?? emptyAsset),
+              )
+            ) {
+              if (changeAddress == null) throw ErrorException(ErrorMessages.NO_OUTPUTS)
+              const difference = currentInputSum.clamped_sub(output)
 
-            const minimumNeededForChange = Utils.minRequiredForChange(
+              const minimumNeededForChange = Utils.minRequiredForChange(
+                txBuilder,
+                changeAddress,
+                difference,
+              )
+
+              const adaNeededLeftForChange = minimumNeededForChange.clamped_sub(difference.coin())
+
+              if (remainingNeeded.coin().compare(adaNeededLeftForChange) < 0) {
+                remainingNeeded.set_coin(adaNeededLeftForChange)
+              }
+            }
+
+            // stop if we've added all the assets we needed
+            {
+              const remainingAssets = remainingNeeded.multiasset()
+
+              if (
+                remainingNeeded.coin().compare(Cardano.BigNum.from_str('0')) === 0 &&
+                (remainingAssets == null || remainingAssets.len() === 0) &&
+                usedUtxos.length > 0
+              ) {
+                return
+              }
+            }
+
+            // push utxo if needed
+            const added = Utils.addUtxoInput(
               txBuilder,
-              changeAddress,
-              difference,
+              {
+                value: remainingNeeded,
+                hasInput: usedUtxos.length > 0,
+              },
+              utxo,
+              true,
             )
 
-            const adaNeededLeftForChange = minimumNeededForChange.clamped_sub(difference.coin())
+            // eslint-disable-next-line
+            if (added !== AddInputResult.VALID) {
+              return
+            }
 
-            if (remainingNeeded.coin().compare(adaNeededLeftForChange) < 0) {
-              remainingNeeded.set_coin(adaNeededLeftForChange)
+            usedUtxos.push(utxo)
+          })
+
+          if (usedUtxos.length === 0) {
+            throw ErrorException(ErrorMessages.NOT_ENOUGH)
+          }
+
+          {
+            // check to see if we have enough balance in the wallet to cover the transaction
+            const currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum)
+
+            const output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()))
+
+            const compare = currentInputSum.compare(output)
+            const enoughInput = compare != null && compare >= 0
+
+            const forceChange = shouldForceChange(
+              currentInputSum.multiasset()?.sub(output.multiasset() ?? emptyAsset),
+            )
+            if (forceChange) {
+              if (changeAddress == null) throw ErrorException(ErrorMessages.NO_OUTPUTS)
+              if (!enoughInput) {
+                throw ErrorException(ErrorMessages.NOT_ENOUGH)
+              }
+              const difference = currentInputSum.checked_sub(output)
+              const minimumNeededForChange = Utils.minRequiredForChange(
+                txBuilder,
+                changeAddress,
+                difference,
+              )
+              if (difference.coin().compare(minimumNeededForChange) < 0) {
+                throw ErrorException(ErrorMessages.NOT_ENOUGH)
+              }
+            }
+            if (!forceChange && !enoughInput) {
+              throw ErrorException(ErrorMessages.NOT_ENOUGH)
             }
           }
-
-          // stop if we've added all the assets we needed
-          const remainingAssets = remainingNeeded.multiasset()
-
-          if (
-            remainingNeeded.coin().compare(Cardano.BigNum.from_str('0')) === 0 &&
-            (remainingAssets == null || remainingAssets.len() === 0) &&
-            usedUtxos.length > 0
-          ) {
-            break
-          }
-
-          // push utxo if needed
-          const added = Utils.addUtxoInput(
-            txBuilder,
-            {
-              value: remainingNeeded,
-              hasInput: usedUtxos.length > 0,
-            },
-            utxo,
-            true,
-          )
-
-          // eslint-disable-next-line
-          if (added !== AddInputResult.VALID) continue
-
-          usedUtxos.push(utxo)
-        }
-
-        if (usedUtxos.length === 0) {
-          throw ErrorException('not_enough')
-        }
-
-        // check to see if we have enough balance in the wallet to cover the transaction
-        const currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum)
-        const output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()))
-        const compare = currentInputSum.compare(output)
-        const enoughInput = compare != null && compare >= 0
-        const forceChange = shouldForceChange(
-          currentInputSum.multiasset()?.sub(output.multiasset() ?? emptyAsset),
-        )
-        if (forceChange) {
-          if (changeAddress == null) throw ErrorException('no_outputs')
-          if (!enoughInput) {
-            throw ErrorException('not_enough')
-          }
-          const difference = currentInputSum.checked_sub(output)
-          const minimumNeededForChange = Utils.minRequiredForChange(
-            txBuilder,
-            changeAddress,
-            difference,
-          )
-          if (difference.coin().compare(minimumNeededForChange) < 0) {
-            throw ErrorException('not_enough')
-          }
-        }
-        if (!forceChange && !enoughInput) {
-          throw ErrorException('not_enough')
         }
 
         // handle change address
-        const change = (() => {
+        const usedUtxosChange = (() => {
           const totalInput = txBuilder
             .get_explicit_input()
             .checked_add(txBuilder.get_implicit_input())
+
           const difference = totalInput.checked_sub(targetOutput)
 
-          const calcForceChange = shouldForceChange(difference.multiasset() ?? emptyAsset)
+          const forceChange = shouldForceChange(difference.multiasset() ?? emptyAsset)
           if (changeAddress == null) {
-            if (calcForceChange) {
-              throw ErrorException('no_outputs')
+            if (forceChange) {
+              throw ErrorException(ErrorMessages.NO_OUTPUTS)
             }
             const minFee = txBuilder.min_fee()
             if (difference.coin().compare(minFee) < 0) {
-              throw ErrorException('not_enough')
+              throw ErrorException(ErrorMessages.NOT_ENOUGH)
             }
             // recall: min fee assumes the largest fee possible
             // so no worries of cbor issue by including larger fee
@@ -713,9 +741,10 @@ const Crypto = function Crypto(pkg, settings) {
 
           const calcChangeAddress = Cardano.Address.from_bech32(changeAddress)
           const changeWasAdded = txBuilder.add_change_if_needed(calcChangeAddress)
-          if (calcForceChange && !changeWasAdded) {
+
+          if (forceChange && !changeWasAdded) {
             // note: this should never happened since it should have been handled by earlier code
-            throw ErrorException('no_change')
+            throw ErrorException(ErrorMessages.NO_CHANGE)
           }
 
           const changeAda = txBuilder
@@ -744,10 +773,10 @@ const Crypto = function Crypto(pkg, settings) {
 
         return {
           data: {
-            // txBody,
-            // txHash,
-            txBody: Buffer.from(txBody.to_bytes()).toString('hex'),
-            txHash: Buffer.from(txHash.to_bytes()).toString('hex'),
+            txBody,
+            txHash,
+            txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
+            txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
             minFee: txBuilder.min_fee().to_str(),
             fee: txBuilder.get_fee_if_set().to_str(),
             spending: {
@@ -755,21 +784,19 @@ const Crypto = function Crypto(pkg, settings) {
                 parseInt(targetOutput.coin().to_str(), 10) +
                 parseInt(txBuilder.get_fee_if_set().to_str(), 10)
               ).toString(),
+              send: targetOutput.coin().to_str(),
               tokens: Utils.parseTokenList(targetOutput.multiasset()),
             },
             outputs,
             usedUtxos,
-            change,
+            usedUtxosChange,
             metadata,
             certificates,
             withdrawals,
+            ttl: currentSlot + settings.ttl,
           },
         }
       } catch (error) {
-        if (!error.type) {
-          error.type = 'tx_build_error'
-        }
-        // console.log(error)
         errorHandler(error)
         return {
           error,
@@ -791,8 +818,19 @@ const Crypto = function Crypto(pkg, settings) {
         const { txHash, txBody, metadata, usedUtxos, certificates, withdrawals } = transaction
 
         const vkeyWitnesses = Cardano.Vkeywitnesses.new()
+        const deduped = []
+        const keyHashes = []
+        usedUtxos.forEach((senderUtxo) => {
+          const keyAddress = Cardano.Address.from_bech32(senderUtxo.address)
+          const keyHash = Cardano.BaseAddress.from_address(keyAddress).payment_cred().to_keyhash()
+          const keyHex = Buffer.from(keyHash.to_bytes()).toString('hex')
+          if (!keyHashes.includes(keyHex)) {
+            keyHashes.push(keyHex)
+            deduped.push(senderUtxo)
+          }
+        })
 
-        usedUtxos.forEach((utxo) => {
+        deduped.forEach((utxo) => {
           const prvKey = Cardano.Bip32PrivateKey.from_bech32(privateKey)
             .derive(utxo.addressing.type)
             .derive(utxo.addressing.path)
@@ -812,8 +850,8 @@ const Crypto = function Crypto(pkg, settings) {
 
         const witnesses = Cardano.TransactionWitnessSet.new()
         witnesses.set_vkeys(vkeyWitnesses)
-        const signedTxRaw = Cardano.Transaction.new(txBody, witnesses, metadata)
 
+        const signedTxRaw = Cardano.Transaction.new(txBody, witnesses, metadata)
         const signedTx = Buffer.from(signedTxRaw.to_bytes()).toString('hex')
 
         return signedTx
@@ -866,8 +904,39 @@ const Crypto = function Crypto(pkg, settings) {
       }
     }
 
+    /**
+     * Generate Deregistration Certificates
+     * @param {string} publicKeyBech32 publick key
+     * @return {array} certificates array
+     */
+
+    this.generateDeregistrationCerts = (publicKeyBech32) => {
+      const { Cardano } = this
+
+      try {
+        const publicKey = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32)
+        const stakeKey = publicKey
+          .derive(2) // chimeric
+          .derive(0)
+
+        const certificates = []
+
+        const deregistrationCertificate = Cardano.Certificate.new_stake_deregistration(
+          Cardano.StakeDeregistration.new(
+            Cardano.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
+          ),
+        )
+        certificates.push(deregistrationCertificate)
+
+        return certificates
+      } catch (error) {
+        errorHandler(error)
+        return false
+      }
+    }
+
     return this
   })()
 }
 
-module.exports = Crypto
+export default Crypto

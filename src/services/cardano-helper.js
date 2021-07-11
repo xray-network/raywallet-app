@@ -48,11 +48,10 @@ apiClient.interceptors.response.use(
     return response
   },
   (error) => {
-    // Errors handling
     console.log(error)
-    notification.warning({
-      message: 'Something went wrong :(',
-    })
+    // notification.warning({
+    //   message: 'Something went wrong :(',
+    // })
   },
 )
 
