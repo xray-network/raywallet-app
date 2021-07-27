@@ -88,7 +88,6 @@ export function* BUILD_TX({ payload }) {
     allowNoOutputs,
   )
 
-  console.log('tx.build.result', result)
   yield put({
     type: 'transactions/SET_STATE',
     payload: {
@@ -185,7 +184,7 @@ export function* CLEAR_TX() {
 export function* SETUP() {
   const chan = eventChannel((emitter) => {
     window.addEventListener('hashchange', (message) => emitter(message))
-    return () => {}
+    return () => { }
   })
 
   while (true) {

@@ -5,6 +5,7 @@
  * https://rraayy.com, https://raywallet.io
  *
  * Copyright (c) 2018 EMURGO
+ * Copyright (c) 2021 Tango-crypto
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,8 +40,9 @@ const Crypto = function Crypto(pkg, settings) {
     this.BigNumber = BigNumber
 
     /**
-     * Cardano Serialization Lib
+     * Get Current Network
      */
+
     this.Network =
       settings.network === 'mainnet'
         ? this.Cardano.NetworkInfo.mainnet().network_id()
@@ -76,6 +78,7 @@ const Crypto = function Crypto(pkg, settings) {
       ADDRESS_WRONG: 'Wrong Cardano address',
       NO_OUTPUTS: 'Transaction requires at least 1 output, but no output was added',
       NO_CHANGE: 'No change added even though it should be forced',
+      ASSET_OVERFLOW: 'Maximum value of a token inside a UTXO exceeded (overflow)',
     }
 
     const ErrorException = (type) => {
@@ -179,15 +182,14 @@ const Crypto = function Crypto(pkg, settings) {
      * @return {array} addresses array
      */
 
-    this.getAccountAddresses = (publicKeyBech32, type = 'external', page = 20, shift = 0) => {
+    this.getAccountAddresses = (publicKeyBech32, page = 20, type = [0], shift = 0) => {
       const { Cardano, Network } = this
 
       try {
         const publicKey = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32)
-        let accountAdresses = {}
 
         const generateAddresses = (addressType) => {
-          const tmpAddresses = {}
+          const tmpAddresses = []
           for (let i = 0 + page * shift; i < page + page * shift; i += 1) {
             const utxoPubKey = publicKey
               .derive(addressType) // 0 external / 1 internal
@@ -200,40 +202,16 @@ const Crypto = function Crypto(pkg, settings) {
               Cardano.StakeCredential.from_keyhash(utxoPubKey.to_raw_key().hash()),
               Cardano.StakeCredential.from_keyhash(stakeKey.to_raw_key().hash()),
             )
-            const baseAddrBech32 = baseAddr.to_address().to_bech32()
-            tmpAddresses[baseAddrBech32] = {
+            tmpAddresses.push({
+              address: baseAddr.to_address().to_bech32(),
               type: addressType,
               path: i,
-            }
+            })
           }
           return tmpAddresses
         }
 
-        switch (type) {
-          case 'external':
-            accountAdresses = {
-              ...generateAddresses(0),
-            }
-            break
-          case 'internal':
-            accountAdresses = {
-              ...generateAddresses(1),
-            }
-            break
-          case 'all':
-            accountAdresses = {
-              ...generateAddresses(0),
-              ...generateAddresses(1),
-            }
-            break
-          default:
-            break
-        }
-
-        return {
-          addresses: Object.keys(accountAdresses),
-          paths: accountAdresses,
-        }
+        return type.map((i) => generateAddresses(i)).flat(1)
       } catch (error) {
         errorHandler(error)
         return false
@@ -322,6 +300,26 @@ const Crypto = function Crypto(pkg, settings) {
         return result
       },
 
+      // parse tcBody outputs
+      parseOutputs: (txBody) => {
+        const { Utils } = this
+
+        const length = txBody.outputs().len()
+        const result = []
+        // eslint-disable-next-line
+        for (let i = 0; i < length; i++) {
+          const output = txBody.outputs().get(i)
+          const transformed = {
+            address: output.address().to_bech32(),
+            value: output.amount().coin().to_str(),
+            tokens: Utils.parseTokenList(output.amount().multiasset()),
+          }
+          result.push(transformed)
+        }
+
+        return result
+      },
+
       // value from outputs (ada value/tokens) data
       cardanoValueFromTokens: (value, tokens = []) => {
         const { Cardano } = this
@@ -335,7 +333,36 @@ const Crypto = function Crypto(pkg, settings) {
         const assets = Cardano.MultiAsset.new()
         tokens.forEach((token) => {
           const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
-          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'))
+          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || '', 'hex'))
+          const quantity = Cardano.BigNum.from_str(token.quantity)
+
+          const asset = assets.get(policyId) ?? Cardano.Assets.new()
+
+          asset.insert(assetName, quantity)
+          assets.insert(policyId, asset)
+        })
+
+        if (assets.len() > 0) {
+          cardanoValue.set_multiasset(assets)
+        }
+
+        return cardanoValue
+      },
+
+      // value from mint (ada value/tokens) data
+      cardanoValueFromMint: (value, tokens = []) => {
+        const { Cardano } = this
+
+        const cardanoValue = Cardano.Value.new(Cardano.BigNum.from_str(value))
+
+        if (tokens && tokens.length === 0) {
+          return cardanoValue
+        }
+
+        const assets = Cardano.MultiAsset.new()
+        tokens.forEach((token) => {
+          const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
+          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || ''))
           const quantity = Cardano.BigNum.from_str(token.quantity)
 
           const asset = assets.get(policyId) ?? Cardano.Assets.new()
@@ -363,10 +390,9 @@ const Crypto = function Crypto(pkg, settings) {
 
         const assets = Cardano.MultiAsset.new()
 
-        // eslint-disable-next-line
         utxo.tokens.forEach((token) => {
           const policyId = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
-          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName, 'hex'))
+          const assetName = Cardano.AssetName.new(Buffer.from(token.asset.assetName || '', 'hex'))
           const quantity = Cardano.BigNum.from_str(token.quantity)
 
           const policyContent = assets.get(policyId) ?? Cardano.Assets.new()
@@ -380,6 +406,135 @@ const Crypto = function Crypto(pkg, settings) {
         }
 
         return cardanoValue
+      },
+
+      // mint values for set_mint
+      mint: (tokens) => {
+        const { Cardano } = this
+
+        const mint = Cardano.Mint.new()
+
+        tokens.forEach((token) => {
+          const scriptHash = Cardano.ScriptHash.from_bytes(Buffer.from(token.asset.policyId, 'hex'))
+          const mintAssets = mint.get(scriptHash) ?? Cardano.MintAssets.new()
+          mintAssets.insert(
+            Cardano.AssetName.new(Buffer.from(token.asset.assetName || '')),
+            Cardano.Int.new_i32(token.quantity),
+          )
+          mint.insert(scriptHash, mintAssets)
+        })
+
+        return mint
+      },
+
+      // process metadata
+      metadata: (metadataInput) => {
+        const { Cardano } = this
+
+        const MetadateTypesEnum = {
+          Number: 'int',
+          String: 'string',
+          Bytes: 'bytes',
+          List: 'list',
+          Map: 'map',
+        }
+
+        const getMetadataObject = (data) => {
+          const result = {}
+          const type = typeof data
+          if (type === 'number') {
+            result[MetadateTypesEnum.Number] = data
+          } else if (type === 'string' && Buffer.byteLength(data, 'utf-8') <= 64) {
+            result[MetadateTypesEnum.String] = data
+          } else if (Buffer.isBuffer(data) && Buffer.byteLength(data, 'hex') <= 64) {
+            result[MetadateTypesEnum.Bytes] = data.toString('hex')
+          } else if (type === 'boolean') {
+            result[MetadateTypesEnum.String] = data.toString()
+          } else if (type === 'undefined') {
+            result[MetadateTypesEnum.String] = 'undefined'
+          } else if (Array.isArray(data)) {
+            result[MetadateTypesEnum.List] = data.map((a) => getMetadataObject(a))
+          } else if (type === 'object') {
+            if (data) {
+              result[MetadateTypesEnum.Map] = Object.keys(data).map((k) => {
+                return {
+                  k: getMetadataObject(k),
+                  v: getMetadataObject(data[k]),
+                }
+              })
+            } else {
+              result[MetadateTypesEnum.String] = 'null'
+            }
+          }
+          return result
+        }
+
+        const constructMetadata = (data) => {
+          const metadata = {}
+
+          if (Array.isArray(data)) {
+            // eslint-disable-next-line
+            for (let i = 0; i < data.length; i++) {
+              const value = data[i]
+              metadata[i] = getMetadataObject(value)
+            }
+          } else {
+            const keys = Object.keys(data)
+            // eslint-disable-next-line
+            for (let i = 0; i < keys.length; i++) {
+              const key = keys[i]
+              if (Number.isInteger(Number(key))) {
+                const index = parseInt(key, 10)
+                metadata[index] = getMetadataObject(data[key])
+              }
+            }
+          }
+          return metadata
+        }
+
+        const getTransactionMetadatum = (value) => {
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Number)) {
+            return Cardano.TransactionMetadatum.new_int(
+              Cardano.Int.new_i32(value[MetadateTypesEnum.Number]),
+            )
+          }
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.String)) {
+            return Cardano.TransactionMetadatum.new_text(value[MetadateTypesEnum.String])
+          }
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Bytes)) {
+            return Cardano.TransactionMetadatum.new_bytes(
+              Buffer.from(value[MetadateTypesEnum.Bytes], 'hex'),
+            )
+          }
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.List)) {
+            const list = value[MetadateTypesEnum.List]
+            const metalist = Cardano.MetadataList.new()
+            // eslint-disable-next-line
+            for (let i = 0; i < list.length; i++) {
+              metalist.add(getTransactionMetadatum(list[i]))
+            }
+            return Cardano.TransactionMetadatum.new_list(metalist)
+          }
+          if (Object.prototype.hasOwnProperty.call(value, MetadateTypesEnum.Map)) {
+            const map = value[MetadateTypesEnum.Map]
+            const metamap = Cardano.MetadataMap.new()
+            // eslint-disable-next-line
+            for (let i = 0; i < map.length; i++) {
+              const { k, v } = map[i]
+              metamap.insert(getTransactionMetadatum(k), getTransactionMetadatum(v))
+            }
+            return Cardano.TransactionMetadatum.new_map(metamap)
+          }
+        }
+
+        const metadata = constructMetadata(metadataInput)
+        const generalMetatada = Cardano.GeneralTransactionMetadata.new()
+        // eslint-disable-next-line
+        for (const key in metadata) {
+          const value = metadata[key]
+          generalMetatada.insert(Cardano.BigNum.from_str(key), getTransactionMetadatum(value))
+        }
+        return Cardano.TransactionMetadata.new(generalMetatada)
       },
 
       // min required for change
@@ -481,14 +636,317 @@ const Crypto = function Crypto(pkg, settings) {
     }
 
     /**
+     * Generate Policy ID and Script for pubkey
+     * @param {string} publicKey change address
+     * @return {object}
+     */
+
+    this.generatePolicyForPubkey = (publicKeyBech32) => {
+      const { Cardano } = this
+
+      const keyHash = Cardano.Bip32PublicKey.from_bech32(publicKeyBech32).to_raw_key().hash()
+      const scriptPubKey = Cardano.NativeScript.new_script_pubkey(Cardano.ScriptPubkey.new(keyHash))
+
+      const scriptPubKeyHash = scriptPubKey.hash(Cardano.ScriptHashNamespace.NativeScript)
+      const scriptHash = Cardano.ScriptHash.from_bytes(scriptPubKeyHash.to_bytes())
+
+      const policyId = Buffer.from(scriptHash.to_bytes()).toString('hex')
+      const script = Buffer.from(scriptPubKey.to_bytes()).toString('hex')
+
+      return {
+        script,
+        policyId,
+      }
+    }
+
+    /**
+     * Mint and Send All Assets to Address
+     * @param {string} toAddress receiver address
+     * @param {array} utxos addresses utxos
+     * @param {number} currentSlot network slot (needed for tx timeout calculation)
+     * @param {object} metadata transaction metadata
+     */
+
+    this.txBuildMint = (
+      toAddress,
+      tokensToMint = [],
+      utxos = [],
+      currentSlot,
+      metadata,
+      donate,
+    ) => {
+      const { Cardano, Utils } = this
+
+      try {
+        if (this.validateAddress(toAddress) !== 'base') {
+          throw ErrorException(ErrorMessages.ADDRESS_WRONG)
+        }
+
+        // create transaction
+        const txBuilder = Cardano.TransactionBuilder.new(
+          Cardano.LinearFee.new(
+            Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient),
+            Cardano.BigNum.from_str(protocolParams.linearFeeConstant),
+          ),
+          Cardano.BigNum.from_str(protocolParams.minimumUtxoVal),
+          Cardano.BigNum.from_str(protocolParams.poolDeposit),
+          Cardano.BigNum.from_str(protocolParams.keyDeposit),
+        )
+
+        // set ttl
+        const ttl = currentSlot + settings.ttl
+        txBuilder.set_ttl(ttl)
+
+        // set metadata
+        if (metadata !== undefined) {
+          const transformedMetadata = Utils.metadata(metadata)
+          txBuilder.set_metadata(transformedMetadata)
+        }
+
+        // add inputs
+        utxos.forEach((utxo) => {
+          const added = Utils.addUtxoInput(txBuilder, undefined, utxo, false)
+          if (added === AddInputResult.OVERFLOW) {
+            throw ErrorException(ErrorMessages.ASSET_OVERFLOW)
+          }
+        })
+
+        // set donate address
+        let donateSubtract = '0'
+        if (donate) {
+          donateSubtract = donate.donateValue
+          txBuilder.add_output(
+            Cardano.TransactionOutput.new(
+              Cardano.Address.from_bech32(donate.donateAddress),
+              Cardano.Value.new(Cardano.BigNum.from_str(donate.donateValue)),
+            ),
+          )
+        }
+
+        // manually calculcate output values depends on output fee
+        const mintValue = Utils.cardanoValueFromMint(protocolParams.minimumUtxoVal, tokensToMint)
+        const minimumAda = Cardano.min_ada_required(
+          mintValue,
+          Cardano.BigNum.from_str(protocolParams.minimumUtxoVal),
+        )
+        const tokensValue = Utils.cardanoValueFromMint(minimumAda.to_str(), tokensToMint)
+
+        const inputValue = txBuilder.get_explicit_input()
+        const minValueSubtract = Cardano.Value.new(
+          Cardano.BigNum.from_str(tokensValue.coin().to_str()),
+        )
+        const mergedValue = inputValue.checked_add(tokensValue).checked_sub(minValueSubtract)
+
+        const outputTx = Cardano.TransactionOutput.new(
+          Cardano.Address.from_bech32(toAddress),
+          mergedValue,
+        )
+        const outputTxFee = txBuilder.fee_for_output(outputTx).to_str()
+        const currentFee = txBuilder.min_fee().to_str()
+
+        // TODO: as we can't set_mint() before txBuilder.build(), we can't calculate fee, that's why we should add compensation
+        const COMPENSATE = '50000'
+
+        const finalValue = mergedValue
+          .checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(outputTxFee)))
+          .checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(currentFee)))
+          .checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(COMPENSATE)))
+          .checked_sub(Cardano.Value.new(Cardano.BigNum.from_str(donateSubtract)))
+
+        // add output
+        txBuilder.add_output(
+          Cardano.TransactionOutput.new(Cardano.Address.from_bech32(toAddress), finalValue),
+        )
+
+        // add
+
+        // set fee
+        txBuilder.set_fee(
+          Cardano.BigNum.from_str(
+            (parseInt(txBuilder.min_fee().to_str(), 10) + parseInt(COMPENSATE, 10)).toString(),
+          ),
+        )
+
+        // build
+        const txBody = txBuilder.build()
+        const mint = Utils.mint(tokensToMint)
+        txBody.set_mint(mint)
+        const outputs = txBody.outputs().len() > 0 ? Utils.parseOutputs(txBody) : []
+        const txHash = Cardano.hash_transaction(txBody)
+
+        // TODO: sign tx and calculate exact fee
+        // {
+        //   const fakeSignedTransaction = txSign(
+        //     { txBody, txHash, usedUtxos: utxos, metadata },
+        //     'xprv16z77fk24y90xgx24tz06sxa82kwme0rjezhe7kvtu8vtsm3lf3f34yzgf8qhvyx5txlxtg32jqm9jnv4a9qpy42nsa06uv4eu03zd4n4tqtnkp2nehy8anmf4gwtaa5e2vn4kwrw83xlrztzacv07cj45uum4023',
+        //     script,
+        //   )
+
+        //   const fakeTxFee = Cardano.min_fee(
+        //     Cardano.Transaction.from_bytes(Buffer.from(fakeSignedTransaction, 'hex')),
+        //     Cardano.LinearFee.new(
+        //       Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient),
+        //       Cardano.BigNum.from_str(protocolParams.linearFeeConstant),
+        //     )
+        //   )
+        //   console.log('fakeTxFee', fakeTxFee.to_str())
+        // }
+
+        const targetOutput = txBuilder
+          .get_explicit_output()
+          .checked_add(Cardano.Value.new(txBuilder.get_deposit()))
+
+        return {
+          data: {
+            txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
+            txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
+            minFee: txBuilder.min_fee().to_str(),
+            fee: txBuilder.get_fee_if_set().to_str(),
+            spending: {
+              value: (
+                parseInt(targetOutput.coin().to_str(), 10) +
+                parseInt(txBuilder.get_fee_if_set().to_str(), 10)
+              ).toString(),
+              send: targetOutput.coin().to_str(),
+              tokens: Utils.parseTokenList(targetOutput.multiasset()),
+            },
+            outputs,
+            usedUtxos: utxos,
+            usedUtxosChange: [],
+            metadata,
+            ttl,
+          },
+        }
+      } catch (error) {
+        errorHandler(error)
+        return {
+          error,
+        }
+      }
+    }
+
+    /**
+     * Send All Assets to Address
+     * @param {string} toAddress receiver address
+     * @param {array} utxos addresses utxos
+     * @param {number} currentSlot network slot (needed for tx timeout calculation)
+     * @param {object} metadata transaction metadata
+     */
+
+    this.txBuildAll = (toAddress, utxos = [], currentSlot, metadata) => {
+      const { Cardano, Utils } = this
+
+      try {
+        if (this.validateAddress(toAddress) !== 'base') {
+          throw ErrorException(ErrorMessages.ADDRESS_WRONG)
+        }
+
+        const totalBalance = utxos
+          .map((utxo) => new BigNumber(utxo.value))
+          .reduce((acc, value) => acc.plus(value), new BigNumber(0))
+
+        if (totalBalance.isZero()) {
+          throw ErrorException(ErrorMessages.NOT_ENOUGH)
+        }
+
+        if (new BigNumber(totalBalance).lt(new BigNumber(protocolParams.minimumUtxoVal))) {
+          throw ErrorException(ErrorMessages.ADA_LESS_THAN_MIN)
+        }
+
+        // create transaction
+        const txBuilder = Cardano.TransactionBuilder.new(
+          Cardano.LinearFee.new(
+            Cardano.BigNum.from_str(protocolParams.linearFeeCoefficient),
+            Cardano.BigNum.from_str(protocolParams.linearFeeConstant),
+          ),
+          Cardano.BigNum.from_str(protocolParams.minimumUtxoVal),
+          Cardano.BigNum.from_str(protocolParams.poolDeposit),
+          Cardano.BigNum.from_str(protocolParams.keyDeposit),
+        )
+
+        // set ttl
+        const ttl = currentSlot + settings.ttl
+        txBuilder.set_ttl(ttl)
+
+        // add inputs
+        utxos.forEach((utxo) => {
+          const added = Utils.addUtxoInput(txBuilder, undefined, utxo, false)
+
+          if (added === AddInputResult.OVERFLOW) {
+            throw ErrorException(ErrorMessages.ASSET_OVERFLOW)
+          }
+        })
+
+        // set metadata
+        if (metadata !== undefined) {
+          const transformedMetadata = Utils.metadata(metadata)
+          txBuilder.set_metadata(transformedMetadata)
+        }
+
+        if (totalBalance.lt(txBuilder.min_fee().to_str())) {
+          // not enough in inputs to even cover the cost of including themselves in a tx
+          throw ErrorException(ErrorMessages.NOT_ENOUGH)
+        }
+
+        // semantically, sending all ADA to somebody
+        // is the same as if you're sending all the ADA as change to yourself
+        // (module the fact the address doesn't belong to you)
+        const changeAddress = Cardano.Address.from_bech32(toAddress)
+        const couldSendAmount = txBuilder.add_change_if_needed(changeAddress)
+        if (!couldSendAmount) {
+          // if you couldn't send any amount,
+          // it's because you couldn't cover the fee of adding an output
+          throw ErrorException(ErrorMessages.NOT_ENOUGH)
+        }
+
+        // tx build
+        const txBody = txBuilder.build()
+        const txHash = Cardano.hash_transaction(txBody)
+        const outputs = txBody.outputs().len() > 0 ? Utils.parseOutputs(txBody) : []
+
+        const targetOutput = txBuilder
+          .get_explicit_output()
+          .checked_add(Cardano.Value.new(txBuilder.get_deposit()))
+
+        return {
+          data: {
+            txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
+            txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
+            minFee: txBuilder.min_fee().to_str(),
+            fee: txBuilder.get_fee_if_set().to_str(),
+            spending: {
+              value: (
+                parseInt(targetOutput.coin().to_str(), 10) +
+                parseInt(txBuilder.get_fee_if_set().to_str(), 10)
+              ).toString(),
+              send: targetOutput.coin().to_str(),
+              tokens: Utils.parseTokenList(targetOutput.multiasset()),
+            },
+            outputs,
+            usedUtxos: utxos,
+            usedUtxosChange: [],
+            metadata,
+            ttl,
+          },
+        }
+      } catch (error) {
+        errorHandler(error)
+        return {
+          error,
+        }
+      }
+    }
+
+    /**
      * Build Transaction
      * @param {array} outputs outputs array
+     * @param {array} utxos addresses utxos
      * @param {string} changeAddress change address
      * @param {number} currentSlot network slot (needed for tx timeout calculation)
-     * @param {array} utxos addresses utxos
      * @param {object} metadata transaction metadata
      * @param {array} certificates delegation certificates
      * @param {array} withdrawals rewards withdrawal
+     * @param {boolean} allowNoOutputs
      * @return {object}
      */
 
@@ -557,12 +1015,12 @@ const Crypto = function Crypto(pkg, settings) {
           Cardano.BigNum.from_str(protocolParams.keyDeposit),
         )
 
-        const hasCertificates = certificates.length > 0
-        const hasWithdrawal = withdrawals.length > 0
-        const hasMetadata = !(metadata == null)
+        // set ttl
+        const ttl = currentSlot + settings.ttl
+        txBuilder.set_ttl(ttl)
 
         // add certificates
-        if (hasCertificates) {
+        if (certificates.length > 0) {
           const certsArray = certificates.reduce((certs, cert) => {
             certs.add(cert)
             return certs
@@ -571,7 +1029,7 @@ const Crypto = function Crypto(pkg, settings) {
         }
 
         // add withdrawal
-        if (hasWithdrawal) {
+        if (withdrawals.length > 0) {
           const processed = withdrawals.map((withdrawal) => {
             const address = Cardano.Address.from_bech32(withdrawal.address)
             return {
@@ -588,12 +1046,10 @@ const Crypto = function Crypto(pkg, settings) {
         }
 
         // add metadata
-        if (hasMetadata) {
-          txBuilder.set_metadata(metadata)
+        if (metadata !== undefined) {
+          const transformedMetadata = Utils.metadata(metadata)
+          txBuilder.set_metadata(transformedMetadata)
         }
-
-        // set ttl
-        txBuilder.set_ttl(currentSlot + settings.ttl)
 
         // add outputs
         outputs.forEach((output) => {
@@ -618,7 +1074,6 @@ const Crypto = function Crypto(pkg, settings) {
           const implicitSum = txBuilder.get_implicit_input()
 
           // add utxos until we have enough to send the transaction
-          // eslint-disable-next-line
           utxos.forEach((utxo) => {
             const currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum)
             const output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()))
@@ -670,7 +1125,6 @@ const Crypto = function Crypto(pkg, settings) {
               true,
             )
 
-            // eslint-disable-next-line
             if (added !== AddInputResult.VALID) {
               return
             }
@@ -685,15 +1139,13 @@ const Crypto = function Crypto(pkg, settings) {
           {
             // check to see if we have enough balance in the wallet to cover the transaction
             const currentInputSum = txBuilder.get_explicit_input().checked_add(implicitSum)
-
             const output = targetOutput.checked_add(Cardano.Value.new(txBuilder.min_fee()))
-
             const compare = currentInputSum.compare(output)
             const enoughInput = compare != null && compare >= 0
-
             const forceChange = shouldForceChange(
               currentInputSum.multiasset()?.sub(output.multiasset() ?? emptyAsset),
             )
+
             if (forceChange) {
               if (changeAddress == null) throw ErrorException(ErrorMessages.NO_OUTPUTS)
               if (!enoughInput) {
@@ -715,7 +1167,7 @@ const Crypto = function Crypto(pkg, settings) {
           }
         }
 
-        // handle change address
+        // handle fees & change address if set
         const usedUtxosChange = (() => {
           const totalInput = txBuilder
             .get_explicit_input()
@@ -773,8 +1225,6 @@ const Crypto = function Crypto(pkg, settings) {
 
         return {
           data: {
-            txBody,
-            txHash,
             txBodyHex: Buffer.from(txBody.to_bytes()).toString('hex'),
             txHashHex: Buffer.from(txHash.to_bytes()).toString('hex'),
             minFee: txBuilder.min_fee().to_str(),
@@ -793,7 +1243,7 @@ const Crypto = function Crypto(pkg, settings) {
             metadata,
             certificates,
             withdrawals,
-            ttl: currentSlot + settings.ttl,
+            ttl,
           },
         }
       } catch (error) {
@@ -811,12 +1261,16 @@ const Crypto = function Crypto(pkg, settings) {
      * @return {object}
      */
 
-    this.txSign = (transaction, privateKey) => {
-      const { Cardano } = this
+    this.txSign = (transaction, privateKey, script) => {
+      const { Cardano, Utils } = this
 
       try {
-        const { txHash, txBody, metadata, usedUtxos, certificates, withdrawals } = transaction
+        const { txHashHex, txBodyHex, usedUtxos, metadata, certificates, withdrawals } = transaction
 
+        const txHash = Cardano.TransactionHash.from_bytes(Buffer.from(txHashHex, 'hex'))
+        const txBody = Cardano.TransactionBody.from_bytes(Buffer.from(txBodyHex, 'hex'))
+
+        const witnesses = Cardano.TransactionWitnessSet.new()
         const vkeyWitnesses = Cardano.Vkeywitnesses.new()
         const deduped = []
         const keyHashes = []
@@ -839,7 +1293,7 @@ const Crypto = function Crypto(pkg, settings) {
           vkeyWitnesses.add(vkeyWitness)
         })
 
-        if (certificates.length > 0 || withdrawals.length > 0) {
+        if ((certificates && certificates.length > 0) || (withdrawals && withdrawals.length > 0)) {
           const prvKey = Cardano.Bip32PrivateKey.from_bech32(privateKey)
             .derive(2)
             .derive(0)
@@ -848,10 +1302,23 @@ const Crypto = function Crypto(pkg, settings) {
           vkeyWitnesses.add(stakeKeyVitness)
         }
 
-        const witnesses = Cardano.TransactionWitnessSet.new()
+        if (script) {
+          const prvKey2 = Cardano.Bip32PrivateKey.from_bech32(privateKey).to_raw_key()
+          const stakeKeyVitness = Cardano.make_vkey_witness(txHash, prvKey2)
+          vkeyWitnesses.add(stakeKeyVitness)
+        }
+
+        if (script) {
+          const nativeScripts = Cardano.NativeScripts.new()
+          nativeScripts.add(Cardano.NativeScript.from_bytes(Buffer.from(script, 'hex')))
+          witnesses.set_scripts(nativeScripts)
+        }
+
         witnesses.set_vkeys(vkeyWitnesses)
 
-        const signedTxRaw = Cardano.Transaction.new(txBody, witnesses, metadata)
+        const transformedMetadata = metadata ? Utils.metadata(metadata) : undefined
+
+        const signedTxRaw = Cardano.Transaction.new(txBody, witnesses, transformedMetadata)
         const signedTx = Buffer.from(signedTxRaw.to_bytes()).toString('hex')
 
         return signedTx

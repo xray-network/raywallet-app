@@ -17,14 +17,10 @@
 
 import axios from 'axios'
 import { notification } from 'antd'
-
-const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'testnet'
+import config from 'config'
 
 const apiClient = axios.create({
-  baseURL:
-    CARDANO_NETWORK === 'testnet'
-      ? 'https://graphql-testnet-helper.rraayy.com'
-      : 'https://graphql-helper.rraayy.com',
+  baseURL: config.api.helper,
   // timeout: 100,
   // headers: { 'X-Custom-Header': 'foobar' }
 })
