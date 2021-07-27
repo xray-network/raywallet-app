@@ -392,41 +392,36 @@ export function* DECRYPT_WALLET({ payload: { password } }) {
 
 export function* GET_PUBLIC_ADRESSES() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
-  const tmpWalletAddresses = yield call(Cardano.crypto.getAccountAddresses, publicKey)
-  const walletAddresses = tmpWalletAddresses.addresses
+  const walletAddresses = yield call(Cardano.crypto.getAccountAddresses, publicKey)
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
       setting: 'walletAddresses',
-      value: walletAddresses,
+      value: walletAddresses.map((address) => address.address),
     },
   })
 }
 
 export function* FETCH_NETWORK_STATE() {
-  const networkState = yield call(Cardano.explorer.getNetworkInfo)
+  const networkInfo = yield call(Cardano.explorer.getNetworkInfo)
+  const cardano = networkInfo?.data?.data?.cardano
 
-  if (networkState) {
-    const { data } = networkState
-    if (data) {
-      const { cardano } = data
-      const startedAt = cardano.currentEpoch?.startedAt
-
-      yield put({
-        type: 'wallets/CHANGE_SETTING',
-        payload: {
-          setting: 'networkInfo',
-          value: cardano,
-        },
-      })
-      yield put({
-        type: 'wallets/CHANGE_SETTING',
-        payload: {
-          setting: 'epochEndIns',
-          value: new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000,
-        },
-      })
-    }
+  if (cardano) {
+    const startedAt = cardano.currentEpoch?.startedAt
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'networkInfo',
+        value: cardano,
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'epochEndIns',
+        value: new Date(startedAt).getTime() + 5 * 24 * 60 * 60 * 1000,
+      },
+    })
   }
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -473,9 +468,10 @@ export function* GET_UTXO_STATE() {
   const { assets, transactions, utxos } = yield call(
     Cardano.explorer.getAccountStateByPublicKey,
     publicKey,
+    10, // adresses to generate per iteration (pagesize)
+    10, // max iterations
+    [0, 1], // generate inner / external addresses for check
   )
-
-  console.log('sagas -> utxos', utxos)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -626,7 +622,7 @@ export function* FETCH_WALLET_DATA() {
   const { publicKey } = yield select((state) => state.wallets.walletParams)
   const networkInfo = yield select((state) => state.wallets.networkInfo)
 
-  if (!publicKey || !networkInfo.tip) {
+  if (!publicKey || !networkInfo?.tip?.number) {
     return
   }
 
@@ -640,7 +636,6 @@ export function* FETCH_WALLET_DATA() {
 
   yield call(GET_PUBLIC_ADRESSES)
   yield call(GET_UTXO_STATE)
-  yield call(GET_STAKE_STATE)
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
@@ -649,6 +644,8 @@ export function* FETCH_WALLET_DATA() {
       value: false,
     },
   })
+
+  yield call(GET_STAKE_STATE)
 }
 
 export function* FETCH_STATUS() {

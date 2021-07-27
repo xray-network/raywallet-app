@@ -6,6 +6,7 @@ const {
   // fixBabelImports,
 } = require('customize-cra')
 
+const webpack = require("webpack")
 const path = require('path')
 
 // use .eslintrc.js config
@@ -57,6 +58,12 @@ const wasmLoader = () => config => {
     include: path.resolve(__dirname, 'src'),
     use: [{ loader: require.resolve('wasm-loader'), options: {} }]
   })
+
+  config.plugins.push(
+    new webpack.ContextReplacementPlugin(
+      /@emurgo\/cardano-serialization-lib-browser/
+    )
+  )
 
   return config
 }

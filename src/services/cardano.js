@@ -1,12 +1,13 @@
 import CardanoWeb3 from 'cardano-web3-browser'
 import { notification } from 'antd'
+import config from 'config'
 
 const Cardano = new CardanoWeb3({
   crypto: {
-    network: 'mainnet',
+    network: config.network,
   },
   explorer: {
-    url: 'https://graphql.rraayy.com',
+    url: config.api.graphql,
     responseHandler: (response) => {
       const { data } = response
       if (data.errors) {
@@ -18,7 +19,7 @@ const Cardano = new CardanoWeb3({
         })
         return false
       }
-      return response.data
+      return response
     },
     errorHandler: () => {
       notification.warning({
