@@ -122,10 +122,12 @@ export function* SEND_TX({ payload }) {
 
   const { transaction, privateKey } = payload
   const signedTx = yield call(Cardano.crypto.txSign, transaction, privateKey)
-  const { data, errors } = yield call(Cardano.explorer.txSend, signedTx)
+  const txSend = yield call(Cardano.explorer.txSend, signedTx)
 
-  if (data) {
-    const transactionHash = data.submitTransaction?.hash
+  const transactionHash = txSend?.data?.data?.submitTransaction?.hash
+  const errors = txSend?.data?.errors
+
+  if (transactionHash) {
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
@@ -148,8 +150,11 @@ export function* SEND_TX({ payload }) {
 
 export function* CHECK_TX({ payload }) {
   const { hash } = payload
-  const { data: success } = yield call(Cardano.explorer.getTxByHash, [hash])
-  if (success?.transactions?.length) {
+  const getTxByHash = yield call(Cardano.explorer.getTxByHash, [hash])
+
+  const transactions = getTxByHash?.data?.data?.transactions
+
+  if (transactions && transactions.length) {
     yield put({
       type: 'transactions/SET_STATE',
       payload: {
