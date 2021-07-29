@@ -468,7 +468,7 @@ export function* GET_UTXO_STATE() {
   const { assets, transactions, utxos } = yield call(
     Cardano.explorer.getAccountStateByPublicKey,
     publicKey,
-    10, // adresses to generate per iteration (pagesize)
+    25, // adresses to generate per iteration (pagesize)
     10, // max iterations
     [0, 1], // generate inner / external addresses for check
   )
