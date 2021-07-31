@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Button } from 'antd'
-import { format } from 'date-fns'
+import { format, addDays } from 'date-fns'
 import Empty from 'components/Layout/Empty'
 import Address from 'components/Layout/Address'
 import AmountFormatterAsset from 'components/Layout/AmountFormatterAsset'
@@ -28,9 +28,9 @@ const RewardsHistory = () => {
                 small
               />
               <div className="ray__address mt-2">
-                <span className="mr-3">Epoch: {reward.epochNo}</span>
-                <span className="mr-3">For Epoch: {reward.epochNo - 2}</span>
-                <span>Date: {format(new Date(reward.timeStart), 'dd/MM/Y HH:mm:ss')}</span>
+                <span className="mr-3">In Epoch: {parseInt(reward.epochNo, 10) + 2}</span>
+                <span className="mr-3">For Epoch: {reward.epochNo}</span>
+                <span>Date: {format(addDays(new Date(reward.timeStart), 10), 'dd/MM/Y HH:mm:ss')}</span>
                 <div>
                   <Address address={reward.poolId} prefix="Pool ID:" cut />
                 </div>

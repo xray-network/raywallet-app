@@ -30,9 +30,8 @@ const RewardsActivities = () => {
     <div>
       <div className="ray__heading">Stake Delegators Distribution</div>
       <div
-        className={`ray__item ${
-          walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
-        }`}
+        className={`ray__item ${walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
+          }`}
       >
         <div className="row">
           <div className="col-lg-6">
@@ -104,15 +103,15 @@ const RewardsActivities = () => {
                         </Tooltip>
                       )}
                       <div className={style.rewardsEpoch}>
-                        <div className={style.rewardsEpochCount}>{item.forEpoch}</div>
+                        <div className={style.rewardsEpochCount}>{item.epochNo}</div>
                         <div className={style.rewardsEpochInfo}>
-                          <div>for</div>
+                          {current && <div>current</div>}
+                          {!current && <div>for</div>}
                           <div>epoch</div>
                         </div>
                       </div>
                       <div className={style.rewardsLabel}>
-                        {current && <strong>Current</strong>}
-                        {!current && 'Payout Date'}
+                        Payout Date
                       </div>
                       <div className={style.rewardsDate}>
                         {correctDate && date}
@@ -126,10 +125,10 @@ const RewardsActivities = () => {
             })}
           </div>
         )}
-        {/* <div className="ray__line" /> */}
-        {walletRayRewardsBonus.amount && (
+        {walletRayRewardsBonus.amount === 0 && <div className="ray__line" />}
+        {walletRayRewardsBonus.amount > 0 && (
           <div className="ray__bonus mt-4">
-            <div className="text-center">
+            <div>
               <h4>
                 <strong>
                   Congratulations!{' '}
