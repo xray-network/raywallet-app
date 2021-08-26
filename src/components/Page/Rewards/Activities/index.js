@@ -30,8 +30,9 @@ const RewardsActivities = () => {
     <div>
       <div className="ray__heading">Stake Delegators Distribution</div>
       <div
-        className={`ray__item ${walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
-          }`}
+        className={`ray__item ${
+          walletStake.hasStakingKey && inRayPools ? 'ray__item--success' : 'ray__item--gray'
+        }`}
       >
         <div className="row">
           <div className="col-lg-6">
@@ -110,9 +111,7 @@ const RewardsActivities = () => {
                           <div>epoch</div>
                         </div>
                       </div>
-                      <div className={style.rewardsLabel}>
-                        Payout Date
-                      </div>
+                      <div className={style.rewardsLabel}>Payout Date</div>
                       <div className={style.rewardsDate}>
                         {correctDate && date}
                         {!correctDate && '—'}
@@ -146,8 +145,8 @@ const RewardsActivities = () => {
                 <div className="ray__form__label">Bonus Balance</div>
                 <AmountFormatterAsset
                   amount={walletRayRewardsBonus.amount}
-                  fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
-                  ticker="XRAY"
+                  fingerprint="asset1y7lphaaxkvjw5hl2kpq37nvlvg09qfqsh4qyme"
+                  ticker="XDIAMOND"
                   availablePrivate
                 />
               </div>
@@ -201,7 +200,8 @@ const RewardsActivities = () => {
                   <p className="mb-0">
                     Receive additional XRAY rewards (total 100,000,000 XRAY) every epoch (5 days)
                     for delegating your ADA coins to any RAY pool. Additional distribution of Early
-                    Delegators Program (total 1,538,200 XRAY) for early delegators ({'<275'} epoch).
+                    Delegators Program (total 1,538,200 XRAY or 15,382 XDIAMOND) for early
+                    delegators ({'<275'} epoch).
                   </p>
                 </small>
               </div>
