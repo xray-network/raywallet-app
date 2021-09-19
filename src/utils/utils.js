@@ -14,6 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+import React from 'react'
 
 export const stringToBinary = (input) => {
   const characters = input.split('')
@@ -38,4 +39,28 @@ export const binaryToString = (input) => {
   }
 
   return result
+}
+
+export const truncate = (x, y = 8) => {
+  return x ? `${x.substring(0, y)}...${x.slice(-y)}` : ''
+}
+
+export const format = (x, precision = 0) => {
+  return precision
+    ? parseInt(x, 10)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+        (parseFloat(x) - parseInt(x, 10)).toFixed(precision).toString().replace('0.', '.')
+    : parseInt(x, 10)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export const formatValue = (value, postfix = '') => {
+  return (
+    <span>
+      {value || '—'}
+      {value && postfix ? postfix : ''}
+    </span>
+  )
 }

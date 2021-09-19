@@ -9,7 +9,10 @@ const StakePools = () => {
   const dispatch = useDispatch()
   const walletParams = useSelector((state) => state.wallets.walletParams)
   const walletStake = useSelector((state) => state.wallets.walletStake)
-  const poolsInfo = useSelector((state) => state.wallets.poolsInfo)
+  const walletIspoBalance = useSelector((state) => state.wallets.walletIspoBalance)
+  const pools = useSelector((state) => state.wallets.pools)
+
+  const poolList = pools?.pools || []
 
   const delegate = (id) => {
     dispatch({
@@ -35,14 +38,14 @@ const StakePools = () => {
   return (
     <div>
       <div className="ray__heading">Stake Pools</div>
-      {!poolsInfo.length && (
+      {!poolList.length && (
         <div className="ray__item py-5 text-center">
           <Spin indicator={<LoadingOutlined style={{ fontSize: 32 }} spin />} />
         </div>
       )}
-      {poolsInfo.map((pool, index) => {
+      {poolList.map((pool, index) => {
         const inRayPools =
-          pool.delegateId === walletStake.currentPoolId && walletStake.hasStakingKey
+          pool.pool_id_bech32 === walletStake.currentPoolId && walletStake.hasStakingKey
         return (
           <div
             className={`ray__item position ${
@@ -62,11 +65,11 @@ const StakePools = () => {
                 <span className="badge badge-success mr-2">{pool.ticker}</span>
               </div>
               <div>
-                <strong>{pool.name}</strong>
+                <strong>{pool.db_ticker}</strong>
               </div>
             </div>
             <div className="mb-3">
-              <Address address={pool.delegateId} cut prefix="Pool ID:" />
+              <Address address={pool.pool_id_bech32} cut prefix="Pool ID:" />
             </div>
             <div className="row">
               <div className="col-6">
@@ -122,8 +125,8 @@ const StakePools = () => {
                   </Button>
                   <a
                     className="ray__link"
-                    onClick={() => deregistrate(pool.delegateId)}
-                    onKeyPress={() => deregistrate(pool.delegateId)}
+                    onClick={() => deregistrate(pool.pool_id_bech32)}
+                    onKeyPress={() => deregistrate(pool.pool_id_bech32)}
                     role="button"
                     tabIndex="0"
                   >
@@ -131,10 +134,11 @@ const StakePools = () => {
                   </a>
                 </div>
               )}
-              {(pool.delegateId !== walletStake.currentPoolId || !walletStake.hasStakingKey) && (
+              {(pool.pool_id_bech32 !== walletStake.currentPoolId ||
+                !walletStake.hasStakingKey) && (
                 <Button
                   type="primary"
-                  onClick={() => delegate(pool.delegateId)}
+                  onClick={() => delegate(pool.pool_id_bech32)}
                   disabled={!walletParams.accountId}
                 >
                   <i className="fe fe-arrow-up-circle mr-1" />

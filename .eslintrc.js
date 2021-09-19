@@ -36,8 +36,9 @@ module.exports = {
     "no-console": 0,
     "react/no-multi-comp": 0,
     "react/no-array-index-key": 0,
-    // "no-unused-vars": 0
+    "no-unused-vars": 0,
     "consistent-return": 0,
+    "import/prefer-default-export": 0,
   },
   "parserOptions": {
     "ecmaFeatures": {

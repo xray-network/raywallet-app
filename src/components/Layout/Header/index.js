@@ -24,12 +24,6 @@ const Header = () => {
             <span>Stake</span>
           </NavLink>
         )}
-        {sections.includes('rewards') && (
-          <NavLink activeClassName={style.active} to="/rewards">
-            <span>Rewards</span>
-            <span>Rewards</span>
-          </NavLink>
-        )}
         {sections.includes('swap') && (
           <NavLink activeClassName={style.active} to="/swap">
             <span>Swap</span>

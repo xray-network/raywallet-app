@@ -15,7 +15,7 @@ const Menu = () => {
   const epochEndIns = useSelector((state) => state.wallets.epochEndIns)
   const walletAssetsSummary = useSelector((state) => state.wallets.walletAssetsSummary)
   const walletStake = useSelector((state) => state.wallets.walletStake)
-  const walletRayRewards = useSelector((state) => state.wallets.walletRayRewards)
+  const walletIspoBalance = useSelector((state) => state.wallets.walletIspoBalance)
   const walletTransactions = useSelector((state) => state.wallets.walletTransactions)
   const walletStore = useSelector((state) => state.wallets.walletStore)
   const walletLoading = useSelector((state) => state.wallets.walletLoading)
@@ -337,7 +337,7 @@ const Menu = () => {
                       {walletStake.hasStakingKey && (
                         <span>
                           <AmountFormatterAda
-                            amount={walletStake.rewardsAmount}
+                            amount={walletStake.rewardsBalance}
                             small
                             inline
                             availablePrivate
@@ -353,7 +353,7 @@ const Menu = () => {
                       {walletStake.hasStakingKey && (
                         <span>
                           <AmountFormatterAsset
-                            amount={walletRayRewards}
+                            amount={walletIspoBalance.balance}
                             fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
                             ticker="XRAY"
                             small
@@ -433,9 +433,9 @@ const Menu = () => {
               Add Wallet
             </a>
             {sections.includes('rewards') && (
-              <Link to="/rewards/activities">
+              <Link to="/stake">
                 <i className="fe fe-activity mr-2" />
-                RAY Rewards Program
+                ISPO Distribution
               </Link>
             )}
             {sections.includes('swap') && (

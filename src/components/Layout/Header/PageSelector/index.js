@@ -30,9 +30,6 @@ export default () => {
             <Checkbox value="stake">Stake</Checkbox>
           </div>
           <div className="mb-1">
-            <Checkbox value="rewards">Rewards</Checkbox>
-          </div>
-          <div className="mb-1">
             <Checkbox value="swap">Swap</Checkbox>
           </div>
           <div className="mb-1">

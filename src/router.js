@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 
 import Wallet from 'pages/wallet'
 import Stake from 'pages/stake'
-import Rewards from 'pages/rewards'
 import Swap from 'pages/swap'
 import KickStart from 'pages/kickstart'
 import NFT from 'pages/nft'
@@ -21,10 +20,6 @@ const routes = [
   {
     path: '/stake',
     Component: Stake,
-  },
-  {
-    path: '/rewards',
-    Component: Rewards,
   },
   {
     path: '/swap',

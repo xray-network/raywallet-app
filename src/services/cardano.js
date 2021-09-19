@@ -7,7 +7,7 @@ const Cardano = new CardanoWeb3({
     network: config.network,
   },
   explorer: {
-    url: config.api.graphql,
+    url: config.graphql,
     responseHandler: (response) => {
       const { data } = response
       if (data.errors) {

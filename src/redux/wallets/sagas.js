@@ -4,10 +4,10 @@ import { AES, enc as EncodeTo } from 'crypto-js'
 import { message } from 'antd'
 import Cardano from 'services/cardano'
 import BigNumber from 'bignumber.js'
-import * as CardanoHelper from 'services/cardano-helper'
 import * as Github from 'services/api/github'
 import * as Coingecko from 'services/api/coingecko'
-import * as Adapools from 'services/api/adapools'
+import * as Distr from 'services/distr'
+import * as Graphql from 'services/graphql'
 import actions from './actions'
 
 const CARDANO_NETWORK = process.env.REACT_APP_NETWORK || 'mainnet'
@@ -517,105 +517,120 @@ export function* GET_UTXO_STATE() {
 }
 
 export function* GET_STAKE_STATE() {
-  const { rewardAddress } = yield select((state) => state.wallets.walletParams)
-  const rawStakeInfo = yield call(CardanoHelper.GetStakeStateByKey, rewardAddress)
-  const walletRayRewards = yield call(CardanoHelper.GetDelegationRewardsStateByKey, rewardAddress)
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'walletStakeLoading',
+      value: true,
+    },
+  })
 
-  const walletStakeRewards = rawStakeInfo.rewardsHistory || []
-  const walletStake = {
-    hasStakingKey: rawStakeInfo.hasStakingKey || false,
-    rewardsAmount:
-      new BigNumber(rawStakeInfo.rewardsAmount).toFixed() || new BigNumber(0).toFixed(),
-    currentPoolId: rawStakeInfo.currentPool?.poolId || '',
-    nextRewardsHistory: rawStakeInfo.nextRewardsHistory || [],
+  const { rewardAddress } = yield select((state) => state.wallets.walletParams)
+  const stakeRegistrations = yield call(Graphql.getStakeRegistrations, rewardAddress)
+  const ispoRewards = yield call(Distr.getKeyHistory, rewardAddress)
+  const ispoPayouts = yield call(Distr.getKeyPayouts, rewardAddress)
+  const adaRewards = yield call(Distr.getKeyAdaHistory, rewardAddress)
+
+  const stakeData = stakeRegistrations?.data?.data
+  const ispoRewardsData = ispoRewards?.data
+  const ispoPayoutsData = ispoPayouts?.data
+  const adaRewardsData = adaRewards?.data
+
+  if (adaRewardsData) {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletAdaRewards',
+        value: adaRewardsData,
+      },
+    })
+  }
+
+  if (stakeData) {
+    const latestReg = stakeData.stakeRegistrations[0]
+      ? parseInt(stakeData.stakeRegistrations[0]?.transaction?.block?.number, 10)
+      : -1
+    const latestDereg = stakeData.stakeDeregistrations[0]
+      ? parseInt(stakeData.stakeDeregistrations[0]?.transaction?.block?.number, 10)
+      : -1
+    const hasStakingKey = latestReg > latestDereg
+
+    const rewardsTotal = parseInt(stakeData.rewards_aggregate?.aggregate?.sum?.amount || 0, 10)
+    const withdrawalsTotal = parseInt(
+      stakeData.withdrawals_aggregate?.aggregate?.sum?.amount || 0,
+      10,
+    )
+    const rewardsBalance = rewardsTotal - withdrawalsTotal
+
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletStake',
+        value: {
+          hasStakingKey,
+          currentPoolId: stakeData.delegations[0]?.stakePool?.id || '',
+          rewardsTotal,
+          withdrawalsTotal,
+          rewardsBalance,
+          rewardsHistory: stakeData.rewards,
+          withdrawalsHistory: stakeData.withdrawals,
+        },
+      },
+    })
+  }
+
+  if (ispoRewardsData && ispoPayoutsData) {
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletIspoHistory',
+        value: ispoRewardsData,
+      },
+    })
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletIspoPayouts',
+        value: ispoPayoutsData,
+      },
+    })
+
+    const totalPayoutsAmount = ispoPayoutsData[0]
+      ? ispoPayoutsData[0].payouts?.reduce((acc, payout) => acc + payout.paid, 0)
+      : 0
+    const totalAccrued = ispoRewardsData?.totalAccrued || 0
+    yield put({
+      type: 'wallets/CHANGE_SETTING',
+      payload: {
+        setting: 'walletIspoBalance',
+        value: {
+          paid: totalPayoutsAmount,
+          balance: totalAccrued - totalPayoutsAmount,
+          accrued: totalAccrued,
+        },
+      },
+    })
   }
 
   yield put({
     type: 'wallets/CHANGE_SETTING',
     payload: {
-      setting: 'walletStake',
-      value: walletStake,
-    },
-  })
-
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'walletStakeRewardsHistory',
-      value: walletStakeRewards,
-    },
-  })
-
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'walletRayRewards',
-      value: walletRayRewards.total || 0,
-    },
-  })
-
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'walletRayRewardsBonus',
-      value: {
-        amount: walletRayRewards.totalEarlyBonus,
-        share: parseFloat(walletRayRewards.totalEarlyShare),
-      },
-    },
-  })
-
-  yield put({
-    type: 'wallets/CHANGE_SETTING',
-    payload: {
-      setting: 'walletRayRewardsHistory',
-      value: walletRayRewards.rewardsHistory?.length
-        ? walletRayRewards.rewardsHistory.filter((item) => item.amount !== 0)
-        : [],
+      setting: 'walletStakeLoading',
+      value: false,
     },
   })
 }
 
 export function* GET_POOLS_INFO() {
-  const pools = yield select((state) => state.wallets.pools)
-  const urls = Object.keys(pools).map((id) => `/pools/${id}/summary.json`)
+  const pools = yield call(Distr.getPools)
 
-  const poolsInfo = yield call(Adapools.GetRawUrlBulk, urls)
-
-  if (poolsInfo) {
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'poolsInfo',
-        value: poolsInfo.map((item) => {
-          return {
-            ...item.data,
-            ...pools[item.data.pool_id],
-          }
-        }),
-      },
-    })
-  }
-
-  // TODO: wait live stake on cardano-graphql
-  // const { currentEpoch } = yield select((state) => state.wallets.networkInfo)
-  // const pools = yield select((state) => state.wallets.pools)
-
-  // const fetchPools = yield call(Explorer.GetPoolsInfo, Object.keys(pools), currentEpoch.number)
-  // const poolsInfo = fetchPools.data.stakePools
-
-  // yield put({
-  //   type: 'wallets/CHANGE_SETTING',
-  //   payload: {
-  //     setting: 'poolsInfo',
-  //     value: poolsInfo.map((item) => {
-  //       return {
-  //         ...item,
-  //         ...pools[item.id],
-  //       }
-  //     }),
-  //   },
-  // })
+  yield put({
+    type: 'wallets/CHANGE_SETTING',
+    payload: {
+      setting: 'pools',
+      value: pools?.data || {},
+    },
+  })
 }
 
 export function* FETCH_WALLET_DATA() {
@@ -649,16 +664,16 @@ export function* FETCH_WALLET_DATA() {
 }
 
 export function* FETCH_STATUS() {
-  const apiStatus = yield call(CardanoHelper.GetStatus)
-  if (apiStatus) {
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'status',
-        value: apiStatus,
-      },
-    })
-  }
+  // const apiStatus = yield call(CardanoHelper.GetStatus)
+  // if (apiStatus) {
+  //   yield put({
+  //     type: 'wallets/CHANGE_SETTING',
+  //     payload: {
+  //       setting: 'status',
+  //       value: apiStatus,
+  //     },
+  //   })
+  // }
 }
 
 export function* FETCH_SIDE_DATA() {

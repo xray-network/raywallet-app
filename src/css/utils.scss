@@ -1,6 +1,17 @@
 @import 'mixins.scss';
 
 .ray {
+  &__ticker {
+    display: inline-block;
+    font-size: 86%;
+    border: 1px solid $border;
+    line-height: 100%;
+    padding: rem(3);
+    border-radius: rem(6);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
   &__block {
     max-width: 980px;
     margin: 0 auto;
@@ -389,6 +400,11 @@
 // dark theme
 [data-vb-theme='dark'] {
   .ray {
+    &__ticker {
+      border: 1px solid $dark-border;
+      color: $white;
+    }
+
     &__wrapper {
       background-color: $dark-gray-4;
     }

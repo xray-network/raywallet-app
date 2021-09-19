@@ -76,6 +76,11 @@ export function* BUILD_TX({ payload }) {
     })
   }
 
+  console.log('outputs', outputs)
+  console.log('walletUTXOs', walletUTXOs)
+  console.log('changeAddress', changeAddress)
+  console.log('currentSlot', currentSlot)
+
   const result = yield call(
     Cardano.crypto.txBuild,
     outputs,
@@ -189,7 +194,7 @@ export function* CLEAR_TX() {
 export function* SETUP() {
   const chan = eventChannel((emitter) => {
     window.addEventListener('hashchange', (message) => emitter(message))
-    return () => { }
+    return () => {}
   })
 
   while (true) {

@@ -1,6 +1,6 @@
 import store from 'store'
 import BigNumber from 'bignumber.js'
-import config from 'config'
+// import config from 'config'
 import actions from './actions'
 
 const initialState = {
@@ -24,23 +24,35 @@ const initialState = {
   walletTransactions: [],
   walletStake: {
     hasStakingKey: false,
-    rewardsAmount: new BigNumber(0),
     currentPoolId: '',
-    nextRewardsHistory: [],
+    rewardsTotal: 0,
+    withdrawalsTotal: 0,
+    rewardsBalance: 0,
+    rewardsHistory: [],
+    withdrawalsHistory: [],
   },
+  walletIspoBalance: {
+    paid: 0,
+    balanace: 0,
+    accrued: 0,
+  },
+  walletIspoHistory: {},
+  walletIspoPayouts: [],
+  walletStakeLoading: true,
+
   walletStakeRewardsHistory: [],
   walletRayRewards: 0,
   walletRayRewardsHistory: [],
   walletRayRewardsBonus: {},
+
   walletList: store.get('RAY.walletList') || [],
   walletStore: store.get('RAY.walletStore') || {},
   networkInfo: {},
   epochEndIns: 0,
   verifiedTokensList: [],
   exchangeRates: {},
-  pools: config.pools,
-  poolsInfo: [],
   status: {},
+  pools: {},
 }
 
 export default function settingsReducer(state = initialState, action) {
