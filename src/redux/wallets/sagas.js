@@ -430,20 +430,21 @@ export function* FETCH_NETWORK_STATE() {
 }
 
 export function* GET_VERIFIED_TOKENS_LIST() {
-  const verifiedTokensList = yield call(
-    Github.GetRawUrl,
-    CARDANO_NETWORK === 'testnet'
-      ? '/ray-network/cardano-verified-tokens-list/main/list-testnet.json'
-      : '/ray-network/cardano-verified-tokens-list/main/list.json',
-  )
-  if (verifiedTokensList) {
-    yield put({
-      type: 'wallets/CHANGE_SETTING',
-      payload: {
-        setting: 'verifiedTokensList',
-        value: verifiedTokensList,
-      },
-    })
+  if (CARDANO_NETWORK === 'mainnet') {
+    const verifiedTokensList = yield call(
+      Github.GetRawUrl,
+      '/ray-network/cardano-verified/main/tokens/list.json',
+    )
+
+    if (verifiedTokensList?.data) {
+      yield put({
+        type: 'wallets/CHANGE_SETTING',
+        payload: {
+          setting: 'verifiedTokensList',
+          value: verifiedTokensList?.data || [],
+        },
+      })
+    }
   }
 }
 

@@ -68,8 +68,8 @@ const StakeBalances = () => {
             <div className="ray__card__amount">
               <AmountFormatterAsset
                 amount={walletIspoHistory?.bonus || 0}
-                fingerprint="asset14y0dxsz9s9nd2lefkqvuu7edqlsg5p70r3wyxa"
-                ticker="XRAY"
+                fingerprint="asset1y7lphaaxkvjw5hl2kpq37nvlvg09qfqsh4qyme"
+                ticker="XDIAMOND"
                 availablePrivate
               />
             </div>
