@@ -7,7 +7,7 @@ const AssetImage = ({ fingerprint }) => {
 
   return isVerified ? (
     <img
-      src={`https://raw.githubusercontent.com/ray-network/cardano-verified-tokens-list/main/logo/${fingerprint}.jpg`}
+      src={`https://raw.githubusercontent.com/ray-network/cardano-verified/main/tokens/icon/${fingerprint}.png`}
       alt=""
     />
   ) : (
